@@ -1,0 +1,50 @@
+[
+    [
+        "@import url(\"stylesheet.css\") supports(not (display:grid) and (display:flex)) screen and (max-width:400px);h1",
+        "color:red;}"
+    ],
+    [
+        ".class-name",
+        "font-size:16px;}"
+    ],
+    [
+        "#unique-id",
+        "background-color:blue;&:hover{text-decoration:underline;}:focus{border-color:green;}::first-line{font-weight:bold;}&::before{content:\"• \";}}"
+    ],
+    [
+        "input[type=\"text\"]:disabled",
+        "width:100%;height:200px;background:linear-gradient(to right,red,yellow);}"
+    ],
+    [
+        "span::first-of-type",
+        "margin:10px;padding:5px;border:1px solid black;border-radius:5px;}"
+    ],
+    [
+        ".box .container",
+        "width:80%;margin:0 auto;padding:20px;border:1px solid #ccc;box-sizing:border-box;> button{white-space:nowrap;}&.active{color:red;}li:has(> span){text-decoration:underline;}}"
+    ],
+    [
+        "p",
+        "font-family:Arial,sans-serif;font-size:14px;line-height:1.5;}"
+    ],
+    [
+        "h2",
+        "font-size:1.5rem;font-weight:bold;}"
+    ],
+    [
+        ".flex-container",
+        "display:flex;justify-content:center;align-items:center;}"
+    ],
+    [
+        ".grid-container",
+        "display:grid;grid-template-columns:1fr 1fr 1fr;grid-gap:20px;}"
+    ],
+    [
+        ".button",
+        "background-color:#007bff;color:#fff;padding:10px 20px;border:none;cursor:pointer;transition:background-color 0.3s ease;&:hover{background-color:#0056b3;}}"
+    ],
+    [
+        "@media screen and (max-width:600px)",
+        "body{background-color:lightblue;}.container{width:100%;padding:10px;}.grid-container{grid-template-columns:1fr;}}"
+    ]
+]

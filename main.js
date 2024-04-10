@@ -750,25 +750,16 @@ html, body {
 		}
 	}
 `
-][1];
+][0];
 
-// document.getElementsByTagName('code')[0].innerHTML = convertToNestedCSS(false, cssProvided);
 
-cssProvided = convertToNestedCSS(true, cssProvided);
 
-function convertToNestedCSS(devMode, cssProvided, htmlString) {
+function convertToNestedCSS(cssProvided, htmlString) {
 	cssProvided = minimizeCSS(cssProvided);
-
-	if (devMode) {
-		cssProvided = splitCSS(cssProvided);
-
-		console.log(cssProvided);
-		cssProvided = unnestCSS(cssProvided);
-		console.log(cssProvided);
-
-		cssProvided = renestCSS(htmlString, cssProvided);
-		cssProvided = beautifyCSS(cssProvided);
-	}
+	cssProvided = splitCSS(cssProvided);
+	cssProvided = unnestCSS(cssProvided);
+	cssProvided = renestCSS(htmlString, cssProvided);
+	cssProvided = beautifyCSS(cssProvided);
 
 	return cssProvided;
 };
@@ -989,7 +980,8 @@ function renestCSS(withHtml, cssProvided) {
 	}
 }
 
-function beautifyCSS(declarations, parsedCSS = '', indent = '') {
+function beautifyCSS(declarations, indent = '') {
+	let parsedCSS = '';
 	for (let i = 0; i < declarations.length; i++) {
 		if (Array.isArray(declarations[i])) {
 			if (declarations[i].length == 2) {
@@ -997,22 +989,25 @@ function beautifyCSS(declarations, parsedCSS = '', indent = '') {
 				let declarationsForSelector = nestedDeclarations[0];
 
 				if (typeof declarationsForSelector[0] === "undefined") {
-					parsedCSS += '\n\n' + indent + selector;
+					parsedCSS += '\n' + indent + selector;
 					continue;
 				}
 
-				parsedCSS += '\n\n' + indent + selector + ' {\n';
+				parsedCSS += ((declarations[0][0] == selector) ? '' : '\n\n') + indent + selector + ' {\n';
 
 				// Declarations for the current selector
-				if (Array.isArray(declarationsForSelector) && declarationsForSelector.length == 1) {
-					let declarations = '';
+				if (declarationsForSelector.length == 1) {
+					let declarationsString = '';
 					let currentDeclaration = '';
 					let isInQuotes = false;
 					let isEscaped = false;
 
 					for (let char of nestedDeclarations[0][0]) {
 						if (char === ';' && !isInQuotes && !isEscaped) {
-							declarations += indent + '  ' + currentDeclaration.trim() + ';\n';
+							declarationsString += currentDeclaration.trim() + ';\n';
+							currentDeclaration = '';
+						} else if (char === ':' && !isInQuotes && !isEscaped) {
+							declarationsString += indent + '  ' + currentDeclaration.trim() + ': ';
 							currentDeclaration = '';
 						} else {
 							if (char === '"') isInQuotes = !isInQuotes;
@@ -1024,45 +1019,21 @@ function beautifyCSS(declarations, parsedCSS = '', indent = '') {
 						}
 					}
 
-					if (currentDeclaration.trim()) declarations += indent + '  ' + currentDeclaration.trim() + ';';
+					if (currentDeclaration.trim()) declarationsString += currentDeclaration.trim() + ';' + ((nestedDeclarations.length > 1) ? '\n\n' : '');
 
 					nestedDeclarations.shift();
-					parsedCSS += declarations;
+					parsedCSS += declarationsString;
 				}
 
 				// Declarations
-				if (nestedDeclarations.length > 0) {
-					if (Array.isArray(nestedDeclarations[0])) {
-						// Array of rules
-						// console.log(nestedDeclarations);
-					} else {
-						// Rule
-						// console.log(nestedDeclarations);
-					}
+				if (nestedDeclarations.length > 0 && Array.isArray(nestedDeclarations[0])) {
+					// Array of rules
+					parsedCSS += beautifyCSS(nestedDeclarations, indent + '  ');
 				}
 
-				// // && !declarations[i].every(Array.isArray)
-				// if (declarationsForSelector.length === 1 && Array.isArray(declarationsForSelector[0])) {
-				//   parsedCSS += declarationsForSelector[0].split(';').reduce((acc, val) => {
-				//     if (acc.length && acc[acc.length - 1].endsWith('\\')) acc[acc.length - 1] = acc[acc.length - 1] + ';' + val;
-				//     else acc.push(val);
-
-				//     return acc;
-				//   }, []).map((declaration) => indent + '  ' + declaration.split(':').join(': ') + ';').join("\n");
-				// } else {
-				//   console.log(declarationsForSelector);
-				//   // console.log(declarationsForSelector.length);
-				// }
-
-				// if (declarations[i].length != 1) beautifyCSS(declarations[i].filter(Array.isArray), parsedCSS, indent + '  ');
-
 				parsedCSS += '\n' + indent + '}';
-			} else { // An array 0f declarations
-				let nestedDeclarations = declarations[i];
-
-				// if (declarations[i].length != 1) beautifyCSS(declarations[i].filter(Array.isArray), parsedCSS, indent);
-			}
+			};
 		}
 	}
-	// return parsedCSS;
+	return parsedCSS;
 }

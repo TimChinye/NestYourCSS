@@ -1,4 +1,4 @@
-let cssProvided = [
+let cssSamples = [
 	`
 html, body {
 		padding: 1vw 4vw;
@@ -752,7 +752,15 @@ html, body {
 `
 ][0];
 
+document.getElementsByTagName('button')[0].addEventListener('click', () => {
+	differ.getEditors().right.setValue(convertToNestedCSS(differ.getEditors().left.getValue()))
+});
 
+/*
+CodeMirror: CodeMirror is a versatile text editor implemented in JavaScript for the browser. It supports diffing out of the box with the merge addon1. For auto-reloading, you might need to implement it yourself or use a library like live-server.
+Ace: Ace is a high performance code editor for the web. It supports diffing through the Ace-diff plugin. However, similar to CodeMirror, auto-reloading might need to be implemented separately.
+Monaco Editor: Monaco Editor is the code editor that powers VS Code. It supports diffing natively. For auto-reloading, you might need to use the FileSystemProvider API to watch for changes in the file system.
+*/
 
 function convertToNestedCSS(cssProvided, htmlString) {
 	cssProvided = minimizeCSS(cssProvided);
@@ -941,7 +949,7 @@ function renestCSS(withHtml, cssProvided) {
 					}
 
 					if (combinators.includes(nestedSelector))
-						selectorParts.splice(i, i + 1, nestedSelector + ' ' + selectorParts[i + 1]);
+						selectorParts.splice(i, 2, nestedSelector + ' ' + selectorParts[i + 1]);
 
 					// else if (combinators.some(char => parts[i].includes("|"))) {
 					//   // Namespace separator
@@ -1007,8 +1015,10 @@ function beautifyCSS(declarations, indent = '') {
 							declarationsString += currentDeclaration.trim() + ';\n';
 							currentDeclaration = '';
 						} else if (char === ':' && !isInQuotes && !isEscaped) {
-							declarationsString += indent + '  ' + currentDeclaration.trim() + ': ';
-							currentDeclaration = '';
+							if (declarationsString.slice(-1)[0] == '\n' || typeof declarationsString.slice(-1)[0] == "undefined") {
+								declarationsString += indent + '  ' + currentDeclaration.trim() + ': ';
+								currentDeclaration = '';
+							}
 						} else {
 							if (char === '"') isInQuotes = !isInQuotes;
 							if (char === '\\' && !isEscaped) isEscaped = true;

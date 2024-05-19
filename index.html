@@ -4,20 +4,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hello World</title>
-
-  <link rel="stylesheet" href="./styles/syntax-highlighting.css">
-  <script src="./lib/highlight.min.js"></script>
-  <script>hljs.highlightAll();</script>
   
-  <!-- <script src="//cdn.jsdelivr.net/npm/eruda"></script>
-  <script>eruda.init(), eruda.show();</script> -->
+  <script src="./lib/ace.min.js"></script>
+  <link href="./lib/styles/ace-diff.min.css" rel="stylesheet">
+  <!-- <link href="./lib/styles/ace-diff-dark.min.css" rel="stylesheet"> -->
   
-  <link rel="stylesheet" href="./main.css">
+  <link rel="stylesheet" href="./styles/main.css">
 </head>
 <body>
-  <button id="nestBtn">Nest!</button>
-  <pre><code contenteditable="true"></code></pre>
+  <!--
+    List of (potential) parts to add to the site:
 
-  <script type="text/javascript" src="./main.js"></script>
+    - History of all conversions to Nested CSS
+    - Section to input CSS code and to display Nested CSS output
+    - Section input both HTML and CSS code and to display Nested CSS output
+    - Change modes from light to dark modes
+    - Replace some of the changed, nested CSS with the original CSS (through AceDiff).
+    - Area to drop in files
+    - Ability to send a link of a CSS file
+    - Button to clear the code (could just CTRL+A & Backspace)
+    - Button to convert the code
+    - Information about why you should 'Nest your CSS'
+    - Information on how to (manually) Nest your CSS
+    - Button to add sample CSS
+    - Ability to nest multiple CSS files at the same time
+    - Ability to auto-nest the CSS code
+    - Show the file size of both CSS outputs
+    - Send the Nested output to a raw file
+    - Button to use the previous selector instead (a.k.a. previous diff, but only for selectors)
+    - Mention it's recommended to use diff and add in the old CSS selectors to the new
+
+    To-do now:
+    - When re-nesting, check if the parent only has one child, if so don't go to another indentation, so we don't end up with rules which only have a single nested rule within them and no self-declarations.
+    - Use Monaco Editor, as opposed to ace (refer: <https://stackoverflow.com/questions/63179813/how-to-run-the-monaco-editor-from-a-cdn-like-cdnjs>).
+  -->
+
+  <button>Nest!</button>
+  <div>
+    <div id="code-editor"></div>
+  </div>
+
+  <script type="text/javascript" src="./scripts/main.js"></script>
+
+  <script src="./lib/ace-diff.min.js"></script>
+  <script>
+    const differ = new AceDiff({
+      element: '#code-editor',
+      // mode: 'ace/mode/css',
+      diffGranularity: 'specific',
+      showConnectors: false,
+      left: {
+        content: 'Input your CSS here',
+        // copyLinkEnabled: false
+      },
+      right: {
+        content: 'Your output CSS will appear here',
+        copyLinkEnabled: false
+      }
+    });
+
+    // console.log(differ.getNumDiffs());
+  </script>
 </body>
 </html>

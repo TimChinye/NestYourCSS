@@ -1193,7 +1193,6 @@ function renestCSS(withHtml, cssProvided) {
 					// Initialize a temporary part to hold the current part of the selector
 					let tempPart = '';
 					// Initialize an array to hold the parts of the selector
-					let selectorParts;
 					// Iterate over the parts of the selector
 					for (let i = 0; i < selectorParts.length; i++) {
 						// If the current part starts with '@', add it to the temporary part

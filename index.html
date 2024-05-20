@@ -47,6 +47,7 @@
   <script type="text/javascript" src="./scripts/main.js"></script>
 
   <script src="./lib/ace-diff.min.js"></script>
+  <script src="./lib/ext-searchbox.min.js"></script>
   <script>
     const differ = new AceDiff({
       element: '#code-editor',
@@ -54,7 +55,7 @@
       diffGranularity: 'specific',
       showConnectors: false,
       left: {
-        content: 'Input your CSS here',
+        content: cssSamples.join(''),
         // copyLinkEnabled: false
       },
       right: {

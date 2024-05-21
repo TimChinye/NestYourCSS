@@ -970,12 +970,6 @@ document.getElementsByTagName('button')[0].addEventListener('click', () => {
 	differ.getEditors().right.setValue(convertToNestedCSS(differ.getEditors().left.getValue()))
 });
 
-/*
-CodeMirror: CodeMirror is a versatile text editor implemented in JavaScript for the browser. It supports diffing out of the box with the merge addon1. For auto-reloading, you might need to implement it yourself or use a library like live-server.
-Ace: Ace is a high performance code editor for the web. It supports diffing through the Ace-diff plugin. However, similar to CodeMirror, auto-reloading might need to be implemented separately.
-Monaco Editor: Monaco Editor is the code editor that powers VS Code. It supports diffing natively. For auto-reloading, you might need to use the FileSystemProvider API to watch for changes in the file system.
-*/
-
 function convertToNestedCSS(cssProvided, htmlString) {
 	cssProvided = minimizeCSS(cssProvided);
 	cssProvided = splitCSS(cssProvided);

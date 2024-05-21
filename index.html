@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
+  <link rel="icon" type="image/png" href="./assets/logo.png" />
+  <title>Nest Your CSS</title>
   
   <script src="./lib/ace.min.js"></script>
   <link href="./lib/styles/ace-diff.min.css" rel="stylesheet">
@@ -13,6 +14,12 @@
 </head>
 <body>
   <!--
+    To-do now:
+    - When re-nesting, check if the parent only has one child, if so don't go to another indentation, so we don't end up with rules which only have a single nested rule within them and no self-declarations.
+    - Also, when re-nesting, seperates rules with `,` in their selector.
+    - Look at Ace Extensions: <https://github.com/ajaxorg/ace/wiki/Extensions>
+    - Use Monaco Editor, as opposed to ace (refer: <https://stackoverflow.com/questions/63179813/how-to-run-the-monaco-editor-from-a-cdn-like-cdnjs>).
+    
     List of (potential) parts to add to the site:
 
     - History of all conversions to Nested CSS
@@ -33,14 +40,10 @@
     - Send the Nested output to a raw file
     - Button to use the previous selector instead (a.k.a. previous diff, but only for selectors)
     - Mention it's recommended to use diff and add in the old CSS selectors to the new
-
-    To-do now:
-    - When re-nesting, check if the parent only has one child, if so don't go to another indentation, so we don't end up with rules which only have a single nested rule within them and no self-declarations.
-    - Use Monaco Editor, as opposed to ace (refer: <https://stackoverflow.com/questions/63179813/how-to-run-the-monaco-editor-from-a-cdn-like-cdnjs>).
   -->
-
-  <button>Nest!</button>
-  <div>
+  
+  <div id="code-editor-wrapper">
+    <button>Nest!</button>
     <div id="code-editor"></div>
   </div>
 
@@ -48,10 +51,13 @@
 
   <script src="./lib/ace-diff.min.js"></script>
   <script src="./lib/ext-searchbox.min.js"></script>
+  <script src="./lib/mode-scss.js"></script>
+  <script src="./lib/theme-chrome.js"></script>
   <script>
     const differ = new AceDiff({
       element: '#code-editor',
-      // mode: 'ace/mode/css',
+      mode: 'ace/mode/scss',
+      theme: 'ace/theme/chrome',
       diffGranularity: 'specific',
       showConnectors: false,
       left: {

@@ -8,7 +8,6 @@
   
   <script src="./lib/ace.min.js"></script>
   <link href="./lib/styles/ace-diff.min.css" rel="stylesheet">
-  <!-- <link href="./lib/styles/ace-diff-dark.min.css" rel="stylesheet"> -->
   
   <link rel="stylesheet" href="./styles/main.css">
 </head>
@@ -17,11 +16,8 @@
     To-do now:
     - When re-nesting, check if the parent only has one child, if so don't go to another indentation, so we don't end up with rules which only have a single nested rule within them and no self-declarations.
     - Also, when re-nesting, seperates rules with `,` in their selector.
-    - Look at Ace Extensions: <https://github.com/ajaxorg/ace/wiki/Extensions>
-    - Use Monaco Editor, as opposed to ace (refer: <https://stackoverflow.com/questions/63179813/how-to-run-the-monaco-editor-from-a-cdn-like-cdnjs>).
-    
-    List of (potential) parts to add to the site:
 
+    List of (potential) parts to add to the site:
     - History of all conversions to Nested CSS
     - Section to input CSS code and to display Nested CSS output
     - Section input both HTML and CSS code and to display Nested CSS output
@@ -40,6 +36,9 @@
     - Send the Nested output to a raw file
     - Button to use the previous selector instead (a.k.a. previous diff, but only for selectors)
     - Mention it's recommended to use diff and add in the old CSS selectors to the new
+    - Paredit may be useful
+    - Keyboard Shortcuts extension has a lot of useful stuff, will have to "re-develop" to: limit what features are possible and re-design.
+    - Option to allow emmet?
   -->
   
   <div id="code-editor-wrapper">
@@ -50,7 +49,9 @@
   <script type="text/javascript" src="./scripts/main.js"></script>
 
   <script src="./lib/ace-diff.min.js"></script>
+  <script src="./lib/ace-linters.min.js"></script>
   <script src="./lib/ext-searchbox.min.js"></script>
+  <!-- <script src="./lib/ext-language_tools.min.js"></script> -->
   <script src="./lib/mode-css.js"></script>
   <script src="./lib/theme-chrome.js"></script>
   <script>
@@ -61,8 +62,7 @@
       diffGranularity: 'specific',
       showConnectors: false,
       left: {
-        content: cssSamples.join(''),
-        // copyLinkEnabled: false
+        content: cssSamples.join('')
       },
       right: {
         content: 'Your output CSS will appear here',
@@ -70,7 +70,31 @@
       }
     });
 
+    differ.getEditors().left.getSession().setUseWorker(false);
+    differ.getEditors().right.getSession().setUseWorker(false);
+    
+    var provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
+    provider.registerEditor(differ.getEditors().left);
+
     // console.log(differ.getNumDiffs());
   </script>
 </body>
 </html>
+
+<!-- 
+
+<script src="https://www.unpkg.com/ace-builds@latest/src-noconflict/ace.js"></script>
+<script src="https://www.unpkg.com/ace-linters@latest/build/ace-linters.js"></script>
+<div id="editor" style="height: 100px">some text</div>
+
+<script>
+    var editor = ace.edit("editor", {
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true,
+    });
+
+    var provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
+    provider.registerEditor(editor);
+</script>
+
+ -->

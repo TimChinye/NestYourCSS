@@ -967,14 +967,31 @@ body {
 ];
 
 document.getElementsByTagName('button')[0].addEventListener('click', () => {
-	differ.getEditors().right.setValue(convertToNestedCSS(differ.getEditors().left.getValue()))
+	let mainEditor = differ.getEditors().left;
+	const annotations = mainEditor.getSession().getAnnotations().filter((a) => a.type);
+	if (mainEditor.getSession().getAnnotations().length == 0)
+		differ.getEditors().right.setValue(convertToNestedCSS(mainEditor.getValue()))
+	else {
+		mainEditor.resize(true);
+		mainEditor.scrollToLine(annotations[0].row, true, true, () => {
+			
+		});
+		mainEditor.gotoLine(annotations[0].row, annotations[0].column, true);
+	}
+
+	// "Your code doesn't seem to valid, do you want to try nesting anyways?"
+	// "It may not work properly."
 });
 
 function convertToNestedCSS(cssProvided, htmlString) {
 	cssProvided = minimizeCSS(cssProvided);
+	console.log(cssProvided);
 	cssProvided = splitCSS(cssProvided);
+	console.log(cssProvided);
 	cssProvided = unnestCSS(cssProvided);
+	console.log(cssProvided);
 	cssProvided = renestCSS(htmlString, cssProvided);
+	console.log(cssProvided);
 	cssProvided = beautifyCSS(cssProvided);
 
 	return cssProvided;
@@ -1058,9 +1075,6 @@ function splitCSS(cssProvided) {
             } else if (char === '{') {
                 selector = unknown;
                 if (declaration) parsedCSS.push(declaration), declaration = '';
-				/*
-				declaration && parsedCSS.push(declaration), declaration = '';
-				*/
 
                 // Set insideBrackets to true and increment bracketCount
                 insideBrackets = true;
@@ -1074,7 +1088,6 @@ function splitCSS(cssProvided) {
     // Return the parsed CSS
     return parsedCSS;
 }
-
 
 function unnestCSS(cssProvided, prefix = '') {
     // Initialize the parsed CSS array
@@ -1264,7 +1277,6 @@ function renestCSS(withHtml, cssProvided) {
 		return parsedCSS;
 	}
 }
-
 
 function beautifyCSS(declarations, indent = '') {
     // Initialize the parsed CSS string

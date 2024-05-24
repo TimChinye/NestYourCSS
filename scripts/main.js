@@ -1,5 +1,22 @@
 let cssSamples = [
 `
+html, body {
+    color: red;
+}
+
+body {
+    background-color: red;
+}
+
+html {
+    border-radius: 10px;
+    
+    main {
+        text-decoration: underline;    
+    }
+}
+`,
+`
 main {
 	@media (min-width: 600px) {
 		body {
@@ -280,7 +297,7 @@ main > article form p#requestCode {
 `,
 `
 
-@import url("stylesheet.css") supports(not (display: grid) and (display: flex)) screen and (max-width: 400px);
+@import url("stylesheet.css") screen and (max-width: 400px);
 
 /* Comments */
 
@@ -968,8 +985,8 @@ body {
 
 document.getElementsByTagName('button')[0].addEventListener('click', () => {
 	let mainEditor = differ.getEditors().left;
-	const annotations = mainEditor.getSession().getAnnotations().filter((a) => a.type);
-	if (mainEditor.getSession().getAnnotations().length == 0)
+	const annotations = mainEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
+	if (annotations.length == 0)
 		differ.getEditors().right.setValue(convertToNestedCSS(mainEditor.getValue()))
 	else {
 		mainEditor.resize(true);
@@ -985,9 +1002,7 @@ document.getElementsByTagName('button')[0].addEventListener('click', () => {
 
 function convertToNestedCSS(cssProvided, htmlString) {
 	cssProvided = minimizeCSS(cssProvided);
-	console.log(cssProvided);
 	cssProvided = splitCSS(cssProvided);
-	console.log(cssProvided);
 	cssProvided = unnestCSS(cssProvided);
 	console.log(cssProvided);
 	cssProvided = renestCSS(htmlString, cssProvided);
@@ -1104,10 +1119,7 @@ function unnestCSS(cssProvided, prefix = '') {
             if (relativeSelector.startsWith('@')) relativeSelector += ';';
 
             // Construct the absolute selector by appending the relative selector to the prefix
-            let absoluteSelector = prefix + (relativeSelector.startsWith('&:') ? '' : ' ') + relativeSelector;
-
-            // If there's no prefix, the absolute selector should be the same as the relative selector
-            if (!prefix) absoluteSelector = relativeSelector;
+            let absoluteSelector = (!prefix ? relativeSelector : prefix + (relativeSelector.startsWith('&:') ? '' : ' ') + relativeSelector);
 
             // If the declarations are an array, there are nested rules within the current rule
             if (Array.isArray(declarations)) {
@@ -1120,10 +1132,39 @@ function unnestCSS(cssProvided, prefix = '') {
                 parsedCSS = parsedCSS.concat(unnestCSS(declarations.filter(Array.isArray), absoluteSelector));
             } else {
                 // If the declarations are not an array, add them to the parsed CSS
-                parsedCSS.push([absoluteSelector, declarations]);
+
+				// Split selector groups:
+				let splitSelectors = [];
+				let currentSelector = '';
+				let openBracketCount = 0;
+			
+				for (let i = 0; i < absoluteSelector.length; i++) {
+					const char = absoluteSelector[i];
+			
+					if (char === ',' && openBracketCount === 0) {
+						splitSelectors.push(currentSelector.trim());
+						currentSelector = '';
+					} else {
+						currentSelector += char;
+						if (char === '(' || char === '[') {
+							openBracketCount++;
+						} else if (char === ')' || char === ']') {
+							openBracketCount--;
+						}
+					}
+				}
+			
+				if (currentSelector.trim() !== '') {
+					splitSelectors.push(currentSelector.trim());
+				}
+
+				splitSelectors = [splitSelectors[0], ...splitSelectors.slice(1).map((newSelector) => (!prefix ? newSelector : prefix + (newSelector.startsWith('&:') ? '' : ' ') + newSelector))];
+			
+				parsedCSS.push(...splitSelectors.map((newSelector) => [newSelector, declarations]));
             }
         } else {
             // If the current rule is not an array, add it to the parsed CSS
+			console.log(cssProvided[i]);
             parsedCSS.push([cssProvided[i]])
         }
     }
@@ -1256,6 +1297,7 @@ function renestCSS(withHtml, cssProvided) {
 
 			// Actually nest the CSS
 			let currentLevel = parsedCSS;
+
 			selectorParts.forEach((part, i) => {
 				let existingIndex = currentLevel.findIndex(([s]) => s === part);
 
@@ -1269,7 +1311,18 @@ function renestCSS(withHtml, cssProvided) {
 
 					currentLevel.push(newPart);
 					currentLevel = newPart[1];
-				} else currentLevel = currentLevel[existingIndex][1];
+				} else {
+					if (i === selectorParts.length - 1) {
+						if (declarations?.endsWith(';')) declarations = declarations.slice(0, -1);
+						let currentDeclarations = currentLevel[existingIndex][1][0];
+
+						if (currentDeclarations) currentDeclarations += ';';
+						else currentDeclarations = '';
+						
+						currentLevel[existingIndex][1][0] = [currentDeclarations + declarations.split(',').join(', ')];
+					}
+					currentLevel = currentLevel[existingIndex][1];
+				}
 			});
 		});
 			
@@ -1337,7 +1390,6 @@ function beautifyCSS(declarations, indent = '') {
 
                 // If there are nested declarations, recursively call beautifyCSS
                 if (nestedDeclarations.length > 0 && Array.isArray(nestedDeclarations[0])) {
-
                     parsedCSS += beautifyCSS(nestedDeclarations, indent + '  ');
                 }
 

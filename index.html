@@ -15,7 +15,7 @@
   <!--
     To-do now:
     - When re-nesting, check if the parent only has one child, if so don't go to another indentation, so we don't end up with rules which only have a single nested rule within them and no self-declarations.
-    - Also, when re-nesting, seperates rules with `,` in their selector.
+    - Factor in attribute selectors
 
     List of (potential) parts to add to the site:
     - History of all conversions to Nested CSS
@@ -62,6 +62,7 @@
       diffGranularity: 'specific',
       showConnectors: false,
       left: {
+        // content: cssSamples[0]
         content: cssSamples.join('')
       },
       right: {

@@ -60,13 +60,14 @@
       mode: 'ace/mode/css',
       theme: 'ace/theme/chrome',
       diffGranularity: 'specific',
+      showDiffs: false,
       showConnectors: false,
       left: {
         // content: cssSamples[0]
         content: cssSamples.join('')
       },
       right: {
-        content: 'Your output CSS will appear here',
+        content: '/* Your output CSS will appear here */',
         copyLinkEnabled: false
       }
     });
@@ -76,6 +77,7 @@
     
     var provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
     provider.registerEditor(differ.getEditors().left);
+    provider.registerEditor(differ.getEditors().right);
 
     // console.log(differ.getNumDiffs());
   </script>

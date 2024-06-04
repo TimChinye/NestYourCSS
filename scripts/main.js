@@ -1,4 +1,46 @@
 let cssSamples = [
+/*`
+@media print, screen and (min-width: 40em) and (max-width: 63.99875em) {
+	.hide-for-medium-only {
+		display: none !important;
+	}
+}
+`*/
+`
+nav {
+	display: inline-flex;
+	width: clamp(384px, 100%, 1600px);
+	height: 4rem;
+}
+
+nav > * {
+	display: inherit;
+	padding: 0.75rem 1rem;
+	background-color: var(--panel-bg-colour);
+}
+
+nav a:has(> img) {
+	display: flex;
+}
+
+nav img {
+	height: 2rem;
+}
+
+nav ul {
+	padding: 1rem 3rem;
+	display: flex;
+}
+
+nav ul a {
+	color: inherit;
+	text-decoration: none;
+}
+
+nav ul a:hover {
+	color: var(--accent-text-colour);
+}
+`,
 `
 aside {
 	color: red;
@@ -1110,17 +1152,12 @@ document.getElementsByTagName('button')[0].addEventListener('click', () => {
 });
 
 function convertToNestedCSS(cssProvided, htmlString) {
-	console.log(cssProvided);
+	
 	cssProvided = minimizeCSS(cssProvided);
-	console.log(cssProvided);
 	cssProvided = splitCSS(cssProvided);
-	console.log(cssProvided);
 	cssProvided = unnestCSS(cssProvided);
-	console.log(cssProvided);
 	cssProvided = renestCSS(htmlString, cssProvided);
-	console.log(cssProvided);
 	cssProvided = beautifyCSS(cssProvided);
-	console.log(cssProvided);
 
 	return cssProvided;
 };
@@ -1439,6 +1476,8 @@ function renestCSS(withHtml, cssProvided) {
 			});
 		});
 
+		// console.log([...parsedCSS]);
+
 		// Return the parsed CSS
 		return parsedCSS;
 	}
@@ -1458,7 +1497,7 @@ function beautifyCSS(declarations, indent = '') {
 				let [selector, nestedDeclarations] = declarations[i];
 				let declarationsForSelector = nestedDeclarations[0];
 
-				console.log(declarationsForSelector);
+				// console.log(declarationsForSelector);
 
 				// If the selector has no declarations, add it to the parsed CSS string
 				if (typeof declarationsForSelector[0] === "undefined") {

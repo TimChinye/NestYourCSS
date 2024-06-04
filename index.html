@@ -9,7 +9,8 @@
   <script src="./lib/ace.min.js"></script>
   <link href="./lib/styles/ace-diff.min.css" rel="stylesheet">
   
-  <link rel="stylesheet" href="./styles/main.css">
+  <link href="./styles/main.css" rel="stylesheet">
+  <link href="./styles/editor.css" rel="stylesheet">
 </head>
 <body>
   <!--
@@ -39,65 +40,66 @@
     - Paredit may be useful
     - Keyboard Shortcuts extension has a lot of useful stuff, will have to "re-develop" to: limit what features are possible and re-design.
     - Option to allow emmet?
+    - Add a minimap, might have to DIY
+    - Sticky Scroll - Official Ace Extensions (DIY)
   -->
-  
+  <!-- <script src="./lib/ext-language_tools.min.js"></script> -->
+
   <div id="code-editor-wrapper">
     <button>Nest!</button>
     <div id="code-editor"></div>
   </div>
 
-  <script type="text/javascript" src="./scripts/main.js"></script>
+  <script src="./scripts/main.js" type="text/javascript"></script>
 
+  <script src="./lib/mode-css.js"></script>
   <script src="./lib/ace-diff.min.js"></script>
   <script src="./lib/ace-linters.min.js"></script>
   <script src="./lib/ext-searchbox.min.js"></script>
-  <!-- <script src="./lib/ext-language_tools.min.js"></script> -->
-  <script src="./lib/mode-css.js"></script>
-  <script src="./lib/theme-chrome.js"></script>
+  <!-- <script src="./scripts/ext-stickyscroll.js"></script> -->
   <script>
     const differ = new AceDiff({
       element: '#code-editor',
       mode: 'ace/mode/css',
-      theme: 'ace/theme/chrome',
       diffGranularity: 'specific',
       showDiffs: false,
       showConnectors: false,
       left: {
         // content: cssSamples[0]
-        content: cssSamples.join('')
+        content: cssSamples.slice(0, 2).join('')
       },
       right: {
-        content: '/* Your output CSS will appear here */',
+        // content: '/* Your output CSS will appear here */',
+        content: convertToNestedCSS(cssSamples.slice(0, 2).join('')),
         copyLinkEnabled: false
       }
     });
 
-    differ.getEditors().left.getSession().setUseWorker(false);
-    differ.getEditors().right.getSession().setUseWorker(false);
+    let { left: leftEditor, right: rightEditor } = differ.getEditors();
+    
+    leftEditor.getSession().on('change', () => {
+      console.log(leftEditor.getSession().getValue());
+        const annotations = leftEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
+        if (annotations.length == 0) rightEditor.getSession().setValue(convertToNestedCSS(leftEditor.getValue()));
+    });
     
     var provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
-    provider.registerEditor(differ.getEditors().left);
-    provider.registerEditor(differ.getEditors().right);
+    provider.registerEditor(leftEditor);
+    provider.registerEditor(rightEditor);
+
+    leftEditor.setOption("showPrintMargin", false);
+    rightEditor.setOption("showPrintMargin", false);
+
+    let getScrollbar = (editor) => editor.container.querySelector('.ace_scrollbar-v > .ace_scrollbar-inner');
+
+    leftEditor.renderer.on("afterRender", function() {
+      if (leftEditor.session.getScrollTop() != this.scrollTop) getScrollbar(leftEditor).style.height = getScrollbar(leftEditor).offsetHeight - 16 + 'px';
+    });
+    rightEditor.renderer.on("afterRender", function() {
+      if (rightEditor.session.getScrollTop() != this.scrollTop) getScrollbar(rightEditor).style.height = getScrollbar(rightEditor).offsetHeight - 16 + 'px';
+    });
 
     // console.log(differ.getNumDiffs());
   </script>
 </body>
 </html>
-
-<!-- 
-
-<script src="https://www.unpkg.com/ace-builds@latest/src-noconflict/ace.js"></script>
-<script src="https://www.unpkg.com/ace-linters@latest/build/ace-linters.js"></script>
-<div id="editor" style="height: 100px">some text</div>
-
-<script>
-    var editor = ace.edit("editor", {
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-    });
-
-    var provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
-    provider.registerEditor(editor);
-</script>
-
- -->

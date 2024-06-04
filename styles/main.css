@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Poppins&display=swap');
+
 :root {
     --pri-colour-darkest: #051823;
     --pri-colour-em-darker: #092533;
@@ -47,6 +49,20 @@ body {
     height: 100%;
     min-height: 100vh;
     background-color: #0C2430;
+    
+    &::before {
+        position: absolute;
+        content: '';
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-image: url(https://i.imgur.com/mrr8mtH.png);
+        background-repeat: repeat;
+        background-attachment: scroll;
+        background-position: 0px 40px;
+        opacity: 10%;
+    }
 }
 
 #code-editor-wrapper {

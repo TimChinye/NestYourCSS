@@ -12,7 +12,7 @@ function glueEditor(editor) {
                 position: fixed;
                 height: fit-content;
                 background: rgb(9, 31, 42);
-                border-bottom: 1px solid color-mix(in srgb, var(--pri-colour-m-darker), transparent);
+                border-bottom: 1px solid color-mix(in srgb, let(--pri-colour-m-darker), transparent);
                 pointer-events: unset;
             }
             
@@ -64,15 +64,15 @@ function glueEditor(editor) {
     
             container.querySelector('.ace_scrollbar-v').style.height = `calc(100% - ${(selectors.length * 19) + 16}px)`;
 
-            var currentPosition = editor.getCursorPosition();
+            let currentPosition = editor.getCursorPosition();
 
             const fillerString = '​​​​​END OF CODE​​​​​';
 
             let allLines = editor.session.getDocument().getAllLines();
 
-            var fillerLines = allLines.filter(line => line == fillerString);
-            var totalLines = allLines.filter(line => line != fillerString);
-            var difference = selectors.length - fillerLines.length;
+            let fillerLines = allLines.filter(line => line == fillerString);
+            let totalLines = allLines.filter(line => line != fillerString);
+            let difference = selectors.length - fillerLines.length;
 
             if (difference > 0) {
                 for (let i = 0; i < difference; i++) {
@@ -100,7 +100,7 @@ function glueEditor(editor) {
     editor.getSession().selection.on('changeSelection', () => {
         if (isProgrammaticChange) return;
 
-        var { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
+        let { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
 
         let finalLine = maxLine - 1;
         let finalChar = (line) => editor.session.getLine(line).length;
@@ -113,7 +113,7 @@ function glueEditor(editor) {
             editor.clearSelection();
             editor.moveCursorTo(maxLine, finalChar(maxLine));
 
-            var { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
+            let { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
             console.log([startRow, endRow]);
             isProgrammaticChange = false;
 
@@ -127,7 +127,7 @@ function glueEditor(editor) {
             editor.getSelection().moveCursorTo({row: finalLine, column: finalChar(finalLine)});
             editor.getSelection().selectTo(finalLine, finalChar(finalLine));
 
-            var { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
+            let { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
             console.log([startRow, endRow]);
             isProgrammaticChange = false;
 
@@ -140,7 +140,7 @@ function glueEditor(editor) {
 
             editor.getSelection().selectTo(finalLine, finalChar(finalLine));
 
-            var { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
+            let { start: { row: startRow }, end: { row: endRow } } = editor.getSelectionRange();
             console.log([startRow, endRow]);
             isProgrammaticChange = false;
 

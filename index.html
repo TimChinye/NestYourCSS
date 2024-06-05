@@ -77,26 +77,32 @@
 
     let { left: leftEditor, right: rightEditor } = differ.getEditors();
     
+    /* Auto Nest */
     leftEditor.getSession().on('change', () => {
-      console.log(leftEditor.getSession().getValue());
         const annotations = leftEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
         if (annotations.length == 0) rightEditor.getSession().setValue(convertToNestedCSS(leftEditor.getValue()));
     });
     
-    var provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
-    provider.registerEditor(leftEditor);
-    provider.registerEditor(rightEditor);
+    let provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
+    let editors = [leftEditor, rightEditor];
 
-    leftEditor.setOption("showPrintMargin", false);
-    rightEditor.setOption("showPrintMargin", false);
+    editors.forEach((editor) => {
+      provider.registerEditor(editor);
+      editor.setOption("showPrintMargin", false);
 
-    let getScrollbar = (editor) => editor.container.querySelector('.ace_scrollbar-v > .ace_scrollbar-inner');
+      let getScrollbar = (editor) => editor.container.querySelector('.ace_scrollbar-v > .ace_scrollbar-inner');
 
-    leftEditor.renderer.on("afterRender", function() {
-      if (leftEditor.session.getScrollTop() != this.scrollTop) getScrollbar(leftEditor).style.height = getScrollbar(leftEditor).offsetHeight - 16 + 'px';
-    });
-    rightEditor.renderer.on("afterRender", function() {
-      if (rightEditor.session.getScrollTop() != this.scrollTop) getScrollbar(rightEditor).style.height = getScrollbar(rightEditor).offsetHeight - 16 + 'px';
+      editor.renderer.on("afterRender", function() {
+        if (editor.session.getScrollTop() != this.scrollTop) {
+          console.log("2");
+        }
+      });
+      editor.session.on('changeScrollTop', function(scrollTop) {
+        if (scrollTop > 0) {
+          console.log("1");
+          getScrollbar(editor).style.height = getScrollbar(editor).offsetHeight - 16 + 'px';
+        }
+      });
     });
 
     // console.log(differ.getNumDiffs());

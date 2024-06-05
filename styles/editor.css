@@ -27,10 +27,8 @@
   --code-parenthesis-colour: color-mix(in srgb, var(--shades-em-lighter), transparent calc((1 - var(--opacity-medium)) * 100%));
   
   border-radius: 16px;
-  box-sizing: border-box;
   border: 2px solid var(--window-text-colour);
-  /* background-color: var(--background-colour); */
-  background-color: #00000040;
+  background-color: color-mix(in srgb, var(--shades-darkest), transparent 75%);
   color: var(--code-text-colour);
   
   font-family: "Fira Code", monospace;
@@ -38,7 +36,7 @@
 }
 
 .ace-tm .ace_gutter {
-  background: var(--background-colour);
+  background: transparent;
   color: var(--window-text-colour);
 }
 
@@ -56,7 +54,7 @@
 }
 
 .ace-tm .ace_marker-layer .ace_active-line {
-  background: color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest));
+  background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
 }
 
 .ace-tm .ace_scroller {
@@ -169,14 +167,19 @@
 
 .ace-tm :is(.language_highlight_text, .language_highlight_read, .language_highlight_write) {
   border: none;
-  background: color-mix(in srgb, var(--sec-colour-m-darker), transparent 50%);
-  box-shadow: 0px 0px 8px 0px var(--sec-colour-m-darker);
+  --highlight-colour: var(--sec-colour-m-darker);
+  background: color-mix(in srgb, var(--highlight-colour), transparent 50%);
+  box-shadow: 0px 0px 8px 0px var(--highlight-colour);
   clip-path: inset(-8px 0);
   z-index: 7;
 }
 
 .ace-tm .language_highlight_write {
-  --sec-colour-m-darker: var(--red-colour-m-darker);
+  --highlight-colour: color-mix(in srgb, var(--shades-medium), transparent 75%);
+}
+
+.ace-tm .ace_highlight-marker {
+  background-color: color-mix(in srgb, var(--shades-medium), transparent 75%);
 }
 
 .ace_scrollbar {
@@ -223,12 +226,20 @@
 .ace-tm.ace_tooltip {
   padding: 1rem;
   background-color: color-mix(in srgb, var(--pri-colour-em-darker), transparent 10%);
+  border: 1px solid var(--pri-colour-m-darker);
   border-radius: 8px;
-  border: none;
-  color: var(
---shades-lighter);
+  color: var(--shades-lighter);
   font-size: 16px;
   min-width: 15em;
+
+  &:hover {
+    border-color: var(--pri-colour-darker);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--shades-darker);
+  }
 }
 
 .ace-tm.ace_tooltip code {

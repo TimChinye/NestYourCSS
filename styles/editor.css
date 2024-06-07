@@ -6,15 +6,6 @@
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
-
-.acediff__gutter {
-  flex: 0 0 calc(100% / var(--editor-width));
-  border: none;
-
-    &, svg {
-      background: transparent;
-    }
-}
   
 .ace-tm.ace_editor {
   --window-text-colour: color-mix(in srgb, var(--shades-darker), transparent calc((1 - var(--opacity-medium)) * 100%));

@@ -49,14 +49,16 @@ html {
 }
 
 body {
+    font-size: clamp(8px, 1.5vh, 24px);
     margin: 0;
     height: 100%;
     min-height: 100vh;
     background-color: #0C2430;
     background-image: linear-gradient(45deg, black, var(--pri-colour-em-darker));
+    background-attachment: fixed;
     
     &::before {
-        position: absolute;
+        position: fixed;
         content: '';
         top: 0;
         left: 0;
@@ -64,8 +66,9 @@ body {
         width: 100%;
         background-image: url(https://i.imgur.com/mrr8mtH.png);
         background-repeat: repeat;
-        background-attachment: scroll;
-        background-position: 0px 40px;
+        background-attachment: fixed;
+        background-position: 0px 0.1vh;
+        background-size: 5vh;
         opacity: 10%;
         z-index: -999;
     }
@@ -78,26 +81,46 @@ body {
     align-items: center;
     width: 100%;
     height: 100%;
-    padding: 128px;
+    padding: 8rem;
+    gap: 2rem;
     box-sizing: border-box;
 
     > button {
         cursor: pointer;
         flex: 0;
+        border-radius: 999px;
+        font-weight: bold;
+        border: none;
+        background: var(--sec-colour-lighter);
+        transition: 0.25s;
+        padding: 1em 3.25em;
+
+        &:hover {
+            background: var(--sec-colour-lightest);
+        }
     }
 
     > #code-editor {
         position: relative;
-        
         height: 100%;
         width: auto;
-        --editor-width: 11;
-        aspect-ratio: var(--editor-width) / 7;
+        --editor-width: 5;
+        --gutter-width: 2;
+        aspect-ratio: calc((var(--editor-width) * 2) + var(--gutter-width)) / 7;
 
-        > div.acediff__wrap {
+        > .acediff__wrap {
             top: 50%;
             left: 50%;
             translate: -50% -50%;
+
+            > .acediff__gutter {
+              flex: 0 0 calc((100% / ((var(--editor-width) * 2) + var(--gutter-width))) * var(--gutter-width));
+              border: none;
+            
+                &, svg {
+                  background: transparent;
+                }
+            }
         }
     }
 }

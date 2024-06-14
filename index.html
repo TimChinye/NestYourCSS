@@ -2,6 +2,9 @@
   To-do now:
   - When re-nesting, check if the parent only has one child, if so don't go to another indentation, so we don't end up with rules which only have a single nested rule within them and no self-declarations.
   - Factor in attribute selectors
+  - Account for `;` within the value of a declaration, such as within a url() path
+  - Account for escaped characters in selectors, e.g; ".u-3\/4\@to-small { ... }"
+  - Rules with nested selectors don't nest properly
 
   List of (potential) parts to add to the site:
   - History of all conversions to Nested CSS
@@ -47,27 +50,6 @@
   <link href="./styles/editor.css" rel="stylesheet">
 </head>
 <body>
-
-  <!-- 50% Slogans
-  “Website styling taking up too much time?”
-  “Is fine-tuning your site’s look too fiddly?”
-  “Struggle to keep your site’s style straight?”
-  “Does your CSS lack the layers of logic?”
-  -->
-
-  <!-- 100% Slogans
-  “Need to keep your rules in order?”
-  “Is your code getting clouded?”
-  “Is your code becoming a maze?”
-  “Drowning in a sea of selectors?”
-  “Does your code make you cringe?”
-  “Is updating your site’s style a chore?”
-  “Is your site’s style not stacking up?”
-  “Feeling lost in the style sheets?”
-  “Is organizing your website’s look a headache?”
-  “Struggling to associate your styles with your HTML structure?”
-  -->
-
   <div id="code-editor-wrapper">
     <button>Nest!</button>
     <div id="code-editor"></div>
@@ -92,8 +74,7 @@
         content: cssSamples.slice(0, 2).join('')
       },
       right: {
-        // content: '/* Your output CSS will appear here */',
-        content: convertToNestedCSS(cssSamples.slice(0, 2).join('')),
+        content: '/* Your output CSS will appear here */',
         copyLinkEnabled: false
       }
     });

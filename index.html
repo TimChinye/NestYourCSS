@@ -84,7 +84,7 @@
     /* Auto Nest */
     leftEditor.getSession().on('change', () => {
         const annotations = leftEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
-        if (annotations.length == 0) rightEditor.getSession().setValue(convertToNestedCSS(leftEditor.getValue()));
+        if (annotations.length == 0) rightEditor.getSession().setValue(convertToNestedCSS(leftEditor.getValue()) || '/* Your output CSS will appear here */');
     });
     
     let provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");

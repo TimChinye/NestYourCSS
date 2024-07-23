@@ -17,18 +17,22 @@
   --code-punctuation-colour: color-mix(in srgb, var(--shades-lightest), transparent calc((1 - var(--opacity-medium)) * 100%));
   --code-parenthesis-colour: color-mix(in srgb, var(--shades-em-lighter), transparent calc((1 - var(--opacity-medium)) * 100%));
   
-  border-radius: 16px;
-  border: 2px solid var(--window-text-colour);
+  border-radius: 1rem;
+  border: 0.25ch solid var(--window-text-colour);
   background-color: color-mix(in srgb, var(--shades-darkest), transparent 75%);
   color: var(--code-text-colour);
   
   font-family: "Fira Code", monospace;
-  font-size: 14px;
+  font-size: 1.1rem;
 }
 
 .ace-tm .ace_gutter {
   background: transparent;
   color: var(--window-text-colour);
+}
+
+.ace-tm .ace_gutter-layer {
+  pointer-events: unset;
 }
 
 .ace-tm .ace_gutter-cell {
@@ -41,11 +45,11 @@
 
 .ace-tm .ace_gutter-active-line {
   font-weight: bold;
-  background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
+  background: color-mix(in srgb, var(--shades-darkest), transparent 75%);
 }
 
 .ace-tm .ace_marker-layer .ace_active-line {
-  background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
+  background: color-mix(in srgb, var(--shades-darkest), transparent 75%);
 }
 
 .ace-tm .ace_scroller {

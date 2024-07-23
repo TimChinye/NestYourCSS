@@ -1,0 +1,198 @@
+@keyframes scaleDown {
+	1%, 99% { pointer-events: none; }
+
+	0% { scale: 1; }
+	50% { scale: calc(6/8); }
+	100% { scale: calc(6/8); }
+}
+
+/* ((100 {firstSectionHeight} + ((100 {sectionHeight} + 50 {gap})  * 4 {otherSectionsCount})) / 700 {totalHeight}) */
+/* ((100 + ((100 + 50) * 4)) / 700) */
+
+@keyframes fall {
+	0% {
+		opacity: 0;
+		scale: 0.50;
+		rotate: -42deg;
+		translate: 80vw calc(-600vh - 150%);
+	}
+
+	14.29% {
+		opacity: 1;
+		scale: 1;
+		rotate: -42deg;
+		translate: 0 calc(-600vh + 0%);
+	}
+
+	35.71% {
+		opacity: 1;
+		scale: 0.75;
+		rotate: 1 1 -2 90deg;
+		translate: 0 calc(-450vh + 50%);
+	}
+
+	57.14% {
+		opacity: 1;
+		scale: 1.25;
+		rotate: 1 0 0 60deg;
+		translate: 0 calc(-300vh - 50%);
+	}
+
+	78.57% {
+		opacity: 1;
+		scale: 1.5;
+		rotate: -60deg;
+		translate: 0 calc(-150vh + 66%);
+	}
+
+	100% {
+		opacity: 1;
+		scale: 1;
+		rotate: 0deg;
+		translate: 0 calc(0vh + 50%);
+	}
+}
+
+@keyframes idle {
+	0% { translate: 0 0%; }
+	
+	100% { translate: 0 10%; }
+}
+
+@keyframes hover {
+	0% { translate: 0 50%; }
+	
+	100% { translate: 0 60%; }
+}
+
+@keyframes repeatText {
+  from {
+    text-shadow:
+      0 -0lh #808080FF,
+      0 -1lh #808080BF, 
+      0 -2lh #80808080, 
+      0 -3lh #80808040;
+  }
+	
+  to {
+    text-shadow: 
+      0 -1lh #808080BF,
+      0 -2lh #80808080, 
+      0 -3lh #80808040, 
+      0 -4lh #80808000;
+  }
+}
+
+@keyframes swapText {
+	from { padding-top: 0lh; }
+	
+	to { padding-top: 1lh; }
+}
+
+@keyframes showText {
+	to { text-shadow: 0 -1lh; }
+}
+
+@keyframes strikethrough {
+	0% { translate: -100%; }
+	
+	50% { translate: 0%; }
+	
+	100% { translate: 100%; }
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		padding-bottom: 20lh;
+	}
+	
+	to {
+		opacity: 1;
+		padding-bottom: 0;
+	}
+}
+
+@keyframes slideIn {
+	50% { margin: 0; }
+	
+	75% { margin: 0; }
+}
+
+@keyframes fadeIn {
+	0% { padding-top: 5lh; }
+	
+	100% { padding-top: 0; }
+}
+
+@keyframes slideUp {
+	to {
+		padding-bottom: 64rem;
+	}
+}
+
+@keyframes changeCard {
+	6% { z-index: -1; }
+	
+	6.25% {
+		scale: 0.75;
+		translate: 180px -180px;
+		rotate: 20 -4 20 60deg;
+		z-index: 1;
+	}
+	
+	12.5% {
+		z-index: 1;
+		scale: none;
+		translate: none;
+		rotate: none;
+	}
+}
+
+@keyframes slideInLines {
+	from { translate: -100px calc(5lh + (var(--charIndex) * 1em)); }
+
+	to { translate: 0; }
+}
+
+@keyframes viewed {}
+
+@keyframes rotate {
+	from { rotate: 0deg; }
+	
+	to { rotate: 360deg; }
+}
+
+@keyframes revealText {
+	from { letter-spacing: -1.5ch; }
+
+	0% { opacity: 0; }
+	
+	25% { opacity: 0.1; }
+	
+	50% { opacity: 0.3; }
+	
+	75% { opacity: 0.5; }
+	
+	100% { opacity: 1; }
+
+	to { letter-spacing: 0ch; }
+}
+
+@keyframes widenGap {
+	to {
+		gap: 10ch;
+		word-spacing: 0.2ch;
+	}
+}
+
+@keyframes moveDown {
+	from { translate: 0 -3lh; opacity: 0; }
+	
+	to { translate: 0 0; opacity: 1; }
+}
+
+@keyframes fadeUp {
+	from { translate: 0ch 1.67em; opacity: 0; }
+	to { translate: -0.96ch -0.31em; opacity: 1; }
+}

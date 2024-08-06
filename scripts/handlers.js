@@ -18,13 +18,13 @@ document.body.addEventListener('mousemove', (e) => {
       onFirstView(e);
     }
     
-    let editorSection = document.getElementsByTagName('main')[0];
+    let editorSection = document.getElementById('groupingStylesTogether');
     if (e.pageY > editorSection.offsetTop - editorSection.offsetHeight && e.pageY < editorSection.offsetTop + (editorSection.offsetHeight * 2)) {
       updateActiveLine();
     }
     
-    let mainSection = document.getElementById('groupingStylesTogether');
-    if (e.pageY > 0 && e.pageY < mainSection.offsetTop + (mainSection.offsetHeight * 2)) {
+    let mainSection = document.getElementsByTagName('main')[0];
+    if (e.pageY > 0 && e.pageY < mainSection.offsetTop + ((mainSection.offsetHeight * (1 / 0.96)) * 2)) {
       moveMainBackground();
     }
     
@@ -45,8 +45,4 @@ window.addEventListener('scroll', (e) => {
   });
 });
 
-document.addEventListener('click', (e) => {
-  requestAnimationFrame(() => {
-    moveCursorBackground();
-  });
-});
+document.getElementById('nestBtn').addEventListener('click', nestCode);

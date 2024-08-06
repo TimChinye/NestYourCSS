@@ -188,11 +188,17 @@
 
 @keyframes moveDown {
 	from { translate: 0 -3lh; opacity: 0; }
-	
 	to { translate: 0 0; opacity: 1; }
 }
 
 @keyframes fadeUp {
 	from { translate: 0ch 1.67em; opacity: 0; }
 	to { translate: -0.96ch -0.31em; opacity: 1; }
+}
+
+@keyframes moveLeft {
+	from { translate: calc((((var(--total-width) - var(--editor-width)) / var(--total-width)) * 100%) - var(--padding)); }
+	to { translate: 0; margin-right: var(--padding); }
+	
+	/* Use margin */
 }

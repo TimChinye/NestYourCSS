@@ -41,7 +41,7 @@
 }
 
 :root {
-	--rem: clamp(8px, 1.5vh, 24px);
+	--rem: clamp(0px, 1.5vh, 24px);
     font-size: var(--rem);
 
     --pri-colour-darkest: #051823;
@@ -84,7 +84,7 @@
 @property --padding {
 	syntax: "<length>";
 	inherits: false;
-	initial-value: calc(2 * (clamp(8px, 1.5vh, 24px)));
+	initial-value: calc(2 * (clamp(0px, 1.5vh, 24px)));
 }
 
 @property --icon-colour {
@@ -112,7 +112,9 @@ body {
 	--cursorHorizPosition: 50%;
 
 	> #site-wrapper {
-		width : 100%;
+		margin: 0 auto;
+		width: clamp(0px, 100%, 3200px);
+		contain: paint;
 
 		> main {
 			--padding: 2rem;
@@ -124,295 +126,390 @@ body {
 				var(--padding) var(--padding) /
 				calc(100% - (var(--padding) * 2)) calc(100% - (var(--padding) * 2)),
 			black;
+			contain: content;
 			position: relative;
-			display: flex;
+			min-width: 100%;
 			height: 96vh;
+			width: fit-content;
 			padding: var(--padding);
+			margin-left: auto;
 			background: var(--background);
 			background-clip: content-box;
 			border-radius: 3rem;
-			justify-content: space-between;
 			transform-origin: center;
 			animation: scaleDown linear both;
 			animation-timeline: view();
 			animation-range: contain 100% cover 100%;
 
-			> article:first-child {
+			> #main-content {
+				position: relative;
+				height: 100%;
+				width: 100%;
 				display: flex;
-				flex-direction: column;
 				justify-content: space-between;
-				margin: 2rem;
-
-				> header {
-					margin-top: 2rem;
-					margin-left: 2rem;
-
-					> hgroup {
-						color: #BFBFBF;
-						font-family: 'Poppins';
-
-						> * { margin: 0; }
-
-						> h3 {
-							line-height: 125%;
-							font-weight: 200;
-							font-size: 3rem;
-							height: 2lh;
-							max-width: 24ch;
+				
+				> article#textSide {
+					width: 100%;
+					height: 100%;
+					contain: content;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					padding: 2rem;
+	
+					> header {
+						margin-top: 2rem;
+						margin-left: 2rem;
+	
+						> hgroup {
+							color: #BFBFBF;
+							font-family: 'Poppins';
+	
+							> * { margin: 0; }
+	
+							> h3 {
+								line-height: 125%;
+								font-weight: 200;
+								font-size: 3rem;
+								height: 2lh;
+								width: 24ch;
+							}
+	
+							> h1 {
+								line-height: 125%;
+								font-weight: 900;
+								font-size: 6rem;
+								white-space: nowrap;
+								transition: 0.25s;
+	
+								&:hover {
+									color: #FFFFFF;
+								}
+							}
 						}
-
-						> h1 {
-							line-height: 125%;
-							font-weight: 900;
-							font-size: 6rem;
-							white-space: nowrap;
-							transition: 0.25s;
-
-							&:hover {
-								color: #FFFFFF;
+	
+						> menu {
+							display: inline-flex;
+							--primary-colour: #808080;
+							font-size: 1rem;
+							gap: 0.33em;
+							margin: 1em 0;
+							padding: 0;
+	
+							.socialButton {
+								display: flex;
+								font-size: inherit;
+								flex-direction: row;
+								align-items: center;
+								position: relative;
+								padding: 0;
+								border: none;
+								background: radial-gradient(circle at 1.5em, transparent calc(1.5em - 0.125em), var(--icon-colour) 0, var(--icon-colour) 100%);
+								border-radius: 999px;
+								position: relative;
+								transition: --icon-colour 0s 1s;
+	
+								> a {
+									position: absolute;
+									top: 0;
+									left: 0;
+									height: 100%;
+									width: 100%;
+									z-index: 1;
+								}
+								
+								> svg {
+									height: 3em;
+									width: auto;
+									aspect-ratio: 1 / 1;
+									border: 0 solid var(--icon-colour);
+									border-radius: inherit;
+									box-sizing: border-box;
+							
+									path {
+										cursor: pointer;
+										fill: var(--icon-colour);
+										transition: --icon-colour 0.5s 1s;
+							
+										&:first-child {
+											--icon-colour: var(--primary-colour);
+										}
+							
+										&:last-child {
+											--icon-colour: transparent;
+										}
+									}
+								}
+								
+								&:hover > svg > path {
+									transition: 0.5s 0s;
+									
+									&:first-child {
+										--icon-colour: transparent;
+									}
+							
+									&:last-child {
+										--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, #D9D9D9);
+									}
+								}
+							
+								> span {
+									flex: 1;
+									display: block;
+									color: var(--icon-colour);
+									font-weight: 600;
+									font-size: 0;
+									opacity: 0;
+									line-height: 1;
+									padding: 1.5ch 0;
+									padding-right: 3ch;
+									translate: 1ch;
+									background: var(--background);
+									background-clip: text;
+									transition: font-size 0.5s 0.5s, opacity 0.25s 0s;
+								}
+								
+								&:hover {
+									cursor: pointer;
+									--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, #D9D9D9);
+									transition: --icon-colour 0.5s;
+								
+									> span {
+										translate: 1ch 0;
+										font-size: unset;
+										opacity: 1;
+										transition: font-size 0.5s 0.5s, opacity 0.25s 1s;
+									}
+								}
 							}
 						}
 					}
-
-					> menu {
-						display: inline-flex;
-						--primary-colour: #808080;
-						font-size: 1rem;
-						gap: 0.33em;
-						margin: 1em 0;
-						padding: 0;
-
-						.socialButton {
+	
+					> figure {
+						display: flex;
+						flex-direction: column;
+						gap: 1rem;
+						margin: 0;
+						margin-left: 2rem;
+						width: min(40vw, 100%);
+						container-type: inline-size;
+	
+						> figcaption {
+							color: #BFBFBF;
+							font-family: 'Poppins';
+							font-weight: 200;
+							font-size: 1.25rem;
+						}
+	
+						> div {
 							display: flex;
-							font-size: inherit;
-							flex-direction: row;
-							align-items: center;
-							position: relative;
-							padding: 0;
-							border: none;
-							background: radial-gradient(circle at 1.5em, transparent calc(1.5em - 0.125em), var(--icon-colour) 0, var(--icon-colour) 100%);
-							border-radius: 999px;
-							position: relative;
-							transition: --icon-colour 0s 1s;
-
-							> a {
-								position: absolute;
-								top: 0;
-								left: 0;
-								height: 100%;
-								width: 100%;
-								z-index: 1;
-							}
-							
-							> svg {
-								height: 3em;
-								width: auto;
-								aspect-ratio: 1 / 1;
-								border: 0 solid var(--icon-colour);
-								border-radius: inherit;
-								box-sizing: border-box;
-						
-								path {
-									cursor: pointer;
-									fill: var(--icon-colour);
-									transition: --icon-colour 0.5s 1s;
-						
-									&:first-child {
-										--icon-colour: var(--primary-colour);
-									}
-						
-									&:last-child {
-										--icon-colour: transparent;
-									}
-								}
-							}
-							
-							&:hover > svg > path {
-								transition: 0.5s 0s;
-								
-								&:first-child {
-									--icon-colour: transparent;
-								}
-						
-								&:last-child {
-									--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, #D9D9D9);
-								}
-							}
-						
-							> span {
-								flex: 1;
-								display: block;
-								color: var(--icon-colour);
-								font-weight: 600;
-								font-size: 0;
-								opacity: 0;
-								line-height: 1;
-								padding: 1.5ch 0;
-								padding-right: 3ch;
-								translate: 1ch;
-								background: var(--background);
-								background-clip: text;
-								transition: font-size 0.5s 0.5s, opacity 0.25s 0s;
-							}
-							
-							&:hover {
+							width: fit-content;
+							border: 0.125rem solid #71717140;
+							padding: 1rem;
+							gap: 1rem;
+							transition: 0.25s;
+	
+							> img {
 								cursor: pointer;
-								--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, #D9D9D9);
-								transition: --icon-colour 0.5s;
-							
-								> span {
-									translate: 1ch 1px;
-									font-size: unset;
-									opacity: 1;
-									transition: font-size 0.5s 0.5s, opacity 0.25s 1s;
+								width: calc(25cqw - (4rem / 3));
+								transition: inherit;
+							}
+	
+							&:hover {
+								border-color: #BFBFBF40;
+							}
+	
+							&:has(> img:hover) {
+								border-color: #BFBFBF80;
+								
+								:not(:hover) {
+									filter: grayscale(1);
 								}
 							}
 						}
 					}
 				}
 
-				> figure {
-					display: flex;
-					flex-direction: column;
-					gap: 1rem;
-					margin: 0;
-					margin-left: 2rem;
-					width: min(40vw, 100%);
-					container-type: inline-size;
-
-					> figcaption {
-						color: #BFBFBF;
-						font-family: 'Poppins';
-						font-weight: 200;
-						font-size: 1.25rem;
-					}
-
-					> div {
-						display: flex;
-						width: fit-content;
-						border: 0.125rem solid #71717140;
-						padding: 1rem;
-						gap: 1rem;
-						transition: 0.25s;
-
-						> img {
-							cursor: pointer;
-							width: calc(25cqw - (4rem / 3));
-							transition: inherit;
-						}
-
-						&:hover {
-							border-color: #BFBFBF40;
-						}
-
-						&:has(> img:hover) {
-							border-color: #BFBFBF80;
-							
-							:not(:hover) {
-								filter: grayscale(1);
+				> article#editorSide {
+					> #code-editor {
+						position: relative;
+						height: 100%;
+						width: auto;
+						--editor-width: 5;
+			
+						> .acediff__wrap {
+							position: relative;
+							overflow: unset;
+	
+							> .editorWrapper {
+								.editor {
+									height: 100%;																
+									transform-origin: left;
+								
+									> div {
+										white-space: pre;
+									}
+								}
+	
+								&#mainEditorWrapper {
+									#mainEditor {
+									}
+								}
 							}
 						}
 					}
 				}
 			}
-		
-			#code-editor-wrapper {
-				position: relative;
-		
-				> button {
-					cursor: pointer;
-					border-radius: 50%;
-					font-weight: bold;
-					border: none;
-					background: var(--sec-colour-lighter);
-					transition: 0.25s;
-					padding: 1rem;
-					position: absolute;
-					aspect-ratio: 1 / 1;
-					bottom: 4rem;
-					right: 4rem;
-					z-index: 1;
-		
-					&:hover {
-						background: var(--sec-colour-lightest);
-					}
-				}
-		
-				> #code-editor {
-					position: relative;
-					height: 100%;
-					width: auto;
-					--editor-width: 5;
-					--gutter-width: 2;
-					/* aspect-ratio: calc((var(--editor-width) * 2) + var(--gutter-width)) / 7; */
-		
-					> .acediff__wrap {
-						position: relative;
-						overflow: unset;
-		
-						> .acediff__gutter {
-							flex: 0 0 calc((100% / ((var(--editor-width) * 2) + var(--gutter-width))) * var(--gutter-width));
+
+			&:not(.nesting) {
+				> #main-content {
+					> article#editorSide {
+						> button {
+							cursor: pointer;
+							border-radius: 50%;
+							font-weight: bold;
 							border: none;
-		
-							&, svg {
-								background: transparent;
+							background: var(--sec-colour-lighter);
+							transition: 0.25s;
+							padding: 1rem;
+							position: absolute;
+							aspect-ratio: 1 / 1;
+							bottom: 4rem;
+							right: 4rem;
+							z-index: 1;
+				
+							&:hover {
+								background: var(--sec-colour-lightest);
 							}
 						}
-					}
-
-					&.single-editor > .acediff__wrap > div:is(.acediff__gutter, .acediff__right) {
-						display: none;
-					} 
-				}
-
-				.editorWrapper {
-					transition: 1s;
-					border-left: 1px solid #71717180;
 				
-					.editor {
-						height: 100%;
-						aspect-ratio: var(--editor-width) / 7;
-						transform-origin: left;
-					
-						> div {
-							white-space: pre;
-						}
-					}
-
-					&#mainEditorWrapper {
-						padding: var(--padding);
-						padding-left: 0;
-						border-radius: 0 1rem 1rem 0;
-						border-color: #71717140;
-						background: color-mix(in srgb, white, transparent 97%);
-
-						#mainEditor {
-							border: 2px solid color-mix(in srgb, #717171, transparent 80%);
-
-							& ~ #shadowEditorsWrapper {
-								height: calc(100% + (var(--padding) * 2));
-								translate: 0 calc(-100% + var(--padding));
-								pointer-events: none;
+						> #code-editor {
+							position: relative;
+							height: 100%;
+							width: auto;
+				
+							> .acediff__wrap {
 								position: relative;
-
-								.shadowEditorWrapper {
-									overflow: hidden;
-									position: absolute;
-									height: 100%;
-				
-									> .shadowEditor {
-										height: calc(100% - (var(--padding) * 2));
-										translate: 0 var(--padding);
+								overflow: unset;
+		
+								> :is(.acediff__gutter, .acediff__right) {
+									display: none;
+								}
+		
+								> .editorWrapper {
+									transition: 1s;
+									border-left: 1px solid #71717180;
+								
+									.editor {
+										height: 100%;
+										aspect-ratio: var(--editor-width) / 7;
+										transform-origin: left;
+									
+										> div {
+											white-space: pre;
+										}
+									}
+		
+									&#mainEditorWrapper {
+										padding: var(--padding);
+										padding-left: 0;
+										border-radius: 0 1rem 1rem 0;
+										border-color: #71717140;
+										background: color-mix(in srgb, white, transparent 97%);
+		
+										#mainEditor {
+											border: 0.25ch solid color-mix(in srgb, #717171, transparent 80%);
+		
+											& ~ #shadowEditorsWrapper {
+												height: calc(100% + (var(--padding) * 2));
+												translate: 0 calc(-100% + var(--padding));
+												pointer-events: none;
+												position: relative;
+		
+												.shadowEditorWrapper {
+													overflow: hidden;
+													position: absolute;
+													height: 100%;
+								
+													> .shadowEditor {
+														height: calc(100% - (var(--padding) * 2));
+														translate: 0 var(--padding);
+													}
+												}
+											}
+										}
 									}
 								}
 							}
+						}
+					}
+				}
+			}
 
-							&.closed ~ #shadowEditorsWrapper > .shadowEditorWrapper {
-							translate: 0 !important;
-							opacity: 0 !important;
+			&.nesting {
+				min-width: 0%;
+				transition: min-width 5s;
+
+				> #main-content {
+					> article#textSide {
+						width: 0;
+						height: 0;
+						opacity: 0;
+						padding: 0;
+						transition: opacity 1s, width 1s, height 1s, padding 1s;
+						contain: size;
+					}
+	
+					> article#editorSide {
+						margin-left: var(--padding);
+						height: 100%;
+						width: 100%;
+						display: flex;
+						flex-direction: row-reverse;
+				
+						> button {
+							display: none;
+						}
+						
+						> #code-editor {
+							--gutter-width: 0.5;
+							--total-width: calc(var(--gutter-width) + (2 * var(--editor-width)));
+							aspect-ratio: var(--total-width) / 7;
+							height: calc(100% - (2 * var(--padding)));
+							animation: moveLeft 1s cubic-bezier(1, 0, 0.5, 1) both;
+							/* animation-play-state: paused; */
+							padding: var(--padding) 0;
+							box-sizing: content-box;
+	
+							> .acediff__wrap {
+								> #mainEditorWrapper {
+									flex: 1;
+
+									> #mainEditor {
+										width: 100%;
+									}
+								}
+
+								> .acediff__gutter {
+									flex: 0 0 calc((100% / ((var(--editor-width) * 2) + var(--gutter-width))) * var(--gutter-width));
+									border: none;
+	
+									&, svg {
+										background: transparent;
+									}
+								}
+	
+								.shadowEditorWrapper {
+									translate: 0 !important;
+									opacity: 0 !important;
+								}
 							}
 						}
 					}
+				}
+
+				& + article {
+					display: none;
 				}
 			}
 		}
@@ -421,17 +518,17 @@ body {
 		> article {
 			display: flex;
 			flex-direction: column;
-			gap: 50vh;
+			gap: min(50dvh, 800px);
 
 			> section, > a > section {
 				position: relative;
-				height: 100vh;
+				height: min(100dvh, 1600px);
 
 				&#reducingBoilerplateCode {
 					> a {
 						margin: 0;
 						position: absolute;
-						top: 1rem;
+						top: 1.5rem;
 						right: 0;
 						color: white;
 						text-decoration: none;
@@ -497,23 +594,23 @@ body {
 						}
 						
 						> span:nth-child(1) {
-						margin-left: 0.5ch;
-						text-align: left;
-						animation-range-start: -0.5lh;
-						animation-range-end: 5lh;
+							margin-left: 0.5ch;
+							text-align: left;
+							animation-range-start: -0.5lh;
+							animation-range-end: 5lh;
 						}
 					
 						> span:nth-child(2) {
-						text-align: center;
-						animation-range-start: 0lh;
-						animation-range-end: 4lh;
+							text-align: center;
+							animation-range-start: 0lh;
+							animation-range-end: 4lh;
 						}
 					
 						> span:nth-child(3) {
-						margin-right: 0.5ch;
-						text-align: right;
-						animation-range-start: 0.5lh;
-						animation-range-end: 3lh;
+							margin-right: 0.5ch;
+							text-align: right;
+							animation-range-start: 0.5lh;
+							animation-range-end: 3lh;
 						}
 					}
 				}
@@ -544,14 +641,14 @@ body {
 								text-shadow: 0 0lh;
 								animation: showText linear forwards;
 								animation-timeline: view();
-							animation-range: calc(50% + 0.15lh) calc(100% - 2lh);
+								animation-range: calc(min(50dvh, 800px) + 0.15lh) calc(min(100dvh, 1600px) - 2lh);
 							}
 
 							&:last-child {
 								text-shadow: 0 -2lh;
 								animation: showText linear forwards;
 								animation-timeline: view();
-							animation-range: calc(50% - 1lh) calc(100% - 3.15lh);
+								animation-range: calc(min(50dvh, 800px) - 1lh) calc(min(100dvh, 1600px) - 3.15lh);
 							}
 						}
 					}
@@ -568,7 +665,7 @@ body {
 						text-align: right;
 						animation: slideDown linear both;
 						animation-timeline: view();
-					animation-range: cover contain 5lh;
+						animation-range: cover contain 5lh;
 
 						s {
 							text-decoration: none;
@@ -625,20 +722,20 @@ body {
 							color: color-mix(in srgb, currentColor 25%, black);
 							animation: slideIn ease-out forwards;
 							animation-timeline: view();
-						animation-range: -0.5lh calc(2lh + 2.5lh);
+							animation-range: -0.5lh calc(2lh + 2.5lh);
 							position: relative;
 					
 							&:first-child {
 								text-align: right;
 								margin-left: 10ch;
-							animation-range: 0lh calc(2.5lh + 2.5lh);
+								animation-range: 0lh calc(2.5lh + 2.5lh);
 							}
 							
 							&:last-child {
 								color: color-mix(in srgb, currentColor 75%, black);
 								text-align: right;
-								margin-left: 5ch;
-							animation-range: -1.5lh calc(1.5lh + 2.5lh);
+								margin-left: 10ch;
+								animation-range: -1.5lh calc(1.5lh + 2.5lh);
 							}
 						}
 					}
@@ -656,7 +753,7 @@ body {
 						width: 50ch;
 						animation: fadeIn linear forwards, slideUp linear forwards;
 						animation-timeline: view(), view();
-					animation-range: cover contain 3lh, contain 3lh cover;
+						animation-range: cover contain 3lh, contain 3lh cover;
 						
 						b {
 							font-size: 1.25em;
@@ -719,7 +816,7 @@ body {
 					> #miniEditor {
 						position: relative;
 						margin-left: auto;
-						margin-right: 12.5vw;
+						margin-right: 7.5vw;
 						display: flex;
 						font-family: 'Fira Code', monospace;
 						font-weight: 300;
@@ -782,7 +879,7 @@ body {
 							> pre > div > span {
 								animation: slideInLines linear forwards;
 								animation-timeline: view();
-							animation-range: cover 0% cover 5lh;
+								animation-range: cover 0% cover 5lh;
 							}
 						}
 					}
@@ -839,10 +936,10 @@ body {
 						word-spacing: 0.7ch;
 						overflow: hidden;
 									
-						&:not(.viewed) {
+						&:not(.viewed) { /* check if hover-animation */
 							animation: viewed linear, revealText linear backwards;
 							animation-timeline: view(), view();
-						animation-range: contain calc(100% - 5lh) cover, cover contain calc(100% - 5lh);
+							animation-range: contain calc(min(100vh, 1600px) - 5lh) cover, cover contain calc(min(100vh, 1600px) - 5lh);
 						}
 			
 						&.viewed {
@@ -893,7 +990,7 @@ body {
 							font-family: 'Poppins';
 							animation: moveDown linear both;
 							animation-timeline: view();
-						animation-range: cover -2lh cover 2lh;
+							animation-range: cover -2lh cover 2lh;
 							transition: scale 1s, text-shadow 1s;
 							
 							&:hover {
@@ -915,7 +1012,7 @@ body {
 							color: #808080;
 							animation: fadeUp linear both;
 							animation-timeline: view();
-						animation-range: cover cover calc(1lh + 1.98em);
+							animation-range: cover cover calc(1lh + 1.98em);
 						}
 					}
 
@@ -996,4 +1093,10 @@ body {
 			}
 		}
 	}
+}
+
+@media (max-aspect-ratio: 1.477 / 1) {
+    body {
+        background: orange;
+    }
 }

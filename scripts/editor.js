@@ -1,11 +1,11 @@
 let cssSamples = [
-/*`
+`
 @media print, screen and (min-width: 40em) and (max-width: 63.99875em) {
 	.hide-for-medium-only {
 		display: none !important;
 	}
 }
-`*/
+`,
 `
 nav {
 	display: inline-flex;
@@ -1134,22 +1134,28 @@ body {
 `
 ];
 
-document.getElementsByTagName('button')[0].addEventListener('click', () => {
-	let mainEditor = differ.getEditors().left;
-	const annotations = mainEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
-	if (annotations.length == 0)
-		differ.getEditors().right.setValue(convertToNestedCSS(mainEditor.getValue()))
-	else {
-		mainEditor.resize(true);
-		mainEditor.scrollToLine(annotations[0].row, true, true, () => {
+function nestCode() {
+	let { left: leftEditor, right: rightEditor } = window.differ.getEditors();
+
+	let mainSection = document.getElementsByTagName('main')[0];
+	
+	if (!mainSection.classList.contains('nesting')) mainSection.classList.add('nesting');
+
+	const annotations = leftEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
+	if (annotations.length == 0) {
+		rightEditor.getSession().setValue(convertToNestedCSS(leftEditor.getValue()) || '/* Your output CSS will appear here */');
+	} else {
+		// Go to nearest error in the code
+		leftEditor.resize(true);
+		leftEditor.scrollToLine(annotations[0].row, true, true, () => {
 
 		});
-		mainEditor.gotoLine(annotations[0].row, annotations[0].column, true);
+		leftEditor.gotoLine(annotations[0].row, annotations[0].column, true);
 	}
 
-	// "Your code doesn't seem to valid, do you want to try nesting anyways?"
+	// "Your code doesn't seem to be valid, do you want to try nesting anyways?"
 	// "It may not work properly."
-});
+};
 
 function convertToNestedCSS(cssProvided, htmlString) {
 	

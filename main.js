@@ -1,11 +1,49 @@
 let cssSamples = [
-/*`
+`
 @media print, screen and (min-width: 40em) and (max-width: 63.99875em) {
 	.hide-for-medium-only {
 		display: none !important;
 	}
 }
-`*/
+
+@supports (display: grid) {
+	div {
+		display: grid;
+	}
+}
+
+
+@media screen and ( orientation: landscape ) {
+	main {
+			flex-direction: row;
+	}
+}
+
+@import url("stylesheet.css") screen and (max-width: 400px);
+`,`
+@media print, screen and (min-width: 40em) and (max-width: 63.99875em) {
+	.hide-for-medium-only {
+		display: none !important;
+	}
+}
+`,
+`
+main {
+	color: red;
+}
+
+main > nav > button {
+	background: blue;
+}
+
+main > a {
+	background: blue;
+}
+
+main > a button {
+	background: blue;
+}
+`,
 `
 nav {
 	display: inline-flex;
@@ -1134,22 +1172,28 @@ body {
 `
 ];
 
-document.getElementsByTagName('button')[0].addEventListener('click', () => {
-	let mainEditor = differ.getEditors().left;
-	const annotations = mainEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
-	if (annotations.length == 0)
-		differ.getEditors().right.setValue(convertToNestedCSS(mainEditor.getValue()))
-	else {
-		mainEditor.resize(true);
-		mainEditor.scrollToLine(annotations[0].row, true, true, () => {
+function nestCode() {
+	let { left: leftEditor, right: rightEditor } = differ.getEditors();
+
+	const annotations = leftEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
+	if (annotations.length == 0) {
+		rightEditor.getSession().setValue(convertToNestedCSS(leftEditor.getValue()) || '/* Your output CSS will appear here */');
+	} else {
+		// Go to nearest error in the code
+		leftEditor.resize(true);
+		leftEditor.scrollToLine(annotations[0].row, true, true, () => {
 
 		});
-		mainEditor.gotoLine(annotations[0].row, annotations[0].column, true);
+		leftEditor.gotoLine(annotations[0].row, annotations[0].column, true);
 	}
 
-	// "Your code doesn't seem to valid, do you want to try nesting anyways?"
+	// "Your code doesn't seem to be valid, do you want to try nesting anyways?"
 	// "It may not work properly."
-});
+};
+
+document.getElementsByTagName('button')[0].addEventListener('click', nestCode);
+
+const clone = (obj) => JSON.parse(JSON.stringify(obj));
 
 function convertToNestedCSS(cssProvided, htmlString) {
 	
@@ -1291,15 +1335,21 @@ function unnestCSS(cssProvided, prefix = '') {
 				for (let i = 0; i < absoluteSelector.length; i++) {
 					const char = absoluteSelector[i];
 
-					if (char === ',' && openBracketCount === 0) {
+					if ((!absoluteSelector.startsWith('@') && char === ',') && openBracketCount === 0) {
 						splitSelectors.push(currentSelector.trim());
 						currentSelector = '';
 					} else {
-						currentSelector += char;
-						if (char === '(' || char === '[') {
-							openBracketCount++;
-						} else if (char === ')' || char === ']') {
-							openBracketCount--;
+						currentSelector += absoluteSelector.startsWith('@') && char === ',' ? ', ' : char;
+
+						switch (char) {
+							case '(':
+							case '[':
+								openBracketCount++;
+								break;
+							case ')':
+							case ']':
+								openBracketCount--;
+								break;
 						}
 					}
 				}
@@ -1476,8 +1526,6 @@ function renestCSS(withHtml, cssProvided) {
 			});
 		});
 
-		// console.log([...parsedCSS]);
-
 		// Return the parsed CSS
 		return parsedCSS;
 	}
@@ -1491,18 +1539,20 @@ function beautifyCSS(declarations, indent = '') {
 	// Loop through each declaration
 	for (let i = 0; i < declarations.length; i++) {
 		// If the declaration is an array
-		if (Array.isArray(declarations[i])) {
+		if (Array.isArray(declarations[i])) { /* This check might be useless */
 			// If the declaration has a selector and nested declarations
 			if (declarations[i].length == 2) {
-				let [selector, nestedDeclarations] = declarations[i];
-				let declarationsForSelector = nestedDeclarations[0];
+				// If no declarations, combined current selector and nested declaration's selectors
+				if (!declarations[i][0].startsWith('@') && declarations[i][1].length == 1 && declarations[i][1][0].length == 2) declarations[i] = [declarations[i][0] + ' ' + declarations[i][1][0][0], declarations[i][1][0][1]];
 
-				// console.log(declarationsForSelector);
+				let [selector, nestedDeclarations] = declarations[i];
+
+				let declarationsForSelector = nestedDeclarations[0];
 
 				// If the selector has no declarations, add it to the parsed CSS string
 				if (typeof declarationsForSelector[0] === "undefined") {
 					parsedCSS += ((declarations[0][0] == selector) ? '' : '\n\n') + indent + selector + ';';
-					continue;
+					continue; // Move on to the next mested declaration
 				}
 
 				// Add the selector to the parsed CSS string
@@ -1510,6 +1560,17 @@ function beautifyCSS(declarations, indent = '') {
 
 				// If the selector has declarations
 				if (declarationsForSelector.length == 1) {
+					
+					const properties = declarationsForSelector[0].match(/[^;]+:[^;]+/g) || [];
+					const uniqueProperties = new Map();
+				
+					properties.forEach(property => {
+						const [key, value] = property.split(/:(.+)/).map(item => item.trim());
+						uniqueProperties.set(key, value);
+					});
+				
+					declarationsForSelector[0] = Array.from(uniqueProperties).map(([key, value]) => `${key}:${value}`).join(';');
+
 					let declarationsString = '';
 					let currentDeclaration = '';
 					let isInQuotes = false;

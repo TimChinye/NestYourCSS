@@ -5,9 +5,9 @@ document.body.addEventListener('mousemove', (e) => {
 
     const target = e.target;
 
-    const socialButton = target.classList.contains('socialButton') ? target : target.closest('.socialButton');
-    if (socialButton) {
-      repositionButtonBG(socialButton);
+    const navButton = target.classList.contains('navButton') ? target : target.closest('.navButton');
+    if (navButton) {
+      repositionButtonBG(navButton);
     };
     
     if (target === splashTextElem) {

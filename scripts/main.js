@@ -13,3 +13,5 @@ const roundNumber = (num, dp = 2) => {
 	let multiplier = Math.pow(10, dp);
 	return Math.floor(num * multiplier) / multiplier;
 };
+
+const clone = (obj) => JSON.parse(JSON.stringify(obj));

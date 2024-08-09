@@ -4,6 +4,37 @@ let cssSamples = [
 	.hide-for-medium-only {
 		display: none !important;
 	}
+}#
+@supports (display: grid) {
+	div {
+		display: grid;
+	}
+}
+@media screen and ( orientation: landscape ) {
+	main {
+			flex-direction: row;
+	}
+}
+@import url("stylesheet.css") screen and (max-width: 400px);
+`,`
+@media print, screen and (min-width: 40em) and (max-width: 63.99875em) {
+	.hide-for-medium-only {
+		display: none !important;
+	}
+}
+`,
+`
+main {
+	color: red;
+}
+main > nav > button {
+	background: blue;
+}
+main > a {
+	background: blue;
+}
+main > a button {
+	background: blue;
 }
 `,
 `
@@ -304,21 +335,21 @@ main > figure blockquote {
 }
 
 main > figure blockquote:before {
-content: "";
-position: absolute;
-z-index: -1;
-inset: 0;
-padding: 1px;
-border-radius: inherit;
-background: linear-gradient(to right, #F7D4DA, transparent);
--webkit-mask:
+	content: "";
+	position: absolute;
+	z-index: -1;
+	inset: 0;
+	padding: 1px;
+	border-radius: inherit;
+	background: linear-gradient(to right, #F7D4DA, transparent);
+	-webkit-mask:
 		linear-gradient(#fff 0 0) content-box,
 		linear-gradient(#fff 0 0);
 				mask:
 		linear-gradient(#fff 0 0) content-box,
 		linear-gradient(#fff 0 0);
 -webkit-mask-composite: xor;
-				mask-composite: exclude;
+	mask-composite: exclude;
 }
 
 main > figure blockquote > p {
@@ -447,12 +478,9 @@ main > article form p#requestCode {
 }
 `,
 `
+/* Statement at-rules */
 
 @import url("stylesheet.css") screen and (max-width: 400px);
-
-/* Comments */
-
-/* This is a comment */
 
 /* Selectors */
 
@@ -470,21 +498,22 @@ h1 {
 	/* Pseudo-classes */
 
 	&:hover {
-			text-decoration: underline;
+		background-image: url("https://example.com/image;name.jpg");
+		text-decoration: underline;
 	}
 
 	:focus {
-			border-color: green
+		border-color: green
 	}
 
 	/* Pseudo-elements */
 
 	::first-line {
-			font-weight: bold;
+		font-weight: bold;
 	}
 
 	&::before {
-			content: "• ";
+		content: "• ";
 	}
 }
 
@@ -513,15 +542,15 @@ span::first-of-type {
 	box-sizing: border-box !important;
 
 	> button {
-			white-space: nowrap;
+		white-space: nowrap;
 	}
 
 	&.active {
-			color: red;
+		color: red;
 	}
 
 	li:has(> span) {
-			text-decoration: underline;
+		text-decoration: underline;
 	}
 }
 
@@ -565,30 +594,34 @@ h2.bold {
 	transition: background-color 0.3s ease;
 
 	&:hover {
-			background-color: #0056b3;
+		background-color: #0056b3;
 	}
 }
 
-/* Media queries */
+/* Block at-rules */
 
 @media screen and (max-width: 600px) {
 	body {
-			background-color: lightblue;
+		background-color: lightblue;
 
-			&:hover {
-				background-color: pink;
-			}
+		&:hover {
+			background-color: pink;
+		}
 	}
 
 	.container {
-			width: 100%;
-			padding: 10px;
+		width: 100%;
+		padding: 10px;
 	}
 
 	.grid-container {
-			grid-template-columns: 1fr;
+		grid-template-columns: 1fr;
 	}
 }
+
+/* Comments */
+
+/* This is a comment */
 `,
 `
 html, body {
@@ -1161,8 +1194,11 @@ function convertToNestedCSS(cssProvided, htmlString) {
 	
 	cssProvided = minimizeCSS(cssProvided);
 	cssProvided = splitCSS(cssProvided);
+	console.log(clone(cssProvided));
 	cssProvided = unnestCSS(cssProvided);
+	console.log(clone(cssProvided));
 	cssProvided = renestCSS(htmlString, cssProvided);
+	console.log(clone(cssProvided));
 	cssProvided = beautifyCSS(cssProvided);
 
 	return cssProvided;
@@ -1297,15 +1333,21 @@ function unnestCSS(cssProvided, prefix = '') {
 				for (let i = 0; i < absoluteSelector.length; i++) {
 					const char = absoluteSelector[i];
 
-					if (char === ',' && openBracketCount === 0) {
+					if ((!absoluteSelector.startsWith('@') && char === ',') && openBracketCount === 0) {
 						splitSelectors.push(currentSelector.trim());
 						currentSelector = '';
 					} else {
-						currentSelector += char;
-						if (char === '(' || char === '[') {
-							openBracketCount++;
-						} else if (char === ')' || char === ']') {
-							openBracketCount--;
+						currentSelector += absoluteSelector.startsWith('@') && char === ',' ? ', ' : char;
+
+						switch (char) {
+							case '(':
+							case '[':
+								openBracketCount++;
+								break;
+							case ')':
+							case ']':
+								openBracketCount--;
+								break;
 						}
 					}
 				}
@@ -1482,8 +1524,6 @@ function renestCSS(withHtml, cssProvided) {
 			});
 		});
 
-		// console.log([...parsedCSS]);
-
 		// Return the parsed CSS
 		return parsedCSS;
 	}
@@ -1497,18 +1537,20 @@ function beautifyCSS(declarations, indent = '') {
 	// Loop through each declaration
 	for (let i = 0; i < declarations.length; i++) {
 		// If the declaration is an array
-		if (Array.isArray(declarations[i])) {
+		if (Array.isArray(declarations[i])) { /* This check might be useless */
 			// If the declaration has a selector and nested declarations
 			if (declarations[i].length == 2) {
-				let [selector, nestedDeclarations] = declarations[i];
-				let declarationsForSelector = nestedDeclarations[0];
+				// If no declarations, combined current selector and nested declaration's selectors
+				if (!declarations[i][0].startsWith('@') && declarations[i][1].length == 1 && declarations[i][1][0].length == 2) declarations[i] = [declarations[i][0] + ' ' + declarations[i][1][0][0], declarations[i][1][0][1]];
 
-				// console.log(declarationsForSelector);
+				let [selector, nestedDeclarations] = declarations[i];
+
+				let declarationsForSelector = nestedDeclarations[0];
 
 				// If the selector has no declarations, add it to the parsed CSS string
 				if (typeof declarationsForSelector[0] === "undefined") {
 					parsedCSS += ((declarations[0][0] == selector) ? '' : '\n\n') + indent + selector + ';';
-					continue;
+					continue; // Move on to the next mested declaration
 				}
 
 				// Add the selector to the parsed CSS string
@@ -1516,6 +1558,17 @@ function beautifyCSS(declarations, indent = '') {
 
 				// If the selector has declarations
 				if (declarationsForSelector.length == 1) {
+					
+					const properties = declarationsForSelector[0].match(/[^;]+:[^;]+/g) || [];
+					const uniqueProperties = new Map();
+				
+					properties.forEach(property => {
+						const [key, value] = property.split(/:(.+)/).map(item => item.trim());
+						uniqueProperties.set(key, value);
+					});
+				
+					declarationsForSelector[0] = Array.from(uniqueProperties).map(([key, value]) => `${key}:${value}`).join(';');
+
 					let declarationsString = '';
 					let currentDeclaration = '';
 					let isInQuotes = false;

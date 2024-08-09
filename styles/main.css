@@ -196,7 +196,7 @@ body {
 							margin: 1em 0;
 							padding: 0;
 	
-							.socialButton {
+							.navButton {
 								display: flex;
 								font-size: inherit;
 								flex-direction: row;
@@ -226,7 +226,7 @@ body {
 									border-radius: inherit;
 									box-sizing: border-box;
 							
-									path {
+									> path {
 										cursor: pointer;
 										fill: var(--icon-colour);
 										transition: --icon-colour 0.5s 1s;
@@ -875,8 +875,8 @@ body {
 							
 							span { display: inline-block; }
 							
-							> div div,
-							> pre > div > span {
+							div > :is(div, span) {
+								--charIndex: -4;
 								animation: slideInLines linear forwards;
 								animation-timeline: view();
 								animation-range: cover 0% cover 5lh;
@@ -939,7 +939,7 @@ body {
 						&:not(.viewed) { /* check if hover-animation */
 							animation: viewed linear, revealText linear backwards;
 							animation-timeline: view(), view();
-							animation-range: contain calc(min(100vh, 1600px) - 5lh) cover, cover contain calc(min(100vh, 1600px) - 5lh);
+							animation-range: contain calc(min(100vh, 1600px) - 10lh) cover, cover contain calc(min(100vh, 1600px) - 10lh);
 						}
 			
 						&.viewed {

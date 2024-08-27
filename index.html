@@ -1,35 +1,54 @@
 <!--
-  To-do now:
-  - When re-nesting, check if the parent only has one child, if so don't go to another indentation, so we don't end up with rules which only have a single nested rule within them and no self-declarations.
-  - Factor in attribute selectors
+  TIM, DO THIS NEXT:
+  - Update the main NYCSS page, with the new internal code.
 
-  List of (potential) parts to add to the site:
-  - History of all conversions to Nested CSS
-  - Section to input CSS code and to display Nested CSS output
-  - Section input both HTML and CSS code and to display Nested CSS output
-  - Change modes from light to dark modes
-  - Replace some of the changed, nested CSS with the original CSS (through AceDiff).
+  To-do now:
+  - Style .ace_search
   - Area to drop in files
   - Ability to send a link of a CSS file
   - Button to clear the code (could just CTRL+A & Backspace)
-  - Button to convert the code
-  - Information about why you should 'Nest your CSS'
-  - Information on how to (manually) Nest your CSS
-  - Button to add sample CSS
-  - Ability to nest multiple CSS files at the same time
-  - Ability to auto-nest the CSS code
+  - Show list of errors, and a button to jump to them
+  - Button to add samples of CSS
   - Show the file size of both CSS outputs
   - Send the Nested output to a raw file
+  - Change indentation setting
+  - Mention "it's recommended to use diff, and add in the old CSS selectors to the new" (because this tool also reformats your code and removes comments)
+
+  List of (potential) parts to add to the site:
+  - History of all conversions to Nested CSS >> Auto-save every minute? Or just "Nest" button (probably both, but auto-save is toggleable)
   - Button to use the previous selector instead (a.k.a. previous diff, but only for selectors)
-  - Mention it's recommended to use diff and add in the old CSS selectors to the new
   - Paredit may be useful
   - Keyboard Shortcuts extension has a lot of useful stuff, will have to "re-develop" to: limit what features are possible and re-design.
-  - Option to allow emmet?
   - Add a minimap, might have to DIY
   - Sticky Scroll - Official Ace Extensions (DIY)
   - Add like a Table of Contents page, like Figma's Layers component
-  - When hover hero text, scramble the letters of the slogan, keeping the letters that will be in the next slogan there.
   - Add an anti-adblock background, along with the border
+
+  Later:
+  - Full revamp
+  - Implement locomotive scroll or some other momentum scroll plugin (https://github.com/locomotivemtl/locomotive-scroll)
+  - Information on how to (manually) Nest your CSS
+  - Replace some of the changed, nested CSS with the original CSS (through AceDiff)
+  - Change modes from light to dark modes
+  - Section input both HTML and CSS code and to display Nested CSS output
+  - Allow comments >> Might require a code revamp
+  - Ability to nest multiple CSS files at the same time
+  - Option to allow emmet?
+
+  Code to go to specific line:
+    // Assuming 'editor' is your Ace Editor instance
+    var lineNumber = 10; // Replace with your desired line number
+
+    // Get the content of the line
+    var lineContent = editor.session.getLine(lineNumber - 1); // Ace Editor uses 0-based index
+
+    // Scroll to the line
+    editor.scrollToLine(lineNumber, true, true, function () {});
+
+    // Optionally, highlight the line
+    editor.gotoLine(lineNumber, 0, true);
+
+    console.log("Line Content: ", lineContent);
 -->
   
 <!doctype html>
@@ -41,99 +60,102 @@
   <title>Nest Your CSS</title>
   
   <script src="./lib/ace.min.js"></script>
-  <link href="./lib/styles/ace-diff.min.css" rel="stylesheet">
   
   <link href="./styles/main.css" rel="stylesheet">
   <link href="./styles/editor.css" rel="stylesheet">
+  <link href="./styles/fonts.css" rel="stylesheet">
 </head>
 <body>
-
-  <!-- 50% Slogans
-  “Website styling taking up too much time?”
-  “Is fine-tuning your site’s look too fiddly?”
-  “Struggle to keep your site’s style straight?”
-  “Does your CSS lack the layers of logic?”
-  -->
-
-  <!-- 100% Slogans
-  “Need to keep your rules in order?”
-  “Is your code getting clouded?”
-  “Is your code becoming a maze?”
-  “Drowning in a sea of selectors?”
-  “Does your code make you cringe?”
-  “Is updating your site’s style a chore?”
-  “Is your site’s style not stacking up?”
-  “Feeling lost in the style sheets?”
-  “Is organizing your website’s look a headache?”
-  “Struggling to associate your styles with your HTML structure?”
-  -->
-
   <div id="code-editor-wrapper">
     <button>Nest!</button>
-    <div id="code-editor"></div>
+    <div id="code-editor">
+      <div class="editor" id="leftEditor"></div>
+      <div class="editor" id="rightEditor"></div>
+    </div>
   </div>
 
   <script src="./main.js" type="text/javascript"></script>
 
   <script src="./lib/mode-css.js"></script>
-  <script src="./lib/ace-diff.min.js"></script>
   <script src="./lib/ace-linters.min.js"></script>
   <script src="./lib/ext-searchbox.min.js"></script>
   <!-- <script src="./scripts/ext-stickyscroll.js"></script> -->
   <!-- <script src="./lib/ext-language_tools.min.js"></script> -->
+
+
   <script>
-    // let sample = cssSamples[1] + cssSamples[4] + cssSamples[5];
-    let sample = cssSamples.join('');
-    // let sample = cssSamples[0];
-
-    const differ = new AceDiff({
-      element: '#code-editor',
-      mode: 'ace/mode/css',
-      diffGranularity: 'specific',
-      showDiffs: false,
-      showConnectors: false,
-      left: {
-        content: sample ?? '/* Your input CSS should go here */',
-      },
-      right: {
-        content: convertToNestedCSS(sample) ?? '/* Your output CSS will appear here */',
-        copyLinkEnabled: false
-      }
-    });
-
-    let { left: leftEditor, right: rightEditor } = differ.getEditors();
-
-    /* Auto Nest */
-    let codeChanged = false;
-
-    leftEditor.getSession().on('change', (d) => {
-      codeChanged = true;
-    });
-
-    leftEditor.getSession().on('changeAnnotation', (d) => {
-      if (codeChanged) {
-        nestCode();
-        codeChanged = false;
-      }
-    });
+    let provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
     
-    let provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
+    function initializeEditor(editorId, value) {
+      const editor = ace.edit(editorId, {
+        mode: "ace/mode/css",
+        showPrintMargin: false
+      });
+
+      editor.setValue(value, -1);
+      provider.registerEditor(editor);
+
+      /*
+      let textarea = editor.container.getElementsByTagName('textarea')[0];
+      textarea.name = editor.container.id + 'Textarea';
+
+      // Remove any support tools that may cause lag and don't provide utility
+      textarea.setAttribute('autocomplete', 'off');
+      textarea.setAttribute('autocorrect', 'off');
+      textarea.setAttribute('autocapitalize', 'off');
+      textarea.setAttribute('spellcheck', 'false');
+
+      // Add the aria- equivalents
+      textarea.setAttribute('aria-autocomplete', 'none');
+      textarea.setAttribute('aria-correct', 'false');
+      textarea.setAttribute('aria-capitalize', 'none');
+      textarea.setAttribute('aria-spellcheck', 'false');
+      */
+
+      return editor;
+    }
+
+    let sample;
+    // sample = cssSamples[0];
+    // sample = cssSamples[1];
+    // sample = cssSamples.slice(0, 2).join('');
+    sample = cssSamples.join('');
+
+    const leftEditor = initializeEditor("leftEditor", sample || '/* Your input CSS should go here */');
+    const rightEditor = initializeEditor("rightEditor", '/* Your output CSS will appear here */');
+
     let editors = [leftEditor, rightEditor];
 
-    editors.forEach((editor) => {
-      provider.registerEditor(editor);
-      editor.setOption("showPrintMargin", false);
+    // Auto Nest
+    let codeChanged = false;
+    let isProcessing = false;
 
-      let getScrollbar = (editor) => editor.container.querySelector('.ace_scrollbar-v > .ace_scrollbar-inner');
+    leftEditor.getSession().on('change', () => {
+      codeChanged = true;
+    });
+    
+    leftEditor.getSession().on('changeAnnotation', () => {
+      if (!isProcessing) {
+        isProcessing = true;
 
-      editor.session.on('changeScrollTop', function(scrollTop) {
-        if (scrollTop > 0) {
-          getScrollbar(editor).style.height = getScrollbar(editor).offsetHeight - 16 + 'px';
-        }
-      });
+        setTimeout(() => {
+          if (codeChanged) {
+            nestCode();
+            codeChanged = false;
+          }
+
+          isProcessing = false;
+        }, 0);
+      }
     });
 
-    // console.log(differ.getNumDiffs());
-  </script>
+    // Initial Nest
+    leftEditor.getSession()._emit('change', {
+      start: { row: 0, column: 0 },
+      end: { row: 0, column: 0 },
+      action: 'insert',
+      lines: []
+    });
+</script>
 </body>
 </html>

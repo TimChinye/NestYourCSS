@@ -1,26 +1,190 @@
 let cssSamples = [
 `
+li:has(> span) {
+	text-decoration: underline;
+}
+`,`
+a {
+	b {
+	    color: red;
+	}
+}
+`,
+`
+& {
+	div {
+		width: 90%;
+		height: 90%;
+		opacity: 0;
+		color: #fff;
+		counter-increment: div;
+		border: 1px solid;
+		border-color: blue;
+
+		&:before {
+			content: counter(div)".";
+		}
+	}
+
+	:hover {
+		animation: fadein;
+		animation-duration: 1.5s;
+		animation-fill-mode: forwards;
+	}
+}
+`,
+`
+[hidden] {
+	display: none;
+}
+
+@rule ();
+
+h1 {
+	color: red
+}
+`,
+`
+main {
+	> section > div > div {
+		display: grid;
+		grid-template-columns: repeat(5, minmax(min-content, 1fr));
+		grid-template-rows: 8rem repeat(4, minmax(8rem, auto)) 1fr;
+		--gap:2rem;
+		grid-gap: var(--gap);
+		margin: 0 auto;
+
+		&::after {
+			content: "";
+			display: flex;
+			height: calc(var(--main-padding) - var(--gap));
+			width: 100%;
+		}
+	}
+}
+`,
+`
+a b c d e f {
+	g h {
+		color: red;
+	}
+}
+`,
+`
+.nav-ewc-persistent-hover body .MusicCartBar[style~="fixed;"] {
+    right: 220px
+}
+`,
+`
+.nav-catFlyout .nav-flyout-content .nav-active {
+    background-image: url(data:image/gif;base64,R0lGODlhBwAKAMIEAICAgJmZmbOzs/f39////////////////yH5BAEKAAcALAAAAAAHAAoAAAMWSDPUGoE5AaIj1M4qMW+ZFDYD1ClnAgA7);
+    background-position: right 3px;
+    background-repeat: no-repeat
+}
+`,
+`
+@media (max-width: 320px) {
+    #accountMenu-container #accountMenu-canvas-background .hmenu-close-icon,
+    #accountMenu-container #hmenu-canvas-background .hmenu-close-icon,
+    #hmenu-container #accountMenu-canvas-background .hmenu-close-icon,
+    #hmenu-container #hmenu-canvas-background .hmenu-close-icon {
+        right:15px
+    }
+}
+
+#accountMenu-container #accountMenu-canvas-background .hmenu-close-icon,
+#accountMenu-container #hmenu-canvas-background .hmenu-close-icon,
+#hmenu-container #accountMenu-canvas-background .hmenu-close-icon,
+#hmenu-container #hmenu-canvas-background .hmenu-close-icon {
+	right:15px
+}
+`,
+`
+/* Using escaped characters in selectors */
+#\\31 \\32 \\33 {
+    background-color: #456;
+}
+
+.\\41 \\42 \\43 {
+    color: #456;
+}
+
+[data-\\61 ttribute="\\76 alue"] {
+    font-family: "Times New Roman", \\73 erif;
+}
+
+/* Using escaped characters in property names and values */
+body:has(:active) {
+    \\62 ackground-\\63 olor: #FFFFFF;
+    \\66 ont-\\73 ize: 16\\70 x;
+}
+
+h1 {
+    \\6d argin-\\74 op: 20\\70 x;
+    \\70 adding-\\62 ottom: 10\\70 x;
+}
+
+/* Using @at-rules with escaped characters */
+@\\6d edia screen and (max-width: 600\\70 x) {
+    body {
+        \\62 ackground-\\63 olor: #eee;
+    }
+}
+
+@\\66 ont-face {
+    \\66 ont-\\66 amily: 'MyFont';
+    src: url('myfont.woff2') format('woff2');
+}
+`,
+`
+@media screen and (max-width: 600px) {
+	body {
+		background-color: lightblue;
+
+		&:hover {
+			background-color: pink;
+		}
+    }
+}
+`,
+`
+@media screen and (max-width: 600px) {
+	body {
+		background-color: lightblue;
+
+		&:hover {
+			background-color: pink;
+		}
+    }
+}
+
+body {
+	background-color: lightblue;
+
+	&:hover {
+		background-color: pink;
+	}
+}
+`,
+`
 @media print, screen and (min-width: 40em) and (max-width: 63.99875em) {
 	.hide-for-medium-only {
 		display: none !important;
 	}
 }
-
 @supports (display: grid) {
 	div {
 		display: grid;
 	}
 }
-
-
 @media screen and ( orientation: landscape ) {
 	main {
 			flex-direction: row;
 	}
 }
-
 @import url("stylesheet.css") screen and (max-width: 400px);
-`,`
+`,
+`
 @media print, screen and (min-width: 40em) and (max-width: 63.99875em) {
 	.hide-for-medium-only {
 		display: none !important;
@@ -31,15 +195,12 @@ let cssSamples = [
 main {
 	color: red;
 }
-
 main > nav > button {
 	background: blue;
 }
-
 main > a {
 	background: blue;
 }
-
 main > a button {
 	background: blue;
 }
@@ -342,21 +503,21 @@ main > figure blockquote {
 }
 
 main > figure blockquote:before {
-content: "";
-position: absolute;
-z-index: -1;
-inset: 0;
-padding: 1px;
-border-radius: inherit;
-background: linear-gradient(to right, #F7D4DA, transparent);
--webkit-mask:
+	content: "";
+	position: absolute;
+	z-index: -1;
+	inset: 0;
+	padding: 1px;
+	border-radius: inherit;
+	background: linear-gradient(to right, #F7D4DA, transparent);
+	-webkit-mask:
 		linear-gradient(#fff 0 0) content-box,
 		linear-gradient(#fff 0 0);
 				mask:
 		linear-gradient(#fff 0 0) content-box,
 		linear-gradient(#fff 0 0);
 -webkit-mask-composite: xor;
-				mask-composite: exclude;
+	mask-composite: exclude;
 }
 
 main > figure blockquote > p {
@@ -485,12 +646,9 @@ main > article form p#requestCode {
 }
 `,
 `
+/* Statement at-rules */
 
 @import url("stylesheet.css") screen and (max-width: 400px);
-
-/* Comments */
-
-/* This is a comment */
 
 /* Selectors */
 
@@ -508,21 +666,21 @@ h1 {
 	/* Pseudo-classes */
 
 	&:hover {
-			text-decoration: underline;
+		text-decoration: underline;
 	}
 
 	:focus {
-			border-color: green
+		border-color: green
 	}
 
 	/* Pseudo-elements */
 
 	::first-line {
-			font-weight: bold;
+		font-weight: bold;
 	}
 
 	&::before {
-			content: "• ";
+		content: "• ";
 	}
 }
 
@@ -551,15 +709,15 @@ span::first-of-type {
 	box-sizing: border-box !important;
 
 	> button {
-			white-space: nowrap;
+		white-space: nowrap;
 	}
 
 	&.active {
-			color: red;
+		color: red;
 	}
 
 	li:has(> span) {
-			text-decoration: underline;
+		text-decoration: underline;
 	}
 }
 
@@ -603,30 +761,34 @@ h2.bold {
 	transition: background-color 0.3s ease;
 
 	&:hover {
-			background-color: #0056b3;
+		background-color: #0056b3;
 	}
 }
 
-/* Media queries */
+/* Block at-rules */
 
 @media screen and (max-width: 600px) {
 	body {
-			background-color: lightblue;
+		background-color: lightblue;
 
-			&:hover {
-				background-color: pink;
-			}
+		&:hover {
+			background-color: pink;
+		}
 	}
 
 	.container {
-			width: 100%;
-			padding: 10px;
+		width: 100%;
+		padding: 10px;
 	}
 
 	.grid-container {
-			grid-template-columns: 1fr;
+		grid-template-columns: 1fr;
 	}
 }
+
+/* Comments */
+
+/* This is a comment */
 `,
 `
 html, body {
@@ -1172,31 +1334,27 @@ body {
 `
 ];
 
-function nestCode() {
-	let { left: leftEditor, right: rightEditor } = differ.getEditors();
+// Prevents chrome's console for logging a reference of an array
+console.log = ((logFunc) => (...args) => logFunc(...args.map(arg => JSON.parse(JSON.stringify(arg)))))(console.log);
 
+function nestCode() {
 	const annotations = leftEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
 	if (annotations.length == 0) {
 		rightEditor.getSession().setValue(convertToNestedCSS(leftEditor.getValue()) || '/* Your output CSS will appear here */');
 	} else {
-		// Go to nearest error in the code
-		leftEditor.resize(true);
-		leftEditor.scrollToLine(annotations[0].row, true, true, () => {
-
-		});
-		leftEditor.gotoLine(annotations[0].row, annotations[0].column, true);
+		console.log('Code Errors:', annotations);
+		rightEditor.getSession().setValue('/* Your input CSS contains errors */');
+		
+		// Show a list of the errors if any.
+		
+		// "Your code doesn't seem to be valid, do you want to try nesting anyways?"
+		// "It may not work properly."
 	}
-
-	// "Your code doesn't seem to be valid, do you want to try nesting anyways?"
-	// "It may not work properly."
 };
 
 document.getElementsByTagName('button')[0].addEventListener('click', nestCode);
 
-const clone = (obj) => JSON.parse(JSON.stringify(obj));
-
 function convertToNestedCSS(cssProvided, htmlString) {
-	
 	cssProvided = minimizeCSS(cssProvided);
 	cssProvided = splitCSS(cssProvided);
 	cssProvided = unnestCSS(cssProvided);
@@ -1235,23 +1393,27 @@ function splitCSS(cssProvided) {
 	let unknown = '';
 	let selector = '';
 	let declaration = '';
-	let bracketCount = 0;
-	let insideBrackets = false;
+	let curlyBracketCount = 0;
+	let insideCurlyBrackets = false;
+	let parenthesisDepth = 0;
+	let bracketDepth = 0;
+	let isInSingleQuotes = false;
+	let isInDoubleQuotes = false;
 
 	// Loop through each character in the provided CSS
 	for (let i = 0; i < cssProvided.length; i++) {
 		const char = cssProvided[i];
 
 		// If inside brackets, add characters to declaration
-		if (insideBrackets) {
+		if (insideCurlyBrackets) {
 			declaration += char;
 
 			// Check for closing bracket
 			if (char === '}') {
-				bracketCount--;
+				curlyBracketCount--;
 
 				// If all brackets are closed, push selector and declaration to parsedCSS
-				if (bracketCount === 0) {
+				if (curlyBracketCount === 0) {
 					if (declaration.slice(-2, -1) == ';') declaration = declaration.slice(0, -2);
 					else declaration = declaration.slice(0, -1);
 					declaration = declaration.trim();
@@ -1264,32 +1426,53 @@ function splitCSS(cssProvided) {
 					unknown = '';
 					selector = '';
 					declaration = '';
-					insideBrackets = false;
+					insideCurlyBrackets = false;
 				}
 			}
 			// Check for nested opening brackets
 			else if (char === '{') {
-				bracketCount++;
+				curlyBracketCount++;
 			}
 		}
 		// If not inside brackets, check for declaration, selector or opening bracket
 		else {
-			if (char === ';') {
+			if (char === ';' && !isInSingleQuotes && !isInDoubleQuotes && bracketDepth == 0 && parenthesisDepth == 0) {
 				declaration += unknown + char;
 
 				// Reset variables
 				unknown = '';
 				selector = '';
-				insideBrackets = false;
+				insideCurlyBrackets = false;
 			} else if (char === '{') {
 				selector = unknown;
 				if (declaration) parsedCSS.push(declaration), declaration = '';
 
 				// Set insideBrackets to true and increment bracketCount
-				insideBrackets = true;
-				bracketCount++;
+				insideCurlyBrackets = true;
+				curlyBracketCount++;
 			} else {
 				unknown += char;
+			}
+			
+			switch (char) {
+				case '(':
+					parenthesisDepth++;
+					break;
+				case ')':
+					parenthesisDepth--;
+					break;
+				case '[':
+					bracketDepth++;
+					break;
+				case ']':
+					bracketDepth--;
+					break;
+				case '"':
+					isInDoubleQuotes = !isInDoubleQuotes;
+					break;
+				case "'":
+					isInSingleQuotes = !isInSingleQuotes;
+					break;
 			}
 		}
 	}
@@ -1304,6 +1487,7 @@ function unnestCSS(cssProvided, prefix = '') {
 
 	// Loop through each rule in the provided CSS
 	for (let i = 0; i < cssProvided.length; i++) {
+
 		// If the current rule is an array, it's a nested rule
 		if (Array.isArray(cssProvided[i])) {
 			// Extract the relative selector and declarations from the current rule
@@ -1312,55 +1496,68 @@ function unnestCSS(cssProvided, prefix = '') {
 			// If the relative selector starts with '@', append a semicolon to it
 			if (relativeSelector.startsWith('@')) relativeSelector += ';';
 
-			// Construct the absolute selector by appending the relative selector to the prefix
-			let absoluteSelector = (!prefix ? relativeSelector : prefix + (relativeSelector.startsWith('&:') ? '' : ' ') + relativeSelector);
-
 			// If the declarations are an array, there are nested rules within the current rule
 			if (Array.isArray(declarations)) {
+				let absoluteSelector = prefix + ((relativeSelector.startsWith('&:') || !prefix) ? '' : ' ') + relativeSelector;
+				
 				// If not all declarations are arrays, add them to the parsed CSS
 				if (!declarations.every(Array.isArray)) {
 					parsedCSS.push([absoluteSelector, declarations.filter((d) => typeof d === 'string').join(';')]);
 				}
 
 				// Recursively call the function to unnest the nested rules, and concatenate the result to the parsed CSS
-				parsedCSS = parsedCSS.concat(unnestCSS(declarations.filter(Array.isArray), absoluteSelector));
+				parsedCSS = parsedCSS.concat(unnestCSS(declarations.filter(Array.isArray).map(([nestedSelector, nestedDeclarations]) => [nestedSelector, nestedDeclarations]), absoluteSelector));
 			} else {
 				// If the declarations are not an array, add them to the parsed CSS
 
 				// Split selector groups:
 				let splitSelectors = [];
 				let currentSelector = '';
-				let openBracketCount = 0;
+				let parenthesisDepth = 0;
+				let bracketDepth = 0;
+				let isInSingleQuotes = false;
+				let isInDoubleQuotes = false;
 
-				for (let i = 0; i < absoluteSelector.length; i++) {
-					const char = absoluteSelector[i];
+				for (let i = 0; i < relativeSelector.length; i++) {
+					const char = relativeSelector[i];
 
-					if ((!absoluteSelector.startsWith('@') && char === ',') && openBracketCount === 0) {
-						splitSelectors.push(currentSelector.trim());
+					currentSelector += char;
+					
+					switch (char) {
+						case '(':
+							parenthesisDepth++;
+							break;
+						case ')':
+							parenthesisDepth--;
+							break;
+						case '[':
+							bracketDepth++;
+							break;
+						case ']':
+							bracketDepth--;
+							break;
+						case '"':
+							isInDoubleQuotes = !isInDoubleQuotes;
+							break;
+						case "'":
+							isInSingleQuotes = !isInSingleQuotes;
+							break;
+					}
+
+					if ((!currentSelector.startsWith('@') && char == ',' && parenthesisDepth == 0 && bracketDepth == 0 && !isInSingleQuotes && !isInDoubleQuotes) || (i + 1) == relativeSelector.length) {
+						splitSelectors.push(currentSelector.split(',').join('').trim());
 						currentSelector = '';
-					} else {
-						currentSelector += absoluteSelector.startsWith('@') && char === ',' ? ', ' : char;
+					}
 
-						switch (char) {
-							case '(':
-							case '[':
-								openBracketCount++;
-								break;
-							case ')':
-							case ']':
-								openBracketCount--;
-								break;
-						}
+					// This part of the code makes it clear an @at-rule is another nested selector.
+					if (char == ';' && parenthesisDepth == 0 && bracketDepth == 0 && !isInSingleQuotes && !isInDoubleQuotes) {
+						atRule = currentSelector + ' ';
+						currentSelector = '';
 					}
 				}
 
-				if (currentSelector.trim() !== '') {
-					splitSelectors.push(currentSelector.trim());
-				}
-
-				splitSelectors = [splitSelectors[0], ...splitSelectors.slice(1).map((newSelector) => (!prefix ? newSelector : prefix + (newSelector.startsWith('&:') ? '' : ' ') + newSelector))];
-
-				parsedCSS.push(...splitSelectors.map((newSelector) => [newSelector, declarations]));
+				let splitSelectorsWithPrefix = splitSelectors.map((newSelector) => prefix + ((newSelector.startsWith('&:') || !prefix) ? '' : ' ') + newSelector);
+				parsedCSS.push(...splitSelectorsWithPrefix.map((newSelector) => [newSelector, declarations]));
 			}
 		} else {
 			// If the current rule is not an array, add it to the parsed CSS
@@ -1391,11 +1588,11 @@ function renestCSS(withHtml, cssProvided) {
 
 				// Iterate over the parts of the selector
 				for (let i = 0; i < selectorParts.length; i++) {
-					// If the current part starts with '@', add it to the temporary part
+					// If it's the start of the at rule, add a space and move on
 					if (selectorParts[i].startsWith('@')) {
 						tempPart += selectorParts[i] + ' ';
 					} 
-					// If the current part ends with ';', add it to the temporary part and push the temporary part to the new parts array
+					// End of the declaration and move on to the next one
 					else if (selectorParts[i].endsWith(';')) {
 						tempPart += selectorParts[i].slice(0, -1);
 						newSelectorParts.push(tempPart);
@@ -1414,12 +1611,9 @@ function renestCSS(withHtml, cssProvided) {
 				// Replace the original parts array with the new parts array
 				selectorParts = newSelectorParts;
 
-				// If the nested selector includes any regular at-rule, remove the last part of the selector parts
-				// if (regularAtRules.some((rAtRule) => nestedSelector.toLowerCase().includes(rAtRule))) selectorParts.pop();
+				// Handle pseudo selectors
+				let parenthesisDepth = 0;
 
-				// If the selector parts array has two elements and the second one is empty, remove the second element
-				// if (selectorParts.length == 2 && selectorParts[1] == '') selectorParts.pop();
-			} else {
 				// Split compound selectors
 				for (let i = 0; i < selectorParts.length; i++) {
 					// Process each part of the selector
@@ -1431,13 +1625,11 @@ function renestCSS(withHtml, cssProvided) {
 						else nestedSelector.splice(0, 2, ':' + nestedSelector[1]);
 
 					// Handle pseudo selectors
-					let pseudoSelectorDepth = 0;
-
 					for (let j = 0; j < nestedSelector.length; j++) {
 						let pseudoSelector = nestedSelector[j];
 
 						// Handle pseudo selectors with parentheses
-						if (pseudoSelectorDepth === 0) {
+						if (parenthesisDepth === 0) {
 							if (pseudoSelector === '')
 								nestedSelector[++j] = ' &::' + nestedSelector[j];
 							else
@@ -1445,19 +1637,94 @@ function renestCSS(withHtml, cssProvided) {
 						} else nestedSelector[j] = ':' + nestedSelector[j];
 
 						if (pseudoSelector.includes('('))
-							pseudoSelectorDepth += pseudoSelector.split("(").length - 1;
-
+							parenthesisDepth += pseudoSelector.split('(').length - 1;
 						if (pseudoSelector.includes(')'))
-							pseudoSelectorDepth -= pseudoSelector.split(")").length - 1;
+							parenthesisDepth -= pseudoSelector.split(')').length - 1;
 					}
 
 					selectorParts[i] = nestedSelector.join('');
-					selector = selectorParts.join(' ');
+					nestedSelector = selectorParts[i];
+				}
+
+				selectorParts = selectorParts.flatMap((part) => ((part.startsWith('@')) ? part : part.split(' ').map((pseudoPart) => pseudoPart.split(',').join(', '))));
+			} else {
+				// Handle pseudo selectors
+				let openBracketCount = 0;
+
+				// Split compound selectors
+				for (let i = 0; i < selectorParts.length; i++) {
+					// Process each part of the selector
+					let nestedSelector = selectorParts[i];
+					nestedSelector = nestedSelector.split('&:').join(':').split(':');
+
+					if (nestedSelector[0] == '') {
+						if (nestedSelector[1] == '') nestedSelector.splice(0, 3, '::' + nestedSelector[2]);
+						else nestedSelector.splice(0, 2, ':' + nestedSelector[1]);
+					}
+
+					for (let j = 0; j < nestedSelector.length; j++) {
+						let pseudoSelector = nestedSelector[j];
+
+						// Handle pseudo selectors with parentheses
+						if (openBracketCount === 0) {
+							if (pseudoSelector === '')
+								nestedSelector[++j] = ' &::' + nestedSelector[j];
+							else
+								nestedSelector[j] = (j === 0 ? '' : ' &:') + pseudoSelector;
+						} else nestedSelector[j] = ((j == 0 && nestedSelector.length == 1) ? '' : ':') + nestedSelector[j];
+
+						// Update depths for parentheses
+						if (pseudoSelector.includes('('))
+							openBracketCount += pseudoSelector.split('(').length - 1;
+						if (pseudoSelector.includes(')'))
+							openBracketCount -= pseudoSelector.split(')').length - 1;
+					}
+
+					selectorParts[i] = nestedSelector.join('');
 
 					nestedSelector = selectorParts[i];
 				}
 
-				selectorParts = selector.split(' ').map((part) => part.split(',').join(', '));
+				function endsWithCSSEscape(str) {
+					if (str.length === 0) return false;
+				
+					// Check for hexadecimal Unicode code points
+					if (str.endsWith('\\')) return false; // A single backslash at the end is not valid
+					if (str.endsWith('\\0') || str.endsWith('\\00')) return true; // Null character escape
+					if (str.endsWith('\\\9') || str.endsWith('\\09')) return true; // Tab character escape
+				
+					// Check for shorter escapes
+					const hexDigits = '0123456789abcdefABCDEF';
+					let i = str.length - 1;
+					let count = 0;
+				
+					while (i >= 0 && hexDigits.includes(str[i])) {
+						count++;
+						i--;
+					}
+				
+					if (count > 0 && str[i] === '\\') {
+						return true;
+					}
+				
+					// Check for special characters
+					const specialChars = ['\\n', '\\r', '\\f', '\\v', '\\t', '\\b'];
+					for (let char of specialChars) {
+						if (str.endsWith(char)) {
+							return true;
+						}
+					}
+				
+					return false;
+				}
+
+				selector = selectorParts.join(' ');
+				selectorParts = selector.split(' ').reverse().filter((item, i, arr) => {
+					if (arr[i + 1] && endsWithCSSEscape(arr[i + 1])) {
+						arr[i + 1] += ' ' + item;
+						return false;
+					} else return true;
+				}).reverse().map((part) => part.split(',').join(', '));
 
 				// Join parts linked by brackets & child combinators
 				const combinators = ["+", ">", /*"||",*/ "~"];
@@ -1494,6 +1761,27 @@ function renestCSS(withHtml, cssProvided) {
 			// Actually nest the CSS
 			let currentLevel = parsedCSS;
 
+			function addSpaceAfterComma(declarations) {
+				if (!declarations) return declarations;
+
+				// Split the declarations by comma
+				let parts = declarations.split(',');
+			
+				// Use map to process each part
+				let result = parts.map((part, index, array) => {
+					// Check if the part contains 'url(' and if it's not the last part
+					if (part.includes('url(') && index < array.length - 1) {
+						// Combine the current part with the next part
+						array[index + 1] = part + ',' + array[index + 1];
+						return null; // Skip this part
+					}
+					return part;
+				}).filter(Boolean); // Remove null values
+			
+				// Join the parts back with ', '
+				return result.join(', ');
+			}
+
 			selectorParts.forEach((part, i) => {
 				let existingIndex = currentLevel.findIndex(([s]) => s === part);
 
@@ -1502,7 +1790,7 @@ function renestCSS(withHtml, cssProvided) {
 
 					if (i === selectorParts.length - 1) {
 						if (declarations?.endsWith(';')) declarations = declarations.slice(0, -1);
-						newPart[1].push([declarations?.split(',')?.join(', ')]);
+						newPart[1].push([addSpaceAfterComma(declarations)]);
 					}
 
 					currentLevel.push(newPart);
@@ -1515,9 +1803,9 @@ function renestCSS(withHtml, cssProvided) {
 
 
 						if (currentDeclarations.length > 1)  {
-							currentLevel[existingIndex][1].unshift([declarations.split(',').join(', ')]);
+							currentLevel[existingIndex][1].unshift([addSpaceAfterComma(declarations)]);
 						} else {
-							if (declarations) currentLevel[existingIndex][1][0] = [currentDeclarations[0] + ';' + declarations.split(',').join(', ')];
+							if (declarations) currentLevel[existingIndex][1][0] = [currentDeclarations[0] + ';' + addSpaceAfterComma(declarations)];
 						}
 
 					}
@@ -1538,80 +1826,103 @@ function beautifyCSS(declarations, indent = '') {
 
 	// Loop through each declaration
 	for (let i = 0; i < declarations.length; i++) {
-		// If the declaration is an array
-		if (Array.isArray(declarations[i])) { /* This check might be useless */
-			// If the declaration has a selector and nested declarations
-			if (declarations[i].length == 2) {
-				// If no declarations, combined current selector and nested declaration's selectors
-				if (!declarations[i][0].startsWith('@') && declarations[i][1].length == 1 && declarations[i][1][0].length == 2) declarations[i] = [declarations[i][0] + ' ' + declarations[i][1][0][0], declarations[i][1][0][1]];
+		// If the declaration has a selector and nested declarations
+		if (declarations[i].length == 2) {
+			// If no declarations, combined current selector and nested declaration's selectors
+			let [selector, nestedDeclarations] = declarations[i];
 
-				let [selector, nestedDeclarations] = declarations[i];
-
-				let declarationsForSelector = nestedDeclarations[0];
-
-				// If the selector has no declarations, add it to the parsed CSS string
-				if (typeof declarationsForSelector[0] === "undefined") {
-					parsedCSS += ((declarations[0][0] == selector) ? '' : '\n\n') + indent + selector + ';';
-					continue; // Move on to the next mested declaration
-				}
-
-				// Add the selector to the parsed CSS string
-				parsedCSS += ((declarations[0][0] == selector) ? '' : '\n\n') + indent + selector + ' {\n';
-
-				// If the selector has declarations
-				if (declarationsForSelector.length == 1) {
-					
-					const properties = declarationsForSelector[0].match(/[^;]+:[^;]+/g) || [];
-					const uniqueProperties = new Map();
+			while (!selector.startsWith('@') && nestedDeclarations.length === 1 && nestedDeclarations[0].length === 2 && !nestedDeclarations[0][0].startsWith('@')) {
+				let [childSelector, childDeclarations] = nestedDeclarations[0];
 				
-					properties.forEach(property => {
-						const [key, value] = property.split(/:(.+)/).map(item => item.trim());
-						uniqueProperties.set(key, value);
-					});
-				
-					declarationsForSelector[0] = Array.from(uniqueProperties).map(([key, value]) => `${key}:${value}`).join(';');
+				if (childSelector.startsWith('&')) childSelector = childSelector.slice(1);
+				else childSelector = ' ' + childSelector;
 
-					let declarationsString = '';
-					let currentDeclaration = '';
-					let isInQuotes = false;
-					let isEscaped = false;
+				selector += childSelector;
+				nestedDeclarations = childDeclarations;
 
-					// Loop through each character in the declarations
-					for (let char of nestedDeclarations[0][0]) {
-						// Handle semicolons, colons, quotes, and escape characters
-						if (char === ';' && !isInQuotes && !isEscaped) {
-							declarationsString += currentDeclaration.trim() + ';\n';
-							currentDeclaration = '';
-						} else if (char === ':' && !isInQuotes && !isEscaped) {
-							if (declarationsString.slice(-1)[0] == '\n' || typeof declarationsString.slice(-1)[0] == "undefined") {
-								declarationsString += indent + indentChar + currentDeclaration.trim() + ': ';
-								currentDeclaration = '';
-							}
-						} else {
-							if (char === '"') isInQuotes = !isInQuotes;
-							if (char === '\\' && !isEscaped) isEscaped = true;
-							else {
-								currentDeclaration += char;
-								isEscaped = false;
-							}
-						}
-					}
-
-					// Add the remaining declaration to the parsed CSS string
-					if (currentDeclaration.trim()) declarationsString += currentDeclaration.trim() + ';' + ((nestedDeclarations.length > 1) ? '\n\n' : '');
-
-					nestedDeclarations.shift();
-					parsedCSS += declarationsString;
-				}
-
-				// If there are nested declarations, recursively call beautifyCSS
-				if (nestedDeclarations.length > 0 && Array.isArray(nestedDeclarations[0])) {
-					parsedCSS += beautifyCSS(nestedDeclarations, indent + indentChar);
-				}
-
-				// Close the selector
-				parsedCSS += '\n' + indent + '}';
+				declarations[i] = [selector, nestedDeclarations];
 			}
+
+			let declarationsForSelector = nestedDeclarations[0];
+
+			// If the selector has no declarations, add it to the parsed CSS string
+			if (typeof declarationsForSelector[0] === "undefined") {
+				parsedCSS += ((declarations[0][0] == selector) ? '' : '\n\n') + indent + selector + ';';
+				continue; // Move on to the next mested declaration
+			}
+
+			// Add the selector to the parsed CSS string
+			parsedCSS += ((declarations[0][0] == selector) ? '' : '\n\n') + indent + selector + ' {\n';
+
+			// If the selector has declarations
+			if (declarationsForSelector.length == 1) {
+				const properties = declarationsForSelector[0].match(/[^;:()]+(?:\([^()]*\))?[^;:()]*:[^;:()]+(?:\([^()]*\))?[^;:]*/g) || [];
+				const uniqueProperties = new Map();
+			
+				properties.forEach(property => {
+					const [key, value] = property.split(/:(.+)/).map(item => item.trim());
+					uniqueProperties.set(key, value);
+				});
+
+				declarationsForSelector[0] = Array.from(uniqueProperties).map(([key, value]) => `${key}:${value}`).join(';');
+
+				let declarationsString = '';
+				let currentDeclaration = '';
+				let parenthesisDepth = 0;
+				let bracketDepth = 0;
+				let isInSingleQuotes = false;
+				let isInDoubleQuotes = false;
+
+				// Loop through each character in the declarations
+				for (let char of nestedDeclarations[0][0]) {
+					// Handle semicolons, colons, quotes, and escape characters
+					if (char === ';' && !isInSingleQuotes && !isInDoubleQuotes && bracketDepth == 0 && parenthesisDepth == 0) {
+						declarationsString += currentDeclaration.trim() + ';\n';
+						currentDeclaration = '';
+					} else if (char === ':' && !isInSingleQuotes && !isInDoubleQuotes && bracketDepth == 0 && parenthesisDepth == 0) {
+						if (declarationsString.slice(-1)[0] == '\n' || typeof declarationsString.slice(-1)[0] == "undefined") {
+							declarationsString += indent + indentChar + currentDeclaration.trim() + ': ';
+							currentDeclaration = '';
+						}
+					} else {
+						switch (char) {
+							case '(':
+								parenthesisDepth++;
+								break;
+							case ')':
+								parenthesisDepth--;
+								break;
+							case '[':
+								bracketDepth++;
+								break;
+							case ']':
+								bracketDepth--;
+							case '"':
+								isInDoubleQuotes = !isInDoubleQuotes;
+								break;
+							case "'":
+								isInSingleQuotes = !isInSingleQuotes;
+								break;
+						}
+
+						currentDeclaration += char;
+					}
+				}
+
+				// Add the remaining declaration to the parsed CSS string
+				if (currentDeclaration.trim()) declarationsString += currentDeclaration.trim() + ';' + ((nestedDeclarations.length > 1) ? '\n\n' : '');
+
+				nestedDeclarations.shift();
+				parsedCSS += declarationsString;
+			}
+
+			// If there are nested declarations, recursively call beautifyCSS
+			if (nestedDeclarations.length > 0 && Array.isArray(nestedDeclarations[0])) {
+				parsedCSS += beautifyCSS(nestedDeclarations, indent + indentChar);
+			}
+
+			// Close the selector
+			parsedCSS += '\n' + indent + '}';
 		}
 	}
 

@@ -1,45 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Bungee+Outline&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
-@font-face {
-  font-family: "Orelo Semi Condensed";
-  src:
-    local("Orelo SemiCondensed DemiBold Regular"),
-    local("Orelo SemiCondensed DemiBold"),
-    url("https://nestyourcss.com/assets/orelo-semicondensed-demibold.otf")
-    format("opentype");
-  font-weight: 600;
-}
-
-@font-face {
-  font-family: "Orelo Semi Condensed";
-  src:
-    local("Orelo SemiCondensed Bold Regular"),
-    local("Orelo SemiCondensed Bold"),
-    url("https://nestyourcss.com/assets/orelo-semicondensed-bold.otf")
-    format("opentype");
-  font-weight: 700 bold;
-}
-
-@font-face {
-  font-family: "Orelo Semi Expanded";
-  src:
-    local("Orelo SemiWide Regular"),
-    local("Orelo SemiWide"),
-    url("https://nestyourcss.com/assets/orelo-semiwide.otf") format("opentype");
-  font-weight: 400 normal;
-}
-
-@font-face {
-  font-family: "Orelo Expanded";
-  src:
-    local("Orelo Wide DemiBold Regular"),
-    local("Orelo Wide DemiBold"),
-    url("https://nestyourcss.com/assets/orelo-wide-demibold.otf")
-    format("opentype");
-  font-weight: 600;
-}
-
 :root {
 	--rem: clamp(0px, 1.5vh, 24px);
     font-size: var(--rem);
@@ -331,116 +289,103 @@ body {
 				}
 
 				> article#editorSide {
+					> #nestBtn {
+						position: absolute;
+						aspect-ratio: 1 / 1;
+						bottom: 2rem;
+						right: 2rem;
+						z-index: 10;
+						
+						cursor: pointer;
+						border: none;
+						padding: 2em;
+						aspect-ratio: 1 / 1;
+						border-radius: 50%;
+						font-size: 0.75rem;
+						font-weight: bold;
+						background-color: #FFFFFF80;
+						transition: 0.5s, --color1 0s, --color2 0s, --color3 0s;
+						animation: shadowRotate 3s infinite both;
+						animation-composition: add;
+					
+						/* All 3 colours below, combined, lightened */
+						background-color: #a6d7f3;
+						box-shadow: inset 0 0 0.5em 0 #000000;
+					
+						&:hover {
+							/* The undefined '--animationControls' prevents the box-shadow from showing initially. Fixing the error during runtime makes the box-shadow appear without resetting the animation. */
+							--animationControls: 0 0 black;
+							font-size: 1rem;
+							background-color: #FFFFFF;
+							transition: 0.5s, --color1 2s, --color2 2s, --color3 2s;
+							
+							/* Using variables so I can transition from transparent to their individual colours */
+							--color1: #4dbaf380;
+							--color2: #03c4d480;
+							--color3: #235b6c80;
+						}
+					}
+ 
 					> #code-editor {
-						position: relative;
-						height: 100%;
-						width: auto;
+						--gutter-width: 0.5;
 						--editor-width: 5;
-			
-						> .acediff__wrap {
-							position: relative;
-							overflow: unset;
-	
-							> .editorWrapper {
-								.editor {
-									height: 100%;																
-									transform-origin: left;
-								
-									> div {
-										white-space: pre;
-									}
-								}
-	
-								&#mainEditorWrapper {
-									#mainEditor {
-									}
-								}
-							}
+						--total-width: calc(var(--gutter-width) + (2 * var(--editor-width)));
+						height: 100%;
+						display: flex;
+
+						.editor {
+							height: 100%;
+							aspect-ratio: var(--editor-width) / 7;
 						}
 					}
 				}
 			}
 
-			&:not(.nesting) {
-				> #main-content {
-					> article#editorSide {
-						> button {
-							cursor: pointer;
-							border-radius: 50%;
-							font-weight: bold;
-							border: none;
-							background: var(--sec-colour-lighter);
-							transition: 0.25s;
-							padding: 1rem;
-							position: absolute;
-							aspect-ratio: 1 / 1;
-							bottom: 4rem;
-							right: 4rem;
-							z-index: 1;
+			&:not(.nesting) > #main-content {
+				> article#textSide {
+
+				}
 				
-							&:hover {
-								background: var(--sec-colour-lightest);
+				> article#editorSide {
+ 
+					> #code-editor {
+
+						.editor {
+							transform-origin: left;
+						}
+
+						.editorWrapper {
+							transition: 1s;
+							border-left: 1px solid #71717180;
+	
+							&#inputEditorWrapper {
+								padding: var(--padding);
+								padding-left: 0;
+								border-radius: 0 1rem 1rem 0;
+								border-color: #71717140;
+								background: color-mix(in srgb, white, transparent 97%);
+	
+								> #inputEditor {
+									border: 0.25ch solid color-mix(in srgb, #717171, transparent 80%);
+								}
+
+								> #shadowEditorsWrapper {
+									height: calc(100% + (var(--padding) * 2));
+									translate: 0 calc(-100% + var(--padding));
+									pointer-events: none;
+									/* position: relative; */
+
+									> .shadowEditorWrapper {
+										overflow: hidden;
+										position: absolute;
+										height: 100%;
+									}
+								}
 							}
 						}
-				
-						> #code-editor {
-							position: relative;
-							height: 100%;
-							width: auto;
-				
-							> .acediff__wrap {
-								position: relative;
-								overflow: unset;
-		
-								> :is(.acediff__gutter, .acediff__right) {
-									display: none;
-								}
-		
-								> .editorWrapper {
-									transition: 1s;
-									border-left: 1px solid #71717180;
-								
-									.editor {
-										height: 100%;
-										aspect-ratio: var(--editor-width) / 7;
-										transform-origin: left;
-									
-										> div {
-											white-space: pre;
-										}
-									}
-		
-									&#mainEditorWrapper {
-										padding: var(--padding);
-										padding-left: 0;
-										border-radius: 0 1rem 1rem 0;
-										border-color: #71717140;
-										background: color-mix(in srgb, white, transparent 97%);
-		
-										#mainEditor {
-											border: 0.25ch solid color-mix(in srgb, #717171, transparent 80%);
-		
-											& ~ #shadowEditorsWrapper {
-												height: calc(100% + (var(--padding) * 2));
-												translate: 0 calc(-100% + var(--padding));
-												pointer-events: none;
-												position: relative;
-		
-												.shadowEditorWrapper {
-													overflow: hidden;
-													position: absolute;
-													height: 100%;
-								
-													> .shadowEditor {
-														height: calc(100% - (var(--padding) * 2));
-														translate: 0 var(--padding);
-													}
-												}
-											}
-										}
-									}
-								}
-							}
+	
+						#outputEditor {
+							display: none;
 						}
 					}
 				}
@@ -452,64 +397,49 @@ body {
 
 				> #main-content {
 					> article#textSide {
-						width: 0;
-						height: 0;
 						opacity: 0;
 						padding: 0;
-						transition: opacity 1s, width 1s, height 1s, padding 1s;
+						transition: opacity 1s, padding 1s;
 						contain: size;
+						/* contain: size; */
 					}
-	
+					
 					> article#editorSide {
 						margin-left: var(--padding);
 						height: 100%;
 						width: 100%;
 						display: flex;
 						flex-direction: row-reverse;
-				
-						> button {
-							display: none;
-						}
-						
-						> #code-editor {
-							--gutter-width: 0.5;
-							--total-width: calc(var(--gutter-width) + (2 * var(--editor-width)));
-							aspect-ratio: var(--total-width) / 7;
-							height: calc(100% - (2 * var(--padding)));
-							animation: moveLeft 1s cubic-bezier(1, 0, 0.5, 1) both;
-							/* animation-play-state: paused; */
-							padding: var(--padding) 0;
-							box-sizing: content-box;
-	
-							> .acediff__wrap {
-								> #mainEditorWrapper {
-									flex: 1;
+ 
+					> #code-editor {
+						height: calc(100% - (2 * var(--padding)));
+						animation: moveLeft 1s cubic-bezier(1, 0, 0.5, 1) both;
+						padding: var(--padding) 0;
+						box-sizing: content-box;
+						gap: calc((var(--gutter-width) / var(--total-width)) * 100%);
 
-									> #mainEditor {
-										width: 100%;
-									}
-								}
+							.editor {
 
-								> .acediff__gutter {
-									flex: 0 0 calc((100% / ((var(--editor-width) * 2) + var(--gutter-width))) * var(--gutter-width));
-									border: none;
-	
-									&, svg {
-										background: transparent;
+							}
+
+							.editorWrapper {
+
+								&#inputEditorWrapper {
+
+									> #inputEditor {
 									}
-								}
-	
-								.shadowEditorWrapper {
-									translate: 0 !important;
-									opacity: 0 !important;
+
+									> #shadowEditorsWrapper {
+
+										> .shadowEditorWrapper {
+											translate: 0 !important;
+											opacity: 0 !important;
+										}
+									}
 								}
 							}
 						}
 					}
-				}
-
-				& + article {
-					display: none;
 				}
 			}
 		}

@@ -1,39 +1,53 @@
 <!--
-  To-do now:
-  - Factor in attribute selectors
-  - Account for `;` within the value of a declaration, such as within a url() path
-  - Account for escaped characters in selectors, e.g; ".u-3\/4\@to-small { ... }"
-  - Rules with nested selectors don't nest properly
+  Update quickly.nestyourcss.com to use the new background (with clip method)
 
-  List of (potential) parts to add to the site:
-  - History of all conversions to Nested CSS
-  - Section to input CSS code and to display Nested CSS output
-  - Section input both HTML and CSS code and to display Nested CSS output
-  - Change modes from light to dark modes
-  - Replace some of the changed, nested CSS with the original CSS (through AceDiff).
+  To-do now:
+  - Style .ace_search
   - Area to drop in files
   - Ability to send a link of a CSS file
   - Button to clear the code (could just CTRL+A & Backspace)
-  - Information on how to (manually) Nest your CSS
-  - Button to add sample CSS
-  - Ability to nest multiple CSS files at the same time
-  - Ability to auto-nest the CSS code
+  - Show list of errors, and a button to jump to them
+  - Button to add samples of CSS
   - Show the file size of both CSS outputs
   - Send the Nested output to a raw file
+  - Change indentation setting
+  - Mention "it's recommended to use diff, and add in the old CSS selectors to the new" (because this tool also reformats your code and removes comments)
+
+  List of (potential) parts to add to the site:
+  - History of all conversions to Nested CSS >> Auto-save every minute? Or just "Nest" button (probably both, but auto-save is toggleable)
   - Button to use the previous selector instead (a.k.a. previous diff, but only for selectors)
-  - Mention it's recommended to use diff and add in the old CSS selectors to the new
   - Paredit may be useful
   - Keyboard Shortcuts extension has a lot of useful stuff, will have to "re-develop" to: limit what features are possible and re-design.
-  - Option to allow emmet?
   - Add a minimap, might have to DIY
   - Sticky Scroll - Official Ace Extensions (DIY)
   - Add like a Table of Contents page, like Figma's Layers component
-  - When hover hero text, scramble the letters of the slogan, keeping the letters that will be in the next slogan there.
   - Add an anti-adblock background, along with the border
 
   Later:
   - Full revamp
   - Implement locomotive scroll or some other momentum scroll plugin (https://github.com/locomotivemtl/locomotive-scroll)
+  - Information on how to (manually) Nest your CSS
+  - Replace some of the changed, nested CSS with the original CSS (through AceDiff)
+  - Change modes from light to dark modes
+  - Section input both HTML and CSS code and to display Nested CSS output
+  - Allow comments >> Might require a code revamp
+  - Ability to nest multiple CSS files at the same time
+  - Option to allow emmet?
+
+  Code to go to specific line:
+    // Assuming 'editor' is your Ace Editor instance
+    var lineNumber = 10; // Replace with your desired line number
+
+    // Get the content of the line
+    var lineContent = editor.session.getLine(lineNumber - 1); // Ace Editor uses 0-based index
+
+    // Scroll to the line
+    editor.scrollToLine(lineNumber, true, true, function () {});
+
+    // Optionally, highlight the line
+    editor.gotoLine(lineNumber, 0, true);
+
+    console.log("Line Content: ", lineContent);
 -->
   
 <!doctype html>
@@ -45,11 +59,11 @@
   <title>Nest Your CSS</title>
   
   <script src="./lib/ace.min.js"></script>
-  <link href="./lib/styles/ace-diff.min.css" rel="stylesheet">
   
   <link href="./styles/keyframes.css" rel="stylesheet">
-  <link href="./styles/main.css" rel="stylesheet">
   <link href="./styles/editor.css" rel="stylesheet">
+  <link href="./styles/fonts.css" rel="stylesheet">
+  <link href="./styles/main.css" rel="stylesheet">
 </head>
 <body>
   <script>
@@ -227,19 +241,23 @@
         </article>
         <article id="editorSide">
           <button id="nestBtn">Nest!</button>
-          <div id="code-editor"></div>
+          <div id="code-editor">
+            <div class="editor" id="inputEditor"></div>
+            <div class="editor" id="outputEditor"></div>
+          </div>
           <script>
-            function createShadowEditors(mainEditor) {
+            function createShadowEditors(inputEd) {
               // Wrap editor
+              const inputEditor = document.getElementById('inputEditor');
 
               const wrapperElement = document.createElement("div");
-              wrapperElement.id = mainEditor.id + "Wrapper";
+              wrapperElement.id = inputEditor.id + "Wrapper";
               wrapperElement.classList.add('editorWrapper');
 
-              mainEditor.replaceWith(wrapperElement);
-              mainEditor.classList.add('editor');
+              inputEditor.replaceWith(wrapperElement);
+              inputEditor.classList.add('editor');
               
-              wrapperElement.appendChild(mainEditor);
+              wrapperElement.appendChild(inputEditor);
 
               // Create the shadow editors
 
@@ -248,14 +266,14 @@
 
               const shadowWrapperElement = document.createElement("div");
               shadowWrapperElement.id = "shadowEditorsWrapper";
-              mainEditor.after(shadowWrapperElement);
+              inputEditor.after(shadowWrapperElement);
 
               // Fill in the shadow editors
 
               for (let i = 0; i < shadowCount; i++) {
                 const shadowEditor = document.createElement("div");
-                shadowEditor.className = mainEditor.className + " shadowEditor";
-                shadowEditor.innerHTML = mainEditor.innerHTML;
+                shadowEditor.className = inputEditor.className + " shadowEditor";
+                shadowEditor.innerHTML = inputEditor.innerHTML;
 
                 shadowEditors.push(shadowEditor);
                 shadowWrapperElement.prepend(shadowEditor);
@@ -265,8 +283,8 @@
 
               let baseShadowOpacity = 0.5;
               let baseShadowBlur = 2;
-              window.shadowHeightDiff = mainEditor.offsetHeight / 10;
-              let baseShadowWidth = mainEditor.offsetWidth / 3.75;
+              window.shadowHeightDiff = inputEditor.offsetHeight / 10;
+              let baseShadowWidth = inputEditor.offsetWidth / 3.75;
               let shadowWidthDiff = baseShadowWidth / 15;
               let previousShadowTranslation = 0;
 
@@ -279,7 +297,7 @@
                 shadowEditor.replaceWith(shadowEditorWrapper);
                 shadowEditorWrapper.appendChild(shadowEditor);
 
-                let scaleValue = ((mainEditor.offsetHeight * 0.8) - (shadowHeightDiff * (editorIndex + 1))) / mainEditor.offsetHeight;
+                let scaleValue = ((inputEditor.offsetHeight * 0.8) - (shadowHeightDiff * (editorIndex + 1))) / inputEditor.offsetHeight;
                 shadowEditor.style.transform = `scale(${scaleValue})`;
 
                 let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (editorIndex + 1));
@@ -296,12 +314,12 @@
               let observer = new MutationObserver(() => {
                 requestAnimationFrame(() => {
                   shadowEditors.forEach((shadowEditor) => {
-                    shadowEditor.innerHTML = mainEditor.innerHTML;
+                    shadowEditor.innerHTML = inputEditor.innerHTML;
                   });
                 });
               });
 
-              observer.observe(mainEditor, {
+              observer.observe(inputEditor, {
                 childList: true,
                 subtree: true,
                 characterData: true
@@ -454,13 +472,10 @@
             const { pageYOffset, document: { documentElement: { scrollTop, scrollHeight, clientHeight } } } = window;
 
             // Check if user is at the bottom
-            console.log([(pageYOffset || scrollTop) + clientHeight, scrollHeight]);
             if ((pageYOffset || scrollTop) + clientHeight >= scrollHeight) {
-              console.log("test1");
               cssBadge.className = 'hover-animation';
               if (!hovered) moveCursorBackground(), hovered = true;
             } else if (cssBadge.className != 'main-animation') {
-              console.log("test2");
               cssBadge.className = 'main-animation';
               if (hovered) moveCursorBackground(), hovered = false;
             } else {
@@ -475,73 +490,69 @@
   </div>
   
   <script src="./scripts/main.js" type="text/javascript"></script>
-  <script src="./scripts/editor.js" type="text/javascript"></script>
+  <script src="./scripts/nesting.js" type="text/javascript"></script>
   <script src="./scripts/handlers.js" type="text/javascript"></script>
 
   <script src="./lib/mode-css.js"></script>
-  <script src="./lib/ace-diff.min.js"></script>
   <script src="./lib/ace-linters.min.js"></script>
   <script src="./lib/ext-searchbox.min.js"></script>
-  <!-- <script src="./lib/ext-language_tools.min.js"></script> -->
   <!-- <script src="./scripts/ext-stickyscroll.js"></script> -->
+  <!-- <script src="./lib/ext-language_tools.min.js"></script> -->
 
   <script>
     let editorId = 'code-editor';
-    if (document.getElementById(editorId)) {
-      let sample = cssSamples[9];
+    let sample;
+    // sample = cssSamples[0];
+    sample = cssSamples[21];
+    // sample = cssSamples.slice(0, 2).join('');
+    // sample = cssSamples.join('');
 
-      window.differ = new AceDiff({
-        element: '#' + editorId,
-        mode: 'ace/mode/css',
-        diffGranularity: 'specific',
-        showDiffs: false,
-        showConnectors: false,
-        left: {
-          content: sample ?? '/* Your input CSS should go here */'
-        },
-        right: {
-          content: '/* Your output CSS will appear here */',
-          copyLinkEnabled: false
-        }
-      });
+    const provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
 
-      let { left: leftEditor, right: rightEditor } = differ.getEditors();
+    const inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
+    const outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
 
-      leftEditor.container.id = "mainEditor";
-      createShadowEditors(leftEditor.container);
-    
-      /* Auto Nest */
-      let updateCode = false;
+    let editors = [inputEditor, outputEditor];
 
-      leftEditor.getSession().on('change', () => {
-        updateCode = true;
-      });
+    // Click to Nest
+    document.getElementById('nestBtn').addEventListener('click', nestCode);
 
-      leftEditor.getSession().on('changeAnnotation', () => {
-        if (updateCode) {
-          nestCode();
-          updateCode = false;
-        }
-      });
-      
-      let provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@latest/build/");
-      let editors = [leftEditor, rightEditor];
+    // Auto Nest
+    let codeChanged = false;
+    let isProcessing = false;
 
-      editors.forEach((editor) => {
-        provider.registerEditor(editor);
-        editor.setOption("showPrintMargin", false);
+    inputEditor.getSession().on('change', () => {
+      codeChanged = true;
+    });
 
-        let getScrollbar = (editor) => editor.container.querySelector('.ace_scrollbar-v > .ace_scrollbar-inner');
+    inputEditor.getSession().on('changeAnnotation', () => {
+      if (!isProcessing) {
+        isProcessing = true;
 
-        editor.session.on('changeScrollTop', function(scrollTop) {
-          if (scrollTop > 0) {
-            getScrollbar(editor).style.height = getScrollbar(editor).offsetHeight - 16 + 'px';
+        setTimeout(() => {
+          if (codeChanged) {
+            nestCode();
+            codeChanged = false;
           }
-        });
+
+          isProcessing = false;
+        }, 0);
+      }
+    });
+
+    function initializeEditor(editorId, value) {
+      const editor = ace.edit(editorId, {
+        mode: "ace/mode/css",
+        showPrintMargin: false
       });
 
-      // console.log(differ.getNumDiffs());
+      editor.setValue(value, -1);
+      provider.registerEditor(editor);
+      
+      return editor;
     }
+    
+    createShadowEditors(inputEditor.container);
   </script>
 </body>
 </html>

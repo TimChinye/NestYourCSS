@@ -202,3 +202,97 @@
 	
 	/* Use margin */
 }
+
+@keyframes shadowRotate {
+	0% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			1em 3em 0 -1em #4dbaf380,
+			3em 0.5em 0 -1em #03c4d480,
+			2.5em 2.5em 0 -0.5em  #235b6c80;
+	}
+	
+	33% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			2.5em 2.5em 0 -0.5em  #235b6c80,
+			1em 3em 0 -1em #4dbaf380,
+			3em 0.5em 0 -1em #03c4d480;
+	}
+	
+	67% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			3em 0.5em 0 -1em #03c4d480,
+			2.5em 2.5em 0 -0.5em  #235b6c80,
+			1em 3em 0 -1em #4dbaf380;
+	}
+	
+	100% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			1em 3em 0 -1em #4dbaf380,
+			3em 0.5em 0 -1em #03c4d480,
+			2.5em 2.5em 0 -0.5em  #235b6c80;
+	}
+}
+
+@keyframes shadowRotate {
+	0% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			1em 3em 0 -1em var(--color1),
+			3em 0.5em 0 -1em var(--color2),
+			2.5em 2.5em 0 -0.5em  var(--color3);
+	}
+	
+	33% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			2.5em 2.5em 0 -0.5em  var(--color3),
+			1em 3em 0 -1em var(--color1),
+			3em 0.5em 0 -1em var(--color2);
+	}
+	
+	67% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			3em 0.5em 0 -1em var(--color2),
+			2.5em 2.5em 0 -0.5em  var(--color3),
+			1em 3em 0 -1em var(--color1);
+	}
+	
+	100% {
+		box-shadow:
+			var(--animationControls),
+			0em 0em 1em 0 #000000,
+			1em 3em 0 -1em var(--color1),
+			3em 0.5em 0 -1em var(--color2),
+			2.5em 2.5em 0 -0.5em  var(--color3);
+	}
+}
+
+@property --color1 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --color2 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --color3 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}

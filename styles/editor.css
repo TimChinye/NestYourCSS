@@ -31,10 +31,6 @@
   color: var(--window-text-colour);
 }
 
-.ace-tm .ace_gutter-layer {
-  pointer-events: unset;
-}
-
 .ace-tm .ace_gutter-cell {
   padding-right: 32px;
 
@@ -45,11 +41,13 @@
 
 .ace-tm .ace_gutter-active-line {
   font-weight: bold;
-  background: color-mix(in srgb, var(--shades-darkest), transparent 75%);
+  background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
+  /* background: color-mix(in srgb, var(--shades-darkest), transparent 75%); */
 }
 
 .ace-tm .ace_marker-layer .ace_active-line {
-  background: color-mix(in srgb, var(--shades-darkest), transparent 75%);
+  background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
+  /* background: color-mix(in srgb, var(--shades-darkest), transparent 75%); */
 }
 
 .ace-tm .ace_scroller {
@@ -132,7 +130,8 @@
 
   &.ace_multiselect .ace_selection.ace_start,
   .ace_marker-layer .ace_selection {
-    background: color-mix(in srgb, var(--pri-colour-em-darker), transparent);
+    background: color-mix(in srgb, var(--pri-colour-m-darker), transparent);
+    /* background: color-mix(in srgb, var(--pri-colour-em-darker), transparent); */
     box-shadow: 0px 0px 0px 8px var(--code-selection-shadow-colour);
     clip-path: inset(0 0 -20px 0px);
   }
@@ -182,7 +181,9 @@
   margin: 8px;
 
   &.ace_scrollbar-v {
-    height: calc(100% - 16px) !important;
+    height: calc(100% - 22px) !important;
+    bottom: 0 !important;
+    z-index: 7;
   }
 
   --thumbnail-colour: var(--sec-colour-darker);
@@ -192,14 +193,23 @@
   @supports selector(::-webkit-scrollbar) {
     &::-webkit-scrollbar {
       width: 12px;
-      height: 8px;
+      height: 12px;
     }
-    &::-webkit-scrollbar-thumb {
-      background: var(--thumbnail-colour);
-      border-radius: 999px;
-      border: 4px solid transparent;
-      background-clip: padding-box;
+
+    &:has(.ace_scrollbar-inner) {
+      &::-webkit-scrollbar-thumb {
+        background: var(--thumbnail-colour);
+        border-radius: 999px;
+        border: 4px solid transparent;
+        background-clip: padding-box;
+      }
+  
+      &::-webkit-scrollbar-thumb:vertical { background-color: var(--thumbnail-colour); }
+      &::-webkit-scrollbar-thumb:vertical:hover { background-color: color-mix(in srgb, var(--thumbnail-colour), white); }
+      &::-webkit-scrollbar-thumb:horizontal { background-color: color-mix(in srgb, var(--thumbnail-colour), transparent); }
+      &::-webkit-scrollbar-thumb:horizontal:hover { background-color: var(--thumbnail-colour); }
     }
+
     &::-webkit-scrollbar-track {
       background: var(--track-colour);
       border-radius: 999px;
@@ -256,6 +266,11 @@
   text-decoration: none;
 }
 
+.ace-tm .ace_constant.ace_language {  /*  Escaped characters within quotes  */
+  color: var(--pri-colour-lightest);
+  background: unset;
+}
+
 /* Everything Above is Fixed */
 
 .ace-tm .ace_invisible {  /*  Unknown  */
@@ -271,11 +286,6 @@
 
 .ace-tm .ace_constant.ace_buildin {  /*  Unknown  */
   color: rgb(88, 72, 246);
-  background: orange;
-}
-
-.ace-tm .ace_constant.ace_language {  /*  Unknown  */
-  color: rgb(88, 92, 246);
   background: orange;
 }
 

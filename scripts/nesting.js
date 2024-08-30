@@ -1336,7 +1336,7 @@ body {
 
 function nestCode() {
 	let mainSection = document.getElementsByTagName('main')[0];
-	mainSection.classList.toggle('nesting');
+	if (!mainSection.classList.contains('nesting')) mainSection.classList.add('nesting');
 
 	const annotations = inputEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
 	if (annotations.length == 0) {

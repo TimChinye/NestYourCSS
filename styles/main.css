@@ -869,7 +869,7 @@ body {
 							
 							span { display: inline-block; }
 							
-							div > :is(div, span) {
+							div :is(> div, span) {
 								--charIndex: -4;
 								animation: slideInLines linear forwards;
 								animation-timeline: view();

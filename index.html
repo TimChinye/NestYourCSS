@@ -1,7 +1,9 @@
 <!--
-  Update quickly.nestyourcss.com to use the new background (with clip method)
+  Next up:
+  - List up all the settings that can be done quickly, and design the settings panel.
 
   To-do now:
+  - Update quickly.nestyourcss.com to use the new background (with clip method)
   - Style .ace_search
   - Area to drop in files
   - Ability to send a link of a CSS file
@@ -12,6 +14,7 @@
   - Send the Nested output to a raw file
   - Change indentation setting
   - Mention "it's recommended to use diff, and add in the old CSS selectors to the new" (because this tool also reformats your code and removes comments)
+  - Update the nesting functionality to fix cssSamples[0] - @page
 
   List of (potential) parts to add to the site:
   - History of all conversions to Nested CSS >> Auto-save every minute? Or just "Nest" button (probably both, but auto-save is toggleable)
@@ -20,14 +23,16 @@
   - Keyboard Shortcuts extension has a lot of useful stuff, will have to "re-develop" to: limit what features are possible and re-design.
   - Add a minimap, might have to DIY
   - Sticky Scroll - Official Ace Extensions (DIY)
-  - Add like a Table of Contents page, like Figma's Layers component
+  - Add like a Table of Contents page, like Figma's Layers component for all the nested selectors
   - Add an anti-adblock background, along with the border
 
   Later:
   - Full revamp
+  - Design the nesting editors, similar to Google Docs - centred editors (toolbar on the top)
+  - Making the nesting settings area have a fixed width and centre the editors within the nesting area
   - Implement locomotive scroll or some other momentum scroll plugin (https://github.com/locomotivemtl/locomotive-scroll)
   - Information on how to (manually) Nest your CSS
-  - Replace some of the changed, nested CSS with the original CSS (through AceDiff)
+  - Add AceDiff
   - Change modes from light to dark modes
   - Section input both HTML and CSS code and to display Nested CSS output
   - Allow comments >> Might require a code revamp
@@ -73,7 +78,10 @@
   </script>
   <div id="site-wrapper">
     <main>
-      <div id="main-content">
+      <aside id="main-settings">
+
+      </aside>
+      <section id="main-content">
         <article id="textSide">
           <header>
             <hgroup>
@@ -240,24 +248,42 @@
           </figure>
         </article>
         <article id="editorSide">
-          <button id="nestBtn">Nest!</button>
+          <button id="nestBtn" onclick="document.getElementsByTagName('main')[0].classList.add('nesting'), nestCode();">Nest!</button>
           <div id="code-editor">
             <div class="editor" id="inputEditor"></div>
+            <div id="editorGap"></div>
             <div class="editor" id="outputEditor"></div>
           </div>
           <script>
-            function createShadowEditors(inputEd) {
+            function createShadowEditors(inputEditor) {
+              let outputEditor = inputEditor.parentElement.lastElementChild;
+
               // Wrap editor
-              const inputEditor = document.getElementById('inputEditor');
 
-              const wrapperElement = document.createElement("div");
-              wrapperElement.id = inputEditor.id + "Wrapper";
-              wrapperElement.classList.add('editorWrapper');
+              [inputEditor, outputEditor].forEach((editor) => {
+                const wrapperElement = document.createElement("div");
+                wrapperElement.id = editor.id + "Wrapper";
+                wrapperElement.classList.add('editorWrapper');
 
-              inputEditor.replaceWith(wrapperElement);
-              inputEditor.classList.add('editor');
-              
-              wrapperElement.appendChild(inputEditor);
+                // Create the new elements to be added
+                const editorGroup = document.createElement("div");
+                editorGroup.classList.add('editorGroup');
+
+                const editorTab = document.createElement("div");
+                editorTab.classList.add('editorTab');
+                editorTab.textContent = editor.id.slice(0, -"Editor".length) + ".css";
+
+                // Replace the editor with the wrapper element
+                editor.replaceWith(wrapperElement);
+                editor.classList.add('editor');
+
+                // Append the editorTab and editor to the editorGroup
+                editorGroup.appendChild(editorTab);
+                editorGroup.appendChild(editor);
+
+                // Append the editorGroup to the wrapperElement
+                wrapperElement.appendChild(editorGroup);
+              });
 
               // Create the shadow editors
 
@@ -266,7 +292,7 @@
 
               const shadowWrapperElement = document.createElement("div");
               shadowWrapperElement.id = "shadowEditorsWrapper";
-              inputEditor.after(shadowWrapperElement);
+              inputEditor.parentElement.after(shadowWrapperElement);
 
               // Fill in the shadow editors
 
@@ -275,8 +301,18 @@
                 shadowEditor.className = inputEditor.className + " shadowEditor";
                 shadowEditor.innerHTML = inputEditor.innerHTML;
 
+                const shadowEditorTab = document.createElement("div");
+                shadowEditorTab.classList.add('editorTab');
+                shadowEditorTab.textContent = "input.css";
+
+                const shadowEditorGroup = document.createElement("div");
+                shadowEditorGroup.classList.add('editorGroup');
+                
+                shadowEditorGroup.prepend(shadowEditor);
+                shadowEditorGroup.prepend(shadowEditorTab);
+
                 shadowEditors.push(shadowEditor);
-                shadowWrapperElement.prepend(shadowEditor);
+                shadowWrapperElement.prepend(shadowEditorGroup);
               }
 
               // Resize and re-positions the shadow editors
@@ -294,11 +330,11 @@
 
                 const shadowEditorWrapper = document.createElement("div");
                 shadowEditorWrapper.classList.add("shadowEditorWrapper", "editorWrapper");
-                shadowEditor.replaceWith(shadowEditorWrapper);
-                shadowEditorWrapper.appendChild(shadowEditor);
+                shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
+                shadowEditorWrapper.appendChild(shadowEditor.parentElement);
 
                 let scaleValue = ((inputEditor.offsetHeight * 0.8) - (shadowHeightDiff * (editorIndex + 1))) / inputEditor.offsetHeight;
-                shadowEditor.style.transform = `scale(${scaleValue})`;
+                shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
 
                 let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (editorIndex + 1));
                 shadowEditorWrapper.style.width = shadowWidth + "px";
@@ -307,8 +343,10 @@
                 shadowEditorWrapper.style.translate = -previousShadowTranslation + "px";
 
                 shadowEditorWrapper.style.opacity = baseShadowOpacity - editorIndex / 10;
-                shadowEditor.style.filter = "blur(" + Math.pow(baseShadowBlur, editorIndex + 1) + "px)";
+                shadowEditor.parentElement.style.filter = "blur(" + Math.pow(baseShadowBlur, editorIndex + 1) + "px)";
                 shadowEditorWrapper.style.backgroundColor = `color-mix(in srgb, transparent ${100 - (2 - editorIndex)}%, white)`;
+
+                shadowEditor.previousElementSibling.style.width = getComputedStyle(shadowEditor).width;
               }
 
               let observer = new MutationObserver(() => {
@@ -327,7 +365,7 @@
             }
           </script>
         </article>
-      </div>
+      </section>
     </main>
     <article>
       <section id="reducingBoilerplateCode">
@@ -450,8 +488,8 @@
           splitText.addEventListener("animationstart", onFirstView);
         </script>
         <hgroup id="nesting-text">
-          <h1>Nest Your CSS</h1>
-          <p>Click anywhere to...</p>
+          <h1><a href="#">Nest Your CSS</a></h1>
+          <p><a href="#">Click anywhere to...</a></p>
         </hgroup>
         <p id="streching-text"><span>M</span><span>e</span><span>c</span><span>h</span><span>a</span><span>n</span><span>i</span><span>c</span><span>s</span>&nbsp;<span>o</span><span>f</span>&nbsp;<span>N</span><span>e</span><span>s</span><span>t</span><span>i</span><span>n</span><span>g</span></p>
         <button id="nycssLogoGroup" onclick="window.location.href='#'">
@@ -502,8 +540,8 @@
   <script>
     let editorId = 'code-editor';
     let sample;
-    // sample = cssSamples[0];
-    sample = cssSamples[21];
+    sample = cssSamples[1];
+    // sample = cssSamples[21];
     // sample = cssSamples.slice(0, 2).join('');
     // sample = cssSamples.join('');
 
@@ -513,9 +551,6 @@
     const outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
 
     let editors = [inputEditor, outputEditor];
-
-    // Click to Nest
-    document.getElementById('nestBtn').addEventListener('click', nestCode);
 
     // Auto Nest
     let codeChanged = false;

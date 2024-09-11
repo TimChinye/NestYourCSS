@@ -31,4 +31,4 @@ function safeStringify(obj) {
 }
 
 // Prevents chrome's console for logging references of arrays
-console.log = ((logFunc) => (...args) => logFunc(...args.map(arg => JSON.parse(safeStringify(arg)))))(console.log);
+console.logNow = ((logFunc) => (...args) => logFunc(...args.map(arg => JSON.parse(safeStringify(arg)))))(console.log);

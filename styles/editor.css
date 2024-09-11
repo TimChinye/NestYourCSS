@@ -8,18 +8,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
   
 .ace-tm.ace_editor {
+  --background-colour: color-mix(in srgb, var(--shades-darkest), transparent 75%);
   --window-text-colour: color-mix(in srgb, var(--shades-darker), transparent calc((1 - var(--opacity-medium)) * 100%));
-  --background-colour: #091F2A;
-  --background-colour: transparent;
-
   --code-text-colour: color-mix(in srgb, var(--shades-em-lighter), transparent calc((1 - var(--opacity-high)) * 100%));
   --code-selection-shadow-colour: color-mix(in srgb, var(--shades-darkest), transparent calc((1 - var(--opacity-low)) * 100%));
   --code-punctuation-colour: color-mix(in srgb, var(--shades-lightest), transparent calc((1 - var(--opacity-medium)) * 100%));
   --code-parenthesis-colour: color-mix(in srgb, var(--shades-em-lighter), transparent calc((1 - var(--opacity-medium)) * 100%));
   
-  border-radius: 1rem;
+  border-radius: 0 0 1rem 1rem;
   border: 0.25ch solid var(--window-text-colour);
-  background-color: color-mix(in srgb, var(--shades-darkest), transparent 75%);
+  background-color: var(--background-colour);
   color: var(--code-text-colour);
   
   font-family: "Fira Code", monospace;
@@ -42,12 +40,10 @@
 .ace-tm .ace_gutter-active-line {
   font-weight: bold;
   background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
-  /* background: color-mix(in srgb, var(--shades-darkest), transparent 75%); */
 }
 
 .ace-tm .ace_marker-layer .ace_active-line {
   background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
-  /* background: color-mix(in srgb, var(--shades-darkest), transparent 75%); */
 }
 
 .ace-tm .ace_scroller {
@@ -177,6 +173,9 @@
 }
 
 .ace_scrollbar {
+  --track-colour: var(--background-colour);
+  --thumbnail-colour: var(--sec-colour-darker);
+
   align-self: flex-end;
   margin: 8px;
 
@@ -185,9 +184,6 @@
     bottom: 0 !important;
     z-index: 7;
   }
-
-  --thumbnail-colour: var(--sec-colour-darker);
-  --track-colour: color-mix(in srgb, var(--shades-darkest), transparent 75%);
 
   /* Non-Standard Properties */
   @supports selector(::-webkit-scrollbar) {

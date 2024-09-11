@@ -196,11 +196,9 @@
 	to { translate: -0.96ch -0.31em; opacity: 1; }
 }
 
-@keyframes moveLeft {
-	from { translate: calc((((var(--total-width) - var(--editor-width)) / var(--total-width)) * 100%) - var(--padding)); }
-	to { translate: 0; margin-right: var(--padding); }
-	
-	/* Use margin */
+@keyframes moveLeft { /* width of an editor the gap */
+	from { translate: calc((((var(--editor-width) + var(--gutter-width)) / var(--total-width)) * 100%)); }
+	to { translate: 0; }
 }
 
 @keyframes shadowRotate {

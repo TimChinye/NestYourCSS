@@ -1,5 +1,5 @@
 :root {
-	--rem: clamp(0px, 1.5vh, 24px);
+	--rem: clamp(0px, 1.5dvh, 24px);
     font-size: var(--rem);
 
     --pri-colour-darkest: #051823;
@@ -39,11 +39,13 @@
     --opacity-high: 0.75;
 }
 
+/*
 @property --padding {
 	syntax: "<length>";
 	inherits: false;
-	initial-value: calc(2 * (clamp(0px, 1.5vh, 24px)));
+	initial-value: calc(2 * (clamp(0px, 1.5dvh, 24px)));
 }
+*/
 
 @property --icon-colour {
 	syntax: "<color>";
@@ -63,9 +65,9 @@ html {
 	scroll-behavior: smooth;
 }
 
-body {
+body {	
     margin: 0;
-    min-height: 100vh;
+    min-height: 100dvh;
     background: black;
 	--cursorHorizPosition: 50%;
 
@@ -76,40 +78,39 @@ body {
 
 		> main {
 			--padding: 2rem;
-			--background: url("https://i.imgur.com/kC3sNLv.png") 0 0.1vh / 5vh repeat,
-			linear-gradient(to right, #00000080, #09253380)
-				var(--padding) var(--padding) /
-				calc(100% - (var(--padding) * 2)) calc(100% - (var(--padding) * 2)),
-			linear-gradient(45deg, transparent, #1C4D6780 var(--cursorHorizPosition), transparent)
-				var(--padding) var(--padding) /
-				calc(100% - (var(--padding) * 2)) calc(100% - (var(--padding) * 2)),
-			black;
-			contain: content;
-			position: relative;
-			min-width: 100%;
-			height: 96vh;
-			width: fit-content;
+			display: flex;
+			justify-content: flex-end;
+			height: 96dvh;
+			width: 100%;
 			padding: var(--padding);
-			margin-left: auto;
-			background: var(--background);
-			background-clip: content-box;
-			border-radius: 3rem;
-			transform-origin: center;
-			animation: scaleDown linear both;
-			animation-timeline: view();
-			animation-range: contain 100% cover 100%;
+
+			> #main-settings {
+				margin-right: 0;
+				flex: 0;
+			}
 
 			> #main-content {
-				position: relative;
-				height: 100%;
-				width: 100%;
+				--background: url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
+				linear-gradient(to right, #00000080, #09253380),
+				linear-gradient(45deg, transparent, #1C4D6780 var(--cursorHorizPosition), transparent),
+				black;
+				contain: content;
 				display: flex;
 				justify-content: space-between;
+				min-width: 100%;
+				width: fit-content;
+				position: relative;
+				background: var(--background);
+				border-radius: 3rem;
+				transform-origin: center;
+				animation: scaleDown linear both;
+				animation-timeline: view();
+				animation-range: contain 100% cover 100%;
 				
-				> article#textSide {
+				> #textSide {
 					width: 100%;
 					height: 100%;
-					contain: content;
+					/* contain: content; */
 					display: flex;
 					flex-direction: column;
 					justify-content: space-between;
@@ -288,8 +289,14 @@ body {
 					}
 				}
 
-				> article#editorSide {
+				> #editorSide {
+					/* Editor Config */
+					--gutter-width: 0.5;
+					--editor-width: 5;
+					--total-width: calc(var(--editor-width) + var(--gutter-width) + var(--editor-width));
+
 					> #nestBtn {
+						opacity: 1;
 						position: absolute;
 						aspect-ratio: 1 / 1;
 						bottom: 2rem;
@@ -327,99 +334,150 @@ body {
 					}
  
 					> #code-editor {
-						--gutter-width: 0.5;
-						--editor-width: 5;
-						--total-width: calc(var(--gutter-width) + (2 * var(--editor-width)));
-						height: 100%;
 						display: flex;
+						height: 100%;
+						width: auto;
+
+						.editorTab {
+							--background-colour: color-mix(in srgb, var(--shades-darkest), transparent 75%);
+							--window-text-colour: color-mix(in srgb, var(--shades-darker), transparent calc((1 - var(--opacity-medium)) * 100%));
+							line-height: 100%;
+							align-content: center;
+							padding: 1em;
+							color: var(--window-text-colour);
+							font-family: "Fira Code", monospace;
+							border: 0.25ch solid var(--window-text-colour);
+							border-radius: 1rem 1rem 0 0;
+							border-bottom: none;
+							background-color: var(--background-colour);
+						}
 
 						.editor {
+							height: calc(100% - 3rem);
+							width: auto;
+							aspect-ratio: var(--editor-width) / 6.625;
+						}
+							
+						.editorGroup {
 							height: 100%;
-							aspect-ratio: var(--editor-width) / 7;
+							width: 100%;
+						}
+
+						.editorWrapper {
 						}
 					}
 				}
 			}
 
-			&:not(.nesting) > #main-content {
-				> article#textSide {
-
-				}
-				
-				> article#editorSide {
- 
-					> #code-editor {
-
-						.editor {
-							transform-origin: left;
-						}
-
-						.editorWrapper {
-							transition: 1s;
-							border-left: 1px solid #71717180;
+			&:not(.nesting) {
+				> #main-content {
+					gap: var(--padding);
+					
+					> #textSide {
 	
-							&#inputEditorWrapper {
-								padding: var(--padding);
-								padding-left: 0;
-								border-radius: 0 1rem 1rem 0;
-								border-color: #71717140;
-								background: color-mix(in srgb, white, transparent 97%);
+					}
+					
+					> #editorSide {
+	 
+						> #code-editor {
 	
-								> #inputEditor {
-									border: 0.25ch solid color-mix(in srgb, #717171, transparent 80%);
-								}
+							.editor {
+								transform-origin: left;
+							}
+							
+							.editorGroup {
+							}
+	
+							.editorWrapper {
+								transition: 1s;
+								border-left: 1px solid #71717180;
+		
+								&#inputEditorWrapper {
+									padding: var(--padding);
+									padding-left: 0;
+									border-radius: 0 1rem 1rem 0;
+									border-color: #71717140;
+									background: color-mix(in srgb, white, transparent 97%);
 
-								> #shadowEditorsWrapper {
-									height: calc(100% + (var(--padding) * 2));
-									translate: 0 calc(-100% + var(--padding));
-									pointer-events: none;
-									/* position: relative; */
-
-									> .shadowEditorWrapper {
-										overflow: hidden;
-										position: absolute;
-										height: 100%;
+									> .editorTab:has(+ #inputEditor),
+									> #inputEditor {
+										border-color: color-mix(in srgb, #717171, transparent 80%);
+									}
+	
+									> #shadowEditorsWrapper {
+										height: calc(100% + (var(--padding) * 2));
+										translate: 0 calc(-100% + var(--padding));
+										pointer-events: none;
+										/* position: relative; */
+	
+										> .shadowEditorWrapper {
+											overflow: hidden;
+											position: absolute;
+											height: 100%;
+										}
 									}
 								}
+		
+								&#outputEditorWrapper {
+									width: 0;
+									opacity: 0;
+								}
 							}
-						}
-	
-						#outputEditor {
-							display: none;
 						}
 					}
 				}
 			}
 
 			&.nesting {
-				min-width: 0%;
-				transition: min-width 5s;
+				height: 100dvh;
+				transition: height 1s;
+
+				& + article {
+					height: 0%;
+					visibility: hidden;
+					transition: height 0s 1s, visibility 0s 1s;
+				}
+
+				> #main-settings {
+					margin-right: var(--padding);
+					max-width: 25vw;
+					flex: 1;
+					transition: margin-right 2s;
+					border-radius: 3rem;
+					/* Primary text colour: hsl(200deg 40% 6.25%) */
+				}
 
 				> #main-content {
-					> article#textSide {
+					min-width: 0%;
+					transition: min-width 5s;
+
+					> #textSide {
+						width: 0%;
 						opacity: 0;
 						padding: 0;
 						transition: opacity 1s, padding 1s;
 						contain: size;
-						/* contain: size; */
 					}
 					
-					> article#editorSide {
-						margin-left: var(--padding);
-						height: 100%;
-						width: 100%;
-						display: flex;
-						flex-direction: row-reverse;
+					> #editorSide {
+						padding: var(--padding);
+
+						> #nestBtn {
+							opacity: 0;
+							pointer-events: none;
+							transition: opacity 1s, pointer-events 0s 1s;
+						}
  
-					> #code-editor {
-						height: calc(100% - (2 * var(--padding)));
-						animation: moveLeft 1s cubic-bezier(1, 0, 0.5, 1) both;
-						padding: var(--padding) 0;
-						box-sizing: content-box;
-						gap: calc((var(--gutter-width) / var(--total-width)) * 100%);
+						> #code-editor {
+							container-type: inline-size;
+							animation: moveLeft 2s cubic-bezier(1, 0, 0.5, 1) both;
+							/* animation-play-state: paused; */
+							height: 100%;
+							aspect-ratio: var(--total-width) / 7;
 
-							.editor {
-
+							#editorGap {
+								height: calc(100% - 3rem);
+								aspect-ratio: var(--gutter-width) / 6.625;
 							}
 
 							.editorWrapper {
@@ -437,6 +495,11 @@ body {
 										}
 									}
 								}
+		
+								&#outputEditorWrapper {
+									transition: opacity 2s;
+									opacity: 1;
+								}
 							}
 						}
 					}
@@ -446,6 +509,7 @@ body {
 		
 
 		> article {
+			height: 100%;
 			display: flex;
 			flex-direction: column;
 			gap: min(50dvh, 800px);
@@ -713,7 +777,7 @@ body {
 					> #grouped-text-wrapper {
 						width: fit-content;
 						position: absolute;
-						bottom: 25vh;
+						bottom: 25dvh;
 						left: 10vw;
 						z-index: 2;
 						
@@ -869,7 +933,7 @@ body {
 						&:not(.viewed) { /* check if hover-animation */
 							animation: viewed linear, revealText linear backwards;
 							animation-timeline: view(), view();
-							animation-range: contain calc(min(100vh, 1600px) - 10lh) cover, cover contain calc(min(100vh, 1600px) - 10lh);
+							animation-range: contain calc(min(100dvh, 1600px) - 10lh) cover, cover contain calc(min(100dvh, 1600px) - 10lh);
 						}
 			
 						&.viewed {
@@ -943,6 +1007,11 @@ body {
 							animation: fadeUp linear both;
 							animation-timeline: view();
 							animation-range: cover cover calc(1lh + 1.98em);
+						}
+
+						a {
+							color: unset;
+							text-decoration: unset;
 						}
 					}
 

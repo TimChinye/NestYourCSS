@@ -44,5 +44,3 @@ window.addEventListener('scroll', (e) => {
     updateLogoState();
   });
 });
-
-document.getElementById('nestBtn').addEventListener('click', nestCode);

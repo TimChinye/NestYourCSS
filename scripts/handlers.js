@@ -30,7 +30,6 @@ document.body.addEventListener('mousemove', (e) => {
     
     let nycssBadge = document.getElementById('nycssBadge');
     if (nycssBadge.className == 'hover-animation') {
-      console.log("test");
       debounce(moveCursorBackground, 100)();
     }
   });

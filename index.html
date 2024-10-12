@@ -1,61 +1,4 @@
-<!--
-  Next up:
-  - List up all the settings that can be done quickly, and design the settings panel.
-
-  To-do now:
-  - Update quickly.nestyourcss.com to use the new background (with clip method)
-  - Style .ace_search
-  - Area to drop in files
-  - Ability to send a link of a CSS file
-  - Button to clear the code (could just CTRL+A & Backspace)
-  - Show list of errors, and a button to jump to them
-  - Button to add samples of CSS
-  - Show the file size of both CSS outputs
-  - Send the Nested output to a raw file
-  - Change indentation setting
-  - Mention "it's recommended to use diff, and add in the old CSS selectors to the new" (because this tool also reformats your code and removes comments)
-  - Update the nesting functionality to fix cssSamples[0] - @page
-
-  List of (potential) parts to add to the site:
-  - History of all conversions to Nested CSS >> Auto-save every minute? Or just "Nest" button (probably both, but auto-save is toggleable)
-  - Button to use the previous selector instead (a.k.a. previous diff, but only for selectors)
-  - Paredit may be useful
-  - Keyboard Shortcuts extension has a lot of useful stuff, will have to "re-develop" to: limit what features are possible and re-design.
-  - Add a minimap, might have to DIY
-  - Sticky Scroll - Official Ace Extensions (DIY)
-  - Add like a Table of Contents page, like Figma's Layers component for all the nested selectors
-  - Add an anti-adblock background, along with the border
-
-  Later:
-  - Full revamp
-  - Design the nesting editors, similar to Google Docs - centred editors (toolbar on the top)
-  - Making the nesting settings area have a fixed width and centre the editors within the nesting area
-  - Implement locomotive scroll or some other momentum scroll plugin (https://github.com/locomotivemtl/locomotive-scroll)
-  - Information on how to (manually) Nest your CSS
-  - Add AceDiff
-  - Change modes from light to dark modes
-  - Section input both HTML and CSS code and to display Nested CSS output
-  - Allow comments >> Might require a code revamp
-  - Ability to nest multiple CSS files at the same time
-  - Option to allow emmet?
-
-  Code to go to specific line:
-    // Assuming 'editor' is your Ace Editor instance
-    var lineNumber = 10; // Replace with your desired line number
-
-    // Get the content of the line
-    var lineContent = editor.session.getLine(lineNumber - 1); // Ace Editor uses 0-based index
-
-    // Scroll to the line
-    editor.scrollToLine(lineNumber, true, true, function () {});
-
-    // Optionally, highlight the line
-    editor.gotoLine(lineNumber, 0, true);
-
-    console.log("Line Content: ", lineContent);
--->
-  
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -248,7 +191,7 @@
           </figure>
         </article>
         <article id="editorSide">
-          <button id="nestBtn" onclick="document.getElementsByTagName('main')[0].classList.add('nesting'), nestCode();">Nest!</button>
+          <button id="nestBtn" onclick="nestCode();">Nest!</button>
           <div id="code-editor">
             <div class="editor" id="inputEditor"></div>
             <div id="editorGap"></div>

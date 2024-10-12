@@ -1473,6 +1473,8 @@ body {
 ];
 
 function nestCode() {
+	(mainEl = document.querySelector('main')).classList.contains('nesting') || mainEl.classList.add('nesting');
+
 	const annotations = inputEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
 	if (annotations.length == 0) {
 		outputEditor.getSession().setValue(convertToNestedCSS(inputEditor.getValue()) || '/* Your output CSS will appear here */');

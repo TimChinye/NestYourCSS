@@ -1826,7 +1826,7 @@ function renestCSS(withHtml, cssProvided) {
 					// Check for hexadecimal Unicode code points
 					if (str.endsWith('\\')) return false; // A single backslash at the end is not valid
 					if (str.endsWith('\\0') || str.endsWith('\\00')) return true; // Null character escape
-					if (str.endsWith('\\\9') || str.endsWith('\\09')) return true; // Tab character escape
+					if (str.endsWith('\\9') || str.endsWith('\\09')) return true; // Tab character escape
 				
 					// Check for shorter escapes
 					const hexDigits = '0123456789abcdefABCDEF';

@@ -342,14 +342,45 @@ body {
 							--background-colour: color-mix(in srgb, var(--shades-darkest), transparent 75%);
 							--window-text-colour: color-mix(in srgb, var(--shades-darker), transparent calc((1 - var(--opacity-medium)) * 100%));
 							line-height: 100%;
-							align-content: center;
-							padding: 1em;
-							color: var(--window-text-colour);
+							color: rgb(from var(--shades-medium) r g b / 50%);
 							font-family: "Fira Code", monospace;
-							border: 0.25ch solid var(--window-text-colour);
+							border: 0.25rch solid var(--window-text-colour);
 							border-radius: 1rem 1rem 0 0;
 							border-bottom: none;
 							background-color: var(--background-colour);
+							display: flex;
+							justify-content: space-between;
+							padding: 0.75em !important;
+						
+							> .fileName {
+								font-size: 1rem;
+								align-content: center;
+							}
+						
+							> .tabButtons {
+								font-size: 0.5rem;
+								display: flex;
+								gap: 1em;
+						
+								> button {
+									font-size: inherit;
+									height: 4em;
+									width: 4em;
+									border: none;
+									border-radius: 50%;
+									background-color: transparent;
+									background-position: center;
+									background-size: cover;
+									filter: invert(0.4431);
+									opacity: var(--opacity-medium);
+									cursor: pointer;
+
+									&.tabCopyAll { background-image: url('../assets/images/icon-copy.svg') }
+									&.tabOpenRaw { background-image: url('../assets/images/icon-open-external.svg') }
+									&.tabInsertCSS { background-image: url('../assets/images/icon-add-file.svg') }
+									&.tabDeleteAll { background-image: url('../assets/images/icon-erase.svg') }
+								}
+							}
 						}
 
 						.editor {

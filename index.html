@@ -200,98 +200,126 @@
           <script>
             function createShadowEditors(inputEditor) {
               let outputEditor = inputEditor.parentElement.lastElementChild;
-
-              // Wrap editor
-
-              [inputEditor, outputEditor].forEach((editor) => {
-                const wrapperElement = document.createElement("div");
-                wrapperElement.id = editor.id + "Wrapper";
-                wrapperElement.classList.add('editorWrapper');
-
-                // Create the new elements to be added
-                const editorGroup = document.createElement("div");
-                editorGroup.classList.add('editorGroup');
-
+              const shadowCount = 3;
+          
+              function createButton(idSuffix, className) {
+                const button = document.createElement("button");
+                button.id = idSuffix;
+                button.classList.add(className);
+                return button;
+              }
+          
+              function createEditorTab(editor, isInputEditor) {
+                const editorName = editor.id.slice(0, -"Editor".length);
+          
                 const editorTab = document.createElement("div");
                 editorTab.classList.add('editorTab');
-                editorTab.textContent = editor.id.slice(0, -"Editor".length) + ".css";
-
-                // Replace the editor with the wrapper element
+          
+                const fileName = document.createElement("div");
+                fileName.classList.add('fileName');
+                fileName.textContent = `${editorName}.css`;
+          
+                const tabButtons = document.createElement("div");
+                tabButtons.classList.add('tabButtons');
+          
+                // Add buttons to the tab
+                tabButtons.appendChild(createButton(`${editorName}TabCopyAll`, 'tabCopyAll'));
+          
+                if (isInputEditor) {
+                  tabButtons.appendChild(createButton(`${editorName}TabInsertCSS`, 'tabInsertCSS'));
+                } else {
+                  tabButtons.appendChild(createButton(`${editorName}TabOpenRaw`, 'tabOpenRaw'));
+                }
+          
+                tabButtons.appendChild(createButton(`${editorName}TabDeleteAll`, 'tabDeleteAll'));
+          
+                // Add file name and buttons to the tab
+                editorTab.appendChild(fileName);
+                editorTab.appendChild(tabButtons);
+          
+                return editorTab;
+              }
+          
+              function wrapEditorWithGroup(editor, editorTab) {
+                const wrapperElement = document.createElement("div");
+                wrapperElement.id = `${editor.id}Wrapper`;
+                wrapperElement.classList.add('editorWrapper');
+          
+                const editorGroup = document.createElement("div");
+                editorGroup.classList.add('editorGroup');
+          
+                // Replace the editor with its wrapper
                 editor.replaceWith(wrapperElement);
                 editor.classList.add('editor');
-
-                // Append the editorTab and editor to the editorGroup
+          
+                // Append tab and editor to the group, then to the wrapper
                 editorGroup.appendChild(editorTab);
                 editorGroup.appendChild(editor);
-
-                // Append the editorGroup to the wrapperElement
                 wrapperElement.appendChild(editorGroup);
+              }
+          
+              // Wrap both input and output editors
+              [inputEditor, outputEditor].forEach((editor) => {
+                const editorTab = createEditorTab(editor, editor === inputEditor);
+                wrapEditorWithGroup(editor, editorTab);
               });
-
-              // Create the shadow editors
-
-              const shadowCount = 3;
-              const shadowEditors = [];
-
+          
+              // Shadow editor creation
               const shadowWrapperElement = document.createElement("div");
               shadowWrapperElement.id = "shadowEditorsWrapper";
               inputEditor.parentElement.after(shadowWrapperElement);
-
-              // Fill in the shadow editors
-
-              for (let i = 0; i < shadowCount; i++) {
+          
+              const shadowEditors = Array.from({ length: shadowCount }, (_, i) => {
                 const shadowEditor = document.createElement("div");
-                shadowEditor.className = inputEditor.className + " shadowEditor";
+                shadowEditor.className = `${inputEditor.className} shadowEditor`;
                 shadowEditor.innerHTML = inputEditor.innerHTML;
-
-                const shadowEditorTab = document.createElement("div");
-                shadowEditorTab.classList.add('editorTab');
-                shadowEditorTab.textContent = "input.css";
-
+          
+                const shadowEditorTab = createEditorTab(inputEditor, true);
                 const shadowEditorGroup = document.createElement("div");
                 shadowEditorGroup.classList.add('editorGroup');
-                
-                shadowEditorGroup.prepend(shadowEditor);
-                shadowEditorGroup.prepend(shadowEditorTab);
+          
+                shadowEditorGroup.appendChild(shadowEditorTab);
+                shadowEditorGroup.appendChild(shadowEditor);
+          
+                shadowWrapperElement.appendChild(shadowEditorGroup);
+                return shadowEditor;
+              });
+          
+              // Resize and reposition shadow editors
+              function styleShadowEditors() {
+                let baseShadowOpacity = 0.5;
+                let baseShadowBlur = 2;
+                let shadowHeightDiff = inputEditor.offsetHeight / 10;
+                let baseShadowWidth = inputEditor.offsetWidth / 3.75;
+                let shadowWidthDiff = baseShadowWidth / 15;
+                let previousShadowTranslation = 0;
+          
+                shadowEditors.forEach((shadowEditor, index) => {
+                  const shadowEditorWrapper = document.createElement("div");
+                  shadowEditorWrapper.classList.add("shadowEditorWrapper", "editorWrapper");
+                  shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
+                  shadowEditorWrapper.appendChild(shadowEditor.parentElement);
+          
+                  let scaleValue = ((inputEditor.offsetHeight * 0.8) - (shadowHeightDiff * (index + 1))) / inputEditor.offsetHeight;
+                  shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
+          
+                  let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (index + 1));
+                  shadowEditorWrapper.style.width = `${shadowWidth}px`;
+          
+                  previousShadowTranslation += shadowWidth + (2 * shadowWidthDiff);
+                  shadowEditorWrapper.style.translate = `-${previousShadowTranslation}px`;
+          
+                  shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
+                  shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;
+                  shadowEditorWrapper.style.backgroundColor = `color-mix(in srgb, transparent ${100 - (2 - index)}%, white)`;
 
-                shadowEditors.push(shadowEditor);
-                shadowWrapperElement.prepend(shadowEditorGroup);
+                  shadowEditorWrapper.getElementsByClassName('editorTab')[0].style.width = getComputedStyle(shadowEditor).width;
+                });
               }
-
-              // Resize and re-positions the shadow editors
-
-              let baseShadowOpacity = 0.5;
-              let baseShadowBlur = 2;
-              window.shadowHeightDiff = inputEditor.offsetHeight / 10;
-              let baseShadowWidth = inputEditor.offsetWidth / 3.75;
-              let shadowWidthDiff = baseShadowWidth / 15;
-              let previousShadowTranslation = 0;
-
-              for (editorIndex in shadowEditors) {
-                editorIndex = Number(editorIndex);
-                const shadowEditor = shadowEditors[editorIndex];
-
-                const shadowEditorWrapper = document.createElement("div");
-                shadowEditorWrapper.classList.add("shadowEditorWrapper", "editorWrapper");
-                shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
-                shadowEditorWrapper.appendChild(shadowEditor.parentElement);
-
-                let scaleValue = ((inputEditor.offsetHeight * 0.8) - (shadowHeightDiff * (editorIndex + 1))) / inputEditor.offsetHeight;
-                shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
-
-                let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (editorIndex + 1));
-                shadowEditorWrapper.style.width = shadowWidth + "px";
-
-                previousShadowTranslation += shadowWidth + (2 * shadowWidthDiff);
-                shadowEditorWrapper.style.translate = -previousShadowTranslation + "px";
-
-                shadowEditorWrapper.style.opacity = baseShadowOpacity - editorIndex / 10;
-                shadowEditor.parentElement.style.filter = "blur(" + Math.pow(baseShadowBlur, editorIndex + 1) + "px)";
-                shadowEditorWrapper.style.backgroundColor = `color-mix(in srgb, transparent ${100 - (2 - editorIndex)}%, white)`;
-
-                shadowEditor.previousElementSibling.style.width = getComputedStyle(shadowEditor).width;
-              }
-
+          
+              styleShadowEditors();
+          
+              // Observer to update shadow editors
               let observer = new MutationObserver(() => {
                 requestAnimationFrame(() => {
                   shadowEditors.forEach((shadowEditor) => {
@@ -299,7 +327,7 @@
                   });
                 });
               });
-
+          
               observer.observe(inputEditor, {
                 childList: true,
                 subtree: true,

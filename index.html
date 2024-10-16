@@ -330,7 +330,7 @@
           
                   shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
                   shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;
-                  shadowEditorWrapper.style.backgroundColor = `color-mix(in srgb, transparent ${100 - (2 - index)}%, white)`;
+                  shadowEditorWrapper.style.backgroundColor = `rgb(from white r g b / ${(2 - index)}%)`;
 
                   shadowEditorWrapper.getElementsByClassName('editorTab')[0].style.width = getComputedStyle(shadowEditor).width;
                 });

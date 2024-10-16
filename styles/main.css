@@ -332,8 +332,8 @@ body {
 						}
 
 						.editorTab {
-							--background-colour: color-mix(in srgb, var(--shades-darkest), transparent 75%);
-							--window-text-colour: color-mix(in srgb, var(--shades-darker), transparent calc((1 - var(--opacity-medium)) * 100%));
+							--background-colour: rgb(from var(--shades-darkest) r g b / 0.25);
+							--window-text-colour: rgb(from var(--shades-darker) r g b / var(--opacity-medium));
 							line-height: 100%;
 							color: rgb(from var(--shades-medium) r g b / 50%);
 							font-family: "Fira Code", monospace;
@@ -402,12 +402,7 @@ body {
 								padding-left: 0;
 								border-radius: 0 1rem 1rem 0;
 								border-color: #71717140;
-								background: color-mix(in srgb, white, transparent 97%);
-
-								> .editorTab:has(+ #inputEditor),
-								> #inputEditor {
-									border-color: color-mix(in srgb, #717171, transparent 80%);
-								}
+								background: rgb(from white r g b / 3%);
 
 								> #shadowEditorsWrapper {
 									height: calc(100% + (var(--padding) * 2));
@@ -897,7 +892,7 @@ body {
 						pointer-events: none;
 						position: absolute;
 						z-index: 999;
-						background-color: color-mix(in srgb, var(--pri-colour-lightest), transparent 25%);
+						background-color: rgb(from var(--pri-colour-lightest) r g b / 0.25);
 						border-radius: 50%;
 						aspect-ratio: 1 / 1;
 						font-size: 10rem;

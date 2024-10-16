@@ -8,12 +8,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
   
 .ace-tm.ace_editor {
-  --background-colour: color-mix(in srgb, var(--shades-darkest), transparent 75%);
-  --window-text-colour: color-mix(in srgb, var(--shades-darker), transparent calc((1 - var(--opacity-medium)) * 100%));
-  --code-text-colour: color-mix(in srgb, var(--shades-em-lighter), transparent calc((1 - var(--opacity-high)) * 100%));
-  --code-selection-shadow-colour: color-mix(in srgb, var(--shades-darkest), transparent calc((1 - var(--opacity-low)) * 100%));
-  --code-punctuation-colour: color-mix(in srgb, var(--shades-lightest), transparent calc((1 - var(--opacity-medium)) * 100%));
-  --code-parenthesis-colour: color-mix(in srgb, var(--shades-em-lighter), transparent calc((1 - var(--opacity-medium)) * 100%));
+  --background-colour: rgb(from var(--shades-darkest) r g b / var(--opacity-low));
+  --window-text-colour: rgb(from var(--shades-darker) r g b / var(--opacity-medium));
+  --code-text-colour: rgb(from var(--shades-em-lighter) r g b / var(--opacity-high));
+  --code-selection-shadow-colour: rgb(from var(--shades-darkest) r g b / var(--opacity-low));
+  --code-punctuation-colour: rgb(from var(--shades-lightest) r g b / var(--opacity-medium));
+  --code-parenthesis-colour: rgb(from var(--shades-em-lighter) r g b / var(--opacity-medium));
   
   border-radius: 0 0 1rem 1rem;
   border: 0.25rch solid var(--window-text-colour);
@@ -39,11 +39,11 @@
 
 .ace-tm .ace_gutter-active-line {
   font-weight: bold;
-  background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
+  background: rgb(from color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)) r g b / 0.5);
 }
 
 .ace-tm .ace_marker-layer .ace_active-line {
-  background: color-mix(in srgb, color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)), transparent);
+  background: rgb(from color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)) r g b / 0.5);
 }
 
 .ace-tm .ace_scroller {
@@ -126,8 +126,7 @@
 
   &.ace_multiselect .ace_selection.ace_start,
   .ace_marker-layer .ace_selection {
-    background: color-mix(in srgb, var(--pri-colour-m-darker), transparent);
-    /* background: color-mix(in srgb, var(--pri-colour-em-darker), transparent); */
+    background: rgb(from var(--pri-colour-m-darker) r g b / 0.5);
     box-shadow: 0px 0px 0px 8px var(--code-selection-shadow-colour);
     clip-path: inset(0 0 -20px 0px);
   }
@@ -147,7 +146,7 @@
 
 .ace-tm .ace_indent-guide {
   background: none;
-  border-right: 1px solid color-mix(in srgb, var(--code-parenthesis-colour), transparent 50%);
+  border-right: 1px solid rgb(from var(--code-parenthesis-colour) r g b / 0.5);
   /* border: none; */
 }
 
@@ -158,18 +157,18 @@
 .ace-tm :is(.language_highlight_text, .language_highlight_read, .language_highlight_write) {
   border: none;
   --highlight-colour: var(--sec-colour-m-darker);
-  background: color-mix(in srgb, var(--highlight-colour), transparent 50%);
+  background: rgb(from var(--highlight-colour) r g b / 0.5);
   box-shadow: 0px 0px 8px 0px var(--highlight-colour);
   clip-path: inset(-8px 0);
   z-index: 7;
 }
 
 .ace-tm .language_highlight_write {
-  --highlight-colour: color-mix(in srgb, var(--shades-medium), transparent 75%);
+  --highlight-colour: rgb(from var(--shades-medium) r g b / 0.25);
 }
 
 .ace-tm .ace_highlight-marker {
-  background-color: color-mix(in srgb, var(--shades-medium), transparent 75%);
+  background-color: rgb(from var(--shades-medium) r g b / 0.25);
 }
 
 .ace_scrollbar {
@@ -220,13 +219,13 @@
 }
 
 .ace-tm .ace_invalid {  /*  <no-width space>  */
-  background-color: color-mix(in srgb, var(--red-colour-darkest), transparent) !important;
+  background-color: rgb(from var(--red-colour-darkest) r g b / 0.5) !important;
   color: var(--red-colour-medium) !important;
 }
 
 .ace-tm.ace_tooltip {
   padding: 1rem;
-  background-color: color-mix(in srgb, var(--pri-colour-em-darker), transparent 10%);
+  background-color: rgb(from var(--pri-colour-em-darker) r g b / 0.9);
   border: 1px solid var(--pri-colour-m-darker);
   border-radius: 8px;
   color: var(--shades-lighter);

@@ -8,6 +8,7 @@
   
   <script src="./lib/ace.min.js"></script>
   
+  <link href="./styles/properties.css" rel="stylesheet">
   <link href="./styles/keyframes.css" rel="stylesheet">
   <link href="./styles/editor.css" rel="stylesheet">
   <link href="./styles/fonts.css" rel="stylesheet">
@@ -198,18 +199,19 @@
             <div class="editor" id="outputEditor"></div>
           </div>
           <script>
-            function createShadowEditors(inputEditor) {
+            function setupEditors(inputEditor) {
               let outputEditor = inputEditor.parentElement.lastElementChild;
               const shadowCount = 3;
           
-              function createButton(idSuffix, className) {
+              function createButton(idSuffix, className, isShadowEditor) {
                 const button = document.createElement("button");
                 button.id = idSuffix;
                 button.classList.add(className);
+                if (!isShadowEditor) button.addEventListener("click", tabButtonHandler);
                 return button;
               }
           
-              function createEditorTab(editor, isInputEditor) {
+              function createEditorTab(editor, isInputEditor, isShadowEditor) {
                 const editorName = editor.id.slice(0, -"Editor".length);
           
                 const editorTab = document.createElement("div");
@@ -223,15 +225,32 @@
                 tabButtons.classList.add('tabButtons');
           
                 // Add buttons to the tab
-                tabButtons.appendChild(createButton(`${editorName}TabCopyAll`, 'tabCopyAll'));
+                tabButtons.appendChild(createButton(`${editorName}TabCopyAll`, 'tabCopyAll', isShadowEditor));
           
                 if (isInputEditor) {
-                  tabButtons.appendChild(createButton(`${editorName}TabInsertCSS`, 'tabInsertCSS'));
+                  if (!isShadowEditor) {
+                    let fileReader = new FileReader();
+                    let fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = ".css";
+
+                    // Set up an event listener for file selection
+                    fileInput.addEventListener("change", (event) => {
+                      if (file = event.target.files[0]) {
+                        fileReader.onload = (e) => window.inputEditor.setValue(e.target.result);
+                        fileReader.readAsText(file);
+                      };
+                    });
+                    
+                    window.insertCSSFileInput = fileInput;
+                  }
+                  
+                  tabButtons.appendChild(createButton(`${editorName}TabInsertCSS`, 'tabInsertCSS', isShadowEditor));
                 } else {
-                  tabButtons.appendChild(createButton(`${editorName}TabOpenRaw`, 'tabOpenRaw'));
+                  tabButtons.appendChild(createButton(`${editorName}TabOpenRaw`, 'tabOpenRaw', isShadowEditor));
                 }
           
-                tabButtons.appendChild(createButton(`${editorName}TabDeleteAll`, 'tabDeleteAll'));
+                tabButtons.appendChild(createButton(`${editorName}TabDeleteAll`, 'tabDeleteAll', isShadowEditor));
           
                 // Add file name and buttons to the tab
                 editorTab.appendChild(fileName);
@@ -260,7 +279,7 @@
           
               // Wrap both input and output editors
               [inputEditor, outputEditor].forEach((editor) => {
-                const editorTab = createEditorTab(editor, editor === inputEditor);
+                const editorTab = createEditorTab(editor, editor === inputEditor, false);
                 wrapEditorWithGroup(editor, editorTab);
               });
           
@@ -270,15 +289,15 @@
               inputEditor.parentElement.after(shadowWrapperElement);
           
               const shadowEditors = Array.from({ length: shadowCount }, (_, i) => {
-                const shadowEditor = document.createElement("div");
-                shadowEditor.className = `${inputEditor.className} shadowEditor`;
-                shadowEditor.innerHTML = inputEditor.innerHTML;
-          
-                const shadowEditorTab = createEditorTab(inputEditor, true);
                 const shadowEditorGroup = document.createElement("div");
                 shadowEditorGroup.classList.add('editorGroup');
           
+                const shadowEditorTab = createEditorTab(inputEditor, true, true);
                 shadowEditorGroup.appendChild(shadowEditorTab);
+
+                const shadowEditor = document.createElement("div");
+                shadowEditor.className = `${inputEditor.className} shadowEditor`;
+                shadowEditor.innerHTML = inputEditor.innerHTML;
                 shadowEditorGroup.appendChild(shadowEditor);
           
                 shadowWrapperElement.appendChild(shadowEditorGroup);
@@ -518,8 +537,8 @@
 
     const provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
 
-    const inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
-    const outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
+    window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
+    window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
 
     let editors = [inputEditor, outputEditor];
 
@@ -558,7 +577,7 @@
       return editor;
     }
     
-    createShadowEditors(inputEditor.container);
+    setupEditors(inputEditor.container);
   </script>
 </body>
 </html>

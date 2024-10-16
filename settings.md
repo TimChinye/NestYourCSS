@@ -1,9 +1,3 @@
-Tab:
-- Clear Button
-- Input field to allow links of CSS files and browse button + drag n drop for files (only for input.css)
-- Send output.css to raw file
-- Copy all
-
 Settings Panel:
 - Indentation input field
 - Show file size checkbox

@@ -39,20 +39,6 @@
     --opacity-high: 0.75;
 }
 
-/*
-@property --padding {
-	syntax: "<length>";
-	inherits: false;
-	initial-value: calc(2 * (clamp(0px, 1.5dvh, 24px)));
-}
-*/
-
-@property --icon-colour {
-	syntax: "<color>";
-	inherits: false;
-	initial-value: transparent;
-}
-
 * {
 	box-sizing: border-box;
 }
@@ -110,7 +96,6 @@ body {
 				> #textSide {
 					width: 100%;
 					height: 100%;
-					/* contain: content; */
 					display: flex;
 					flex-direction: column;
 					justify-content: space-between;
@@ -165,7 +150,6 @@ body {
 								border: none;
 								background: radial-gradient(circle at 1.5em, transparent calc(1.5em - 0.125em), var(--icon-colour) 0, var(--icon-colour) 100%);
 								border-radius: 999px;
-								position: relative;
 								transition: --icon-colour 0s 1s;
 	
 								> a {
@@ -199,18 +183,6 @@ body {
 										}
 									}
 								}
-								
-								&:hover > svg > path {
-									transition: 0.5s 0s;
-									
-									&:first-child {
-										--icon-colour: transparent;
-									}
-							
-									&:last-child {
-										--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, #D9D9D9);
-									}
-								}
 							
 								> span {
 									flex: 1;
@@ -232,7 +204,19 @@ body {
 									cursor: pointer;
 									--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, #D9D9D9);
 									transition: --icon-colour 0.5s;
-								
+
+									> svg > path {
+									transition: 0.5s 0s;
+									
+									&:first-child {
+										--icon-colour: transparent;
+									}
+							
+									&:last-child {
+										--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, #D9D9D9);
+										}
+									}
+
 									> span {
 										translate: 1ch 0;
 										font-size: unset;
@@ -310,19 +294,17 @@ body {
 						border-radius: 50%;
 						font-size: 0.75rem;
 						font-weight: bold;
-						background-color: #FFFFFF80;
+						background-color: #a6d7f3;
+						transform-origin: bottom right;
 						transition: 0.5s, --color1 0s, --color2 0s, --color3 0s;
 						animation: shadowRotate 3s infinite both;
 						animation-composition: add;
-					
-						/* All 3 colours below, combined, lightened */
-						background-color: #a6d7f3;
 						box-shadow: inset 0 0 0.5em 0 #000000;
 					
 						&:hover {
 							/* The undefined '--animationControls' prevents the box-shadow from showing initially. Fixing the error during runtime makes the box-shadow appear without resetting the animation. */
 							--animationControls: 0 0 black;
-							font-size: 1rem;
+							transform: scale(1.333);
 							background-color: #FFFFFF;
 							transition: 0.5s, --color1 2s, --color2 2s, --color3 2s;
 							
@@ -338,6 +320,17 @@ body {
 						height: 100%;
 						width: auto;
 
+						.editorWrapper:has(button:active) {
+							--onClickValue1: 0.75;
+							--opacity-medium: var(--onClickValue2, unset);
+							animation: onClick 1s;
+						}
+							
+						.editorGroup {
+							height: 100%;
+							width: 100%;
+						}
+
 						.editorTab {
 							--background-colour: color-mix(in srgb, var(--shades-darkest), transparent 75%);
 							--window-text-colour: color-mix(in srgb, var(--shades-darker), transparent calc((1 - var(--opacity-medium)) * 100%));
@@ -350,7 +343,7 @@ body {
 							background-color: var(--background-colour);
 							display: flex;
 							justify-content: space-between;
-							padding: 0.75em !important;
+							padding: 0.75rem !important;
 						
 							> .fileName {
 								font-size: 1rem;
@@ -384,17 +377,12 @@ body {
 						}
 
 						.editor {
-							height: calc(100% - 3rem);
+							/* height: calc(100% - (editorTab's total height) */
+							/* height: calc(100% - (<editorTab's "padding-block"> + <height of buttons>) */
+							/* height: calc(100% - ((2 * 0.75rem) + 2rem)); */
+							height: calc(100% - 3.5rem);
 							width: auto;
 							aspect-ratio: var(--editor-width) / 6.625;
-						}
-							
-						.editorGroup {
-							height: 100%;
-							width: 100%;
-						}
-
-						.editorWrapper {
 						}
 					}
 				}
@@ -404,56 +392,45 @@ body {
 				> #main-content {
 					gap: var(--padding);
 					
-					> #textSide {
-	
-					}
-					
-					> #editorSide {
-	 
-						> #code-editor {
-	
-							.editor {
-								transform-origin: left;
-							}
-							
-							.editorGroup {
-							}
-	
-							.editorWrapper {
-								transition: 1s;
-								border-left: 1px solid #71717180;
-		
-								&#inputEditorWrapper {
-									padding: var(--padding);
-									padding-left: 0;
-									border-radius: 0 1rem 1rem 0;
-									border-color: #71717140;
-									background: color-mix(in srgb, white, transparent 97%);
+					> #editorSide > #code-editor {
+						.editorWrapper {
+							transition: 1s;
+							border-left: 1px solid #71717180;
 
-									> .editorTab:has(+ #inputEditor),
-									> #inputEditor {
-										border-color: color-mix(in srgb, #717171, transparent 80%);
-									}
-	
-									> #shadowEditorsWrapper {
-										height: calc(100% + (var(--padding) * 2));
-										translate: 0 calc(-100% + var(--padding));
-										pointer-events: none;
-										/* position: relative; */
-	
-										> .shadowEditorWrapper {
-											overflow: hidden;
-											position: absolute;
-											height: 100%;
-										}
-									}
+							&#inputEditorWrapper {
+								padding: var(--padding);
+								padding-left: 0;
+								border-radius: 0 1rem 1rem 0;
+								border-color: #71717140;
+								background: color-mix(in srgb, white, transparent 97%);
+
+								> .editorTab:has(+ #inputEditor),
+								> #inputEditor {
+									border-color: color-mix(in srgb, #717171, transparent 80%);
 								}
-		
-								&#outputEditorWrapper {
-									width: 0;
-									opacity: 0;
+
+								> #shadowEditorsWrapper {
+									height: calc(100% + (var(--padding) * 2));
+									translate: 0 calc(-100% + var(--padding));
+									pointer-events: none;
+									/* position: relative; */
+
+									> .shadowEditorWrapper {
+										overflow: hidden;
+										position: absolute;
+										height: 100%;
+									}
 								}
 							}
+
+							&#outputEditorWrapper {
+								width: 0;
+								opacity: 0;
+							}
+						}
+
+						.editor {
+							transform-origin: left;
 						}
 					}
 				}
@@ -465,8 +442,8 @@ body {
 
 				& + article {
 					height: 0%;
-					visibility: hidden;
-					transition: height 0s 1s, visibility 0s 1s;
+					opacity: 0;
+					transition: height 0s 1s, opacity 1s 1s;
 				}
 
 				> #main-settings {
@@ -486,7 +463,7 @@ body {
 						width: 0%;
 						opacity: 0;
 						padding: 0;
-						transition: opacity 1s, padding 1s;
+						transition: width, 1s, opacity 1s, padding 1s;
 						contain: size;
 					}
 					
@@ -502,7 +479,6 @@ body {
 						> #code-editor {
 							container-type: inline-size;
 							animation: moveLeft 2s cubic-bezier(1, 0, 0.5, 1) both;
-							/* animation-play-state: paused; */
 							height: 100%;
 							aspect-ratio: var(--total-width) / 7;
 
@@ -512,19 +488,9 @@ body {
 							}
 
 							.editorWrapper {
-
-								&#inputEditorWrapper {
-
-									> #inputEditor {
-									}
-
-									> #shadowEditorsWrapper {
-
-										> .shadowEditorWrapper {
-											translate: 0 !important;
-											opacity: 0 !important;
-										}
-									}
+								&#inputEditorWrapper > #shadowEditorsWrapper > .shadowEditorWrapper {
+									translate: 0 !important;
+									opacity: 0 !important;
 								}
 		
 								&#outputEditorWrapper {
@@ -537,7 +503,6 @@ body {
 				}
 			}
 		}
-		
 
 		> article {
 			height: 100%;
@@ -616,26 +581,26 @@ body {
 						text-shadow: 0 -1lh;
 						animation: swapText linear;
 						animation-timeline: view();
-						}
 						
-						> span:nth-child(1) {
+							&:nth-child(1) {
 							margin-left: 0.5ch;
-							text-align: left;
-							animation-range-start: -0.5lh;
-							animation-range-end: 5lh;
-						}
+								text-align: left;
+								animation-range-start: -0.5lh;
+								animation-range-end: 5lh;
+							}
 					
-						> span:nth-child(2) {
-							text-align: center;
-							animation-range-start: 0lh;
-							animation-range-end: 4lh;
-						}
+							&:nth-child(2) {
+								text-align: center;
+								animation-range-start: 0lh;
+								animation-range-end: 4lh;
+							}
 					
-						> span:nth-child(3) {
-							margin-right: 0.5ch;
-							text-align: right;
-							animation-range-start: 0.5lh;
-							animation-range-end: 3lh;
+							&:nth-child(3) {
+								margin-right: 0.5ch;
+								text-align: right;
+								animation-range-start: 0.5lh;
+								animation-range-end: 3lh;
+							}
 						}
 					}
 				}
@@ -714,12 +679,12 @@ body {
 								animation: strikethrough 2.5s infinite var(--animation-delay);
 								animation-timing-function: linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%);
 							}
-						}
 						
-						s + b {
-							text-decoration: none;
-							font-weight: bold;
-							color: #77C37A;
+							+ b {
+								text-decoration: none;
+								font-weight: bold;
+								color: #77C37A;
+							}
 						}
 					}
 				}
@@ -832,7 +797,6 @@ body {
 								left: 0;
 								position: absolute;
 								z-index: -1;
-								
 								animation: changeCard 10s linear infinite 5s;
 							}
 						}

@@ -10,14 +10,16 @@
     --pri-colour-lighter: #98d7fc;
     --pri-colour-lightest: #bde4fc;
 
-    --sec-colour-darkest: #00272b;
+    --sec-colour-darkest: #001a1d;
+    --sec-colour-em-darker: #00272b;
     --sec-colour-m-darker: #015259;
     --sec-colour-darker: #02818b;
     --sec-colour-medium: #03c4d4;
     --sec-colour-lighter: #8adee7;
     --sec-colour-lightest: #b6e9ee;
 
-    --red-colour-darkest: #33191b;
+    --red-colour-darkest: #230f11;
+    --red-colour-em-darker: #33191b;
     --red-colour-m-darker: #67383c;
     --red-colour-darker: #a15a60;
     --red-colour-medium: #f48a94;
@@ -30,8 +32,8 @@
     --shades-darker: #717171;
     --shades-medium: #aeaeae;
     --shades-lighter: #cecece;
-    --shades-em-lighter: #dedede;
-    --shades-lightest: #ffffff;
+    --shades-lightest: #dedede;
+    --shades-white: #ffffff;
     
     --opacity-none: 0;
     --opacity-low: 0.25;

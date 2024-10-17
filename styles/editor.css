@@ -10,10 +10,10 @@
 .ace-tm.ace_editor {
   --background-colour: rgb(from var(--shades-darkest) r g b / var(--opacity-low));
   --window-text-colour: rgb(from var(--shades-darker) r g b / var(--opacity-medium));
-  --code-text-colour: rgb(from var(--shades-em-lighter) r g b / var(--opacity-high));
+  --code-text-colour: rgb(from var(--shades-lightest) r g b / var(--opacity-high));
   --code-selection-shadow-colour: rgb(from var(--shades-darkest) r g b / var(--opacity-low));
-  --code-punctuation-colour: rgb(from var(--shades-lightest) r g b / var(--opacity-medium));
-  --code-parenthesis-colour: rgb(from var(--shades-em-lighter) r g b / var(--opacity-medium));
+  --code-punctuation-colour: rgb(from var(--shades-white) r g b / var(--opacity-medium));
+  --code-parenthesis-colour: rgb(from var(--shades-lightest) r g b / var(--opacity-medium));
   
   border-radius: 0 0 1rem 1rem;
   border: 0.25rch solid var(--window-text-colour);
@@ -264,6 +264,62 @@
 .ace-tm .ace_constant.ace_language {  /*  Escaped characters within quotes  */
   color: var(--pri-colour-lightest);
   background: unset;
+}
+
+.ace-tm .ace_search {
+  background-color: var(--pri-colour-darkest);
+  border-color: var(--window-text-colour);
+  color: var(--code-text-colour);
+}
+
+.ace-tm :is(.ace_search_field, .ace_searchbtn) {
+  background-color: var(--pri-colour-em-darker);
+  border: none;
+  color: var(--shades-darker);
+
+  &:hover {
+    color: var(--shades-medium);
+  }
+}
+
+.ace-tm .ace_button {
+  padding-inline: 4px;
+  border: none;
+  color: var(--pri-colour-darker);
+
+  &:hover {
+    background-color: var(--pri-colour-em-darker);
+  }
+}
+
+.ace-tm .ace_searchbtn {
+  &::after {
+    border-color: currentColor;
+    margin-bottom: 1px;
+  }
+
+  &.prev::after {
+    border-width: 1px 0 0 1px;
+  }
+
+  &.next::after {
+    border-width: 0 1px 1px 0;
+  }
+}
+
+.ace-tm .ace_search_counter {
+  color: var(--sec-colour-m-darker);
+}
+
+.ace-tm .ace_searchbtn_close {
+  background-color: var(--pri-colour-em-darker);
+  translate: 50% -50%;
+  top: calc((2.09rem / 2) + 4px);
+  right: calc(26px / 2);
+}
+
+.ace-tm .ace_search_form.ace_nomatch {
+  outline-color: var(--red-colour-m-darker);
 }
 
 /* Everything Above is Fixed */

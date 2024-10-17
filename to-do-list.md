@@ -1,11 +1,9 @@
 # To-do List
 
 ## Next up:
-- List up all the settings that can be done quickly, and design the settings panel.
+- Update quickly.nestyourcss.com to use the new background (with clip method)
 
 ## To-do now:
-- Update quickly.nestyourcss.com to use the new background (with clip method)
-- Style `.ace_search`
 - Add area to drop in files
 - Implement ability to send a link of a CSS file
 - Add button to clear the code (could just use `CTRL+A & Backspace`)
@@ -14,6 +12,7 @@
 - Show the file size of both CSS outputs
 - Send the Nested output to a raw file
 - Change indentation setting
+- List up all the settings that can be done quickly, and design the settings panel.
 - Mention it's recommended to use `diff` and add in the old CSS selectors to the new (since this tool also reformats code and removes comments)
 - Update the nesting functionality to fix `cssSamples[0]` – `@page`
 

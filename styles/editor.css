@@ -17,16 +17,13 @@
   --code-punctuation-colour: color-mix(in srgb, var(--shades-lightest), transparent calc((1 - var(--opacity-medium)) * 100%));
   --code-parenthesis-colour: color-mix(in srgb, var(--shades-em-lighter), transparent calc((1 - var(--opacity-medium)) * 100%));
   
-  border-radius: 1rem;
+  border-radius: 0 0 1rem 1rem;
   border: 0.25ch solid var(--window-text-colour);
   background-color: color-mix(in srgb, var(--shades-darkest), transparent 75%);
   color: var(--code-text-colour);
   
   font-family: "Fira Code", monospace;
   font-size: 1.1rem;
-  
-  height: 100%;
-  aspect-ratio: var(--editor-width) / 7;
 }
 
 .ace-tm .ace_gutter {

@@ -106,6 +106,10 @@ body {
                 --opacity-medium: var(--onClickValue2, unset);
                 animation: onClick 1s;
             }
+
+            &:has(#inputEditor.drag-hover) {
+                --opacity-medium: 0.75;
+            }
         }
 
         .editorTab {

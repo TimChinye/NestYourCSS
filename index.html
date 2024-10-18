@@ -241,6 +241,9 @@
                         fileReader.readAsText(file);
                       };
                     });
+
+                    // Add event listeners for drag-and-drop functionality
+                    setupDragAndDrop(editor);
                     
                     window.insertCSSFileInput = fileInput;
                   }

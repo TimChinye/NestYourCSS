@@ -321,16 +321,20 @@ body {
 						display: flex;
 						height: 100%;
 						width: auto;
-
-						.editorWrapper:has(button:active) {
-							--onClickValue1: 0.75;
-							--opacity-medium: var(--onClickValue2, unset);
-							animation: onClick 1s;
-						}
 							
 						.editorGroup {
 							height: 100%;
 							width: 100%;
+
+                            &:has(button:active) {
+                                --onClickValue1: 0.75;
+                                --opacity-medium: var(--onClickValue2, unset);
+                                animation: onClick 1s;
+                            }
+
+                            &:has(#inputEditor.drag-hover) {
+                                --opacity-medium: 0.75;
+                            }
 						}
 
 						.editorTab {

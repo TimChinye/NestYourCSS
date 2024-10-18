@@ -1,20 +1,16 @@
 # To-do List
 
 ## Next up:
-- Update quickly.nestyourcss.com to use the new background (with clip method)
 
 ## To-do now:
-- Add area to drop in files
-- Implement ability to send a link of a CSS file
-- Add button to clear the code (could just use `CTRL+A & Backspace`)
-- Show list of errors, and a button to jump to them
-- Add button to include samples of CSS
-- Show the file size of both CSS outputs
-- Send the Nested output to a raw file
-- Change indentation setting
-- List up all the settings that can be done quickly, and design the settings panel.
-- Mention it's recommended to use `diff` and add in the old CSS selectors to the new (since this tool also reformats code and removes comments)
 - Update the nesting functionality to fix `cssSamples[0]` – `@page`
+- List up all the settings that can be done quickly, and design the settings panel.
+- Change indentation setting
+- Show the file size of both CSS outputs
+- Add button to include samples of CSS
+- Show list of errors, and a button to jump to them
+- Implement ability to send a link of a CSS file
+- Mention it's recommended to use `diff` and add in the old CSS selectors to the new (since this tool also reformats code and removes comments)
 
 ## List of (potential) parts to add to the site:
 - History of all conversions to Nested CSS

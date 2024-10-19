@@ -168,9 +168,5 @@ body {
             width: auto;
             aspect-ratio: var(--editor-width) / 6.625;
         }
-/*   
-  height: 100%;
-  aspect-ratio: var(--editor-width) / 7;
-*/
     }
 }

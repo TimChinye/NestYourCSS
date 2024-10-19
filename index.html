@@ -49,10 +49,10 @@
     }
 
     let sample;
-    // sample = cssSamples[0];
-    sample = cssSamples[1];
-    // sample = cssSamples.slice(0, 2).join('');
-    // sample = cssSamples.join('');
+    // sample = cssSamples[0]; // First one
+    sample = cssSamples[0]; // Specific one 
+    // sample = cssSamples.slice(0, 2).join(''); // Range
+    // sample = cssSamples.join(''); // All
 
     window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
     window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');

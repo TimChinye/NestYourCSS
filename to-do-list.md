@@ -1,10 +1,9 @@
 # To-do List
 
 ## Next up:
+- List up all the settings that can be done quickly, and design the settings panel.
 
 ## To-do now:
-- Update the nesting functionality to fix `cssSamples[0]` – `@page`
-- List up all the settings that can be done quickly, and design the settings panel.
 - Change indentation setting
 - Show the file size of both CSS outputs
 - Add button to include samples of CSS
@@ -15,13 +14,13 @@
 ## List of (potential) parts to add to the site:
 - History of all conversions to Nested CSS
   - Auto-save every minute? Or just "Nest" button (probably both, with a toggleable auto-save)
-- Button to use the previous selector instead (a.k.a. previous `diff`, but only for selectors)
+- Button to use the previous selector instead (a.k.a. previous `diff`, but only for selectors) edit: not sure why this is only for selectors
 - Paredit may be useful
 - Keyboard Shortcuts extension has a lot of useful stuff
-  - Will have to re-develop to limit features and re-design.
+- Will have to re-develop to limit features and re-design.
 - Add a minimap (might need to DIY)
 - Sticky Scroll – Official Ace Extensions (DIY)
-- Add a Table of Contents page (similar to Figma's Layers component) for all nested selectors
+- Add a Table of Contents page within settings section (similar to Figma's Layers component) for all nested selectors within the code editor
 - Add an anti-adblock background, along with a border
 
 ## Later:

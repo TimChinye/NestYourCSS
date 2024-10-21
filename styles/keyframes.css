@@ -242,3 +242,13 @@
 @keyframes onClick {
     from { --onClickValue2: var(--onClickValue1); }
 }
+
+@keyframes lightenBackgroundColour {
+	14.29% {
+		background-color: var(--shades-darkest);
+	}
+
+	to {
+		background-color: rgb(from var(--shades-em-darker) r g b / 0.5);
+	}
+}

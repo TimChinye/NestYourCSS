@@ -51,12 +51,14 @@ html {
 	}
 
 	scroll-behavior: smooth;
+	background-color: var(--shades-darkest);
 }
 
 body {	
     margin: 0;
     min-height: 100dvh;
-    background: black;
+	animation: lightenBackgroundColour linear backwards;
+	animation-timeline: scroll(root);
 	--cursorHorizPosition: 50%;
 
 	> #site-wrapper {
@@ -71,6 +73,7 @@ body {
 			height: 96dvh;
 			width: 100%;
 			padding: var(--padding);
+			background-color: var(--shades-darkest);
 
 			> #main-settings {
 				margin-right: 0;
@@ -301,11 +304,11 @@ body {
 						transition: 0.5s, --color1 0s, --color2 0s, --color3 0s;
 						animation: shadowRotate 3s infinite both;
 						animation-composition: add;
-						box-shadow: inset 0 0 0.5em 0 #000000;
+						box-shadow: inset 0 0 0.5em 0 #101010;
 					
 						&:hover {
 							/* The undefined '--animationControls' prevents the box-shadow from showing initially. Fixing the error during runtime makes the box-shadow appear without resetting the animation. */
-							--animationControls: 0 0 black;
+							--animationControls: 0 0 transparent;
 							transform: scale(1.333);
 							background-color: #FFFFFF;
 							transition: 0.5s, --color1 2s, --color2 2s, --color3 2s;
@@ -710,7 +713,7 @@ body {
 							margin-left: -4ch;
 							padding: 0 2rem;
 							width: 100%;
-							color: color-mix(in srgb, currentColor 25%, black);
+							color: rgb(from white r g b / 0.25);
 							animation: slideIn ease-out forwards;
 							animation-timeline: view();
 							animation-range: -0.5lh calc(2lh + 2.5lh);
@@ -723,7 +726,7 @@ body {
 							}
 							
 							&:last-child {
-								color: color-mix(in srgb, currentColor 75%, black);
+								color: rgb(from white r g b / 0.75);
 								text-align: right;
 								margin-left: 10ch;
 								animation-range: -1.5lh calc(1.5lh + 2.5lh);
@@ -791,13 +794,15 @@ body {
 							position: relative;
 							z-index: 1;
 							border: 0.25rem dashed #FFFFFF40;
-							background: black;
+							animation: lightenBackgroundColour linear backwards;
+							animation-timeline: scroll(root);
 							
 							& + #grouped-text {
 								top: 0;
 								left: 0;
 								position: absolute;
 								z-index: -1;
+								background: color-mix(in srgb, var(--shades-em-darker), var(--shades-darkest) 75%);
 								animation: changeCard 10s linear infinite 5s;
 							}
 						}
@@ -846,6 +851,7 @@ body {
 										height: 100%;
 										width: calc(100% + 5ch);
 										background: linear-gradient(to right, transparent, #092533 calc(var(--intensityPos) - 20%), #1c4d67 var(--intensityPos), #092533 calc(var(--intensityPos) + 20%), transparent);
+										background: linear-gradient(to right, transparent, rgb(from var(--pri-colour-m-darker) r g b / 0.5) calc(var(--intensityPos) - 20%), rgb(from var(--pri-colour-darker) r g b / 0.5) var(--intensityPos), rgb(from var(--pri-colour-m-darker) r g b / 0.5) calc(var(--intensityPos) + 20%), transparent);
 										z-index: -1;
 										translate: 0 calc((clamp(1, var(--activeLine), var(--maxLines)) - 1) * 1lh);
 										transition: 0.5s ease;
@@ -1037,6 +1043,7 @@ body {
 							}
 					
 							#nycssNest {
+								color: transparent;
 								filter: drop-shadow(0 -0.5rem) drop-shadow(0.7rem 0.3rem) drop-shadow(5.4rem 1rem) drop-shadow(7.1rem 1.1rem) drop-shadow(1.6rem 0.4rem) drop-shadow(4.3rem 0.9rem);
 								clip-path: circle(47.2%);
 							}

@@ -5,19 +5,19 @@
 }
 
 @property --color1 {
-    syntax: '<color>';
-    inherits: false;
-    initial-value: transparent;
-  }
-  
-  @property --color2 {
-    syntax: '<color>';
-    inherits: false;
-    initial-value: transparent;
-  }
-  
-  @property --color3 {
-    syntax: '<color>';
-    inherits: false;
-    initial-value: transparent;
-  }
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --color2 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}
+
+@property --color3 {
+  syntax: '<color>';
+  inherits: false;
+  initial-value: transparent;
+}

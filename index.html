@@ -543,14 +543,14 @@
     window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
     window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
 
-    let editors = [inputEditor, outputEditor];
-
     // Auto Nest
     let codeChanged = false;
     let isProcessing = false;
 
     inputEditor.getSession().on('change', () => {
       codeChanged = true;
+
+      console.log("test");
     });
 
     inputEditor.getSession().on('changeAnnotation', () => {
@@ -576,6 +576,10 @@
 
       editor.setValue(value, -1);
       provider.registerEditor(editor);
+
+      editor.renderer.on('afterRender', () => {
+          editor.container.getElementsByClassName('ace_scrollbar-h')[0].style.setProperty('--gutter-width', editor.container.getElementsByClassName('ace_gutter')[0].style.width);
+      });
       
       return editor;
     }

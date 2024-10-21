@@ -3,13 +3,15 @@
 ## Next up:
 - List up all the settings that can be done quickly, and design the settings panel.
 
-## To-do now:
+## To-do now, before release:
 - Change indentation setting
 - Show the file size of both CSS outputs
 - Add button to include samples of CSS
 - Show list of errors, and a button to jump to them
 - Implement ability to send a link of a CSS file
 - Mention it's recommended to use `diff` and add in the old CSS selectors to the new (since this tool also reformats code and removes comments)
+- Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback) 
+- Mobile version - design & develop
 
 ## List of (potential) parts to add to the site:
 - History of all conversions to Nested CSS
@@ -23,7 +25,7 @@
 - Add a Table of Contents page within settings section (similar to Figma's Layers component) for all nested selectors within the code editor
 - Add an anti-adblock background, along with a border
 
-## Later:
+## Much later:
 - Full revamp
 - Design the nesting editors, similar to Google Docs (centered editors, toolbar at the top)
 - Make the nesting settings area have a fixed width and center the editors within the nesting area

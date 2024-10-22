@@ -12,7 +12,7 @@ function glueEditor(editor) {
                 position: fixed;
                 height: fit-content;
                 background: rgb(9, 31, 42);
-                border-bottom: 1px solid rgb(from var(--pri-colour-m-darker) r g b / 0.5);
+                border-bottom: 1px solid rgb(from var(--pri-colour-m-darker) r g b /  / 0.50);
                 pointer-events: unset;
             }
             

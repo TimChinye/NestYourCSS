@@ -8,10 +8,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
   
 .ace-tm.ace_editor {
-  --background-colour: rgb(from var(--shades-darkest) r g b / var(--opacity-low));
+  --background-colour: rgb(from var(--shades-black) r g b / var(--opacity-low));
   --window-text-colour: rgb(from var(--shades-darker) r g b / var(--opacity-medium));
   --code-text-colour: rgb(from var(--shades-lightest) r g b / var(--opacity-high));
-  --code-selection-shadow-colour: rgb(from var(--shades-darkest) r g b / var(--opacity-low));
+  --code-selection-shadow-colour: rgb(from var(--shades-black) r g b / var(--opacity-low));
   --code-punctuation-colour: rgb(from var(--shades-white) r g b / var(--opacity-medium));
   --code-parenthesis-colour: rgb(from var(--shades-lightest) r g b / var(--opacity-medium));
   
@@ -39,11 +39,11 @@
 
 .ace-tm .ace_gutter-active-line {
   font-weight: bold;
-  background: rgb(from color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)) r g b / 0.5);
+  background: rgb(from color-mix(in srgb, var(--pri-colour-em-darker), var(--sec-colour-em-darker)) r g b / var(--opacity-medium));
 }
 
 .ace-tm .ace_marker-layer .ace_active-line {
-  background: rgb(from color-mix(in srgb, var(--pri-colour-darkest), var(--sec-colour-darkest)) r g b / 0.5);
+  background: rgb(from color-mix(in srgb, var(--pri-colour-em-darker), var(--sec-colour-em-darker)) r g b / var(--opacity-medium));
 }
 
 .ace-tm .ace_scroller {
@@ -126,7 +126,7 @@
 
   &.ace_multiselect .ace_selection.ace_start,
   .ace_marker-layer .ace_selection {
-    background: rgb(from var(--pri-colour-m-darker) r g b / 0.5);
+    background: rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium));
     box-shadow: 0px 0px 0px 8px var(--code-selection-shadow-colour);
     clip-path: inset(0 0 -20px 0px);
   }
@@ -146,29 +146,29 @@
 
 .ace-tm .ace_indent-guide {
   background: none;
-  border-right: 1px solid rgb(from var(--code-parenthesis-colour) r g b / 0.5);
+  border-right: 1px solid rgb(from var(--code-parenthesis-colour) r g b / var(--opacity-medium));
   /* border: none; */
 }
 
 .ace-tm .ace_indent-guide-active {
-  border-color: color-mix(in srgb, var(--code-parenthesis-colour), white 25%);
+  border-color: color-mix(in srgb, var(--code-parenthesis-colour), var(--shades-white) 25%);
 }
 
 .ace-tm :is(.language_highlight_text, .language_highlight_read, .language_highlight_write) {
   border: none;
   --highlight-colour: var(--sec-colour-m-darker);
-  background: rgb(from var(--highlight-colour) r g b / 0.5);
+  background: rgb(from var(--highlight-colour) r g b / var(--opacity-medium));
   box-shadow: 0px 0px 8px 0px var(--highlight-colour);
   clip-path: inset(-8px 0);
   z-index: 7;
 }
 
 .ace-tm .language_highlight_write {
-  --highlight-colour: rgb(from var(--shades-medium) r g b / 0.25);
+  --highlight-colour: rgb(from var(--shades-medium) r g b / var(--opacity-low));
 }
 
 .ace-tm .ace_highlight-marker {
-  background-color: rgb(from var(--shades-medium) r g b / 0.25);
+  background-color: rgb(from var(--shades-medium) r g b / var(--opacity-low));
 }
 
 .ace_scrollbar {
@@ -213,7 +213,7 @@
       }
   
       &::-webkit-scrollbar-thumb:vertical { background-color: var(--thumbnail-colour); }
-      &::-webkit-scrollbar-thumb:vertical:hover { background-color: color-mix(in srgb, var(--thumbnail-colour), white); }
+      &::-webkit-scrollbar-thumb:vertical:hover { background-color: color-mix(in srgb, var(--thumbnail-colour), var(--shades-white)); }
       &::-webkit-scrollbar-thumb:horizontal { background-color: color-mix(in srgb, var(--thumbnail-colour), transparent); }
       &::-webkit-scrollbar-thumb:horizontal:hover { background-color: var(--thumbnail-colour); }
     }
@@ -232,7 +232,7 @@
 }
 
 .ace-tm .ace_invalid {  /*  <no-width space>  */
-  background-color: rgb(from var(--red-colour-darkest) r g b / 0.5) !important;
+  background-color: rgb(from var(--red-colour-em-darker) r g b / var(--opacity-medium)) !important;
   color: var(--red-colour-medium) !important;
 }
 
@@ -280,7 +280,7 @@
 }
 
 .ace-tm .ace_search {
-  background-color: var(--pri-colour-darkest);
+  background-color: var(--pri-colour-em-darker);
   border-color: var(--window-text-colour);
   color: var(--code-text-colour);
 }

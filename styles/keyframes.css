@@ -68,18 +68,18 @@
 @keyframes repeatText {
   from {
     text-shadow:
-      0 -0lh #808080FF,
-      0 -1lh #808080BF, 
-      0 -2lh #80808080, 
-      0 -3lh #80808040;
+      0 -0lh rgb(from var(--shades-darker) r g b / 1),
+      0 -1lh rgb(from var(--shades-darker) r g b / var(--opacity-high)),
+      0 -2lh rgb(from var(--shades-darker) r g b / var(--opacity-medium)),
+      0 -3lh rgb(from var(--shades-darker) r g b / var(--opacity-low));
   }
 	
   to {
     text-shadow: 
-      0 -1lh #808080BF,
-      0 -2lh #80808080, 
-      0 -3lh #80808040, 
-      0 -4lh #80808000;
+      0 -1lh rgb(from var(--shades-darker) r g b / var(--opacity-high)),
+      0 -2lh rgb(from var(--shades-darker) r g b / var(--opacity-medium)),
+      0 -3lh rgb(from var(--shades-darker) r g b / var(--opacity-low)),
+      0 -4lh rgb(from var(--shades-darker) r g b / 0);
   }
 }
 
@@ -114,9 +114,9 @@
 }
 
 @keyframes slideIn {
-	50% { margin: 0; }
-	
-	75% { margin: 0; }
+	0% { filter: blur(25px); }
+	50%, 75% { margin: 0; }
+	62.5% { filter: blur(0px); }
 }
 
 @keyframes fadeIn {
@@ -205,7 +205,7 @@
 	0% {
 		box-shadow:
 			var(--animationControls),
-			0em 0em 1em 0 #000000,
+			0em 0em 1em 0 var(--shades-black),
 			1em 3em 0 -1em var(--color1),
 			3em 0.5em 0 -1em var(--color2),
 			2.5em 2.5em 0 -0.5em  var(--color3);
@@ -214,7 +214,7 @@
 	33% {
 		box-shadow:
 			var(--animationControls),
-			0em 0em 1em 0 #000000,
+			0em 0em 1em 0 var(--shades-black),
 			2.5em 2.5em 0 -0.5em  var(--color3),
 			1em 3em 0 -1em var(--color1),
 			3em 0.5em 0 -1em var(--color2);
@@ -223,7 +223,7 @@
 	67% {
 		box-shadow:
 			var(--animationControls),
-			0em 0em 1em 0 #000000,
+			0em 0em 1em 0 var(--shades-black),
 			3em 0.5em 0 -1em var(--color2),
 			2.5em 2.5em 0 -0.5em  var(--color3),
 			1em 3em 0 -1em var(--color1);
@@ -232,7 +232,7 @@
 	100% {
 		box-shadow:
 			var(--animationControls),
-			0em 0em 1em 0 #000000,
+			0em 0em 1em 0 var(--shades-black),
 			1em 3em 0 -1em var(--color1),
 			3em 0.5em 0 -1em var(--color2),
 			2.5em 2.5em 0 -0.5em  var(--color3);
@@ -244,11 +244,11 @@
 }
 
 @keyframes lightenBackgroundColour {
-	14.29% {
-		background-color: var(--shades-darkest);
+	from {
+		background-color: var(--shades-black);
 	}
 
 	to {
-		background-color: rgb(from var(--shades-em-darker) r g b / 0.5);
+		background-color: color-mix(in srgb, var(--shades-em-darker), var(--shades-black));
 	}
 }

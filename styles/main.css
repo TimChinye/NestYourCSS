@@ -760,7 +760,7 @@ body {
 						font-size: 2rem;
 						line-height: 3rem;
 						width: 50ch;
-						animation: fadeIn linear forwards, slideUp linear forwards;
+						animation: boostUp linear forwards, slideUp linear forwards;
 						animation-timeline: view(), view();
 						animation-range: cover contain 3lh, contain 3lh cover;
 						
@@ -954,7 +954,9 @@ body {
 						}
 			
 						&.viewed {
-							animation: widenGap 3s ease-in-out infinite alternate backwards;
+							animation: widenGap 3s ease-in-out infinite alternate backwards, unblur ease-out both;
+							animation-timeline: auto, view();
+							animation-range: normal, 0lh 20lh;
 						}
 					}
 

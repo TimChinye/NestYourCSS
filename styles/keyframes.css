@@ -114,12 +114,12 @@
 }
 
 @keyframes slideIn {
-	0% { filter: blur(25px); }
+	0% { color: black; }
 	50%, 75% { margin: 0; }
-	62.5% { filter: blur(0px); }
+	62.5% { color: revert-layer; }
 }
 
-@keyframes fadeIn {
+@keyframes boostUp {
 	0% { padding-top: 5lh; }
 	
 	100% { padding-top: 0; }
@@ -251,4 +251,9 @@
 	to {
 		background-color: color-mix(in srgb, var(--shades-em-darker), var(--shades-black));
 	}
+}
+
+@keyframes unblur {
+	0% { filter: blur(25px); }
+	100% { filter: blur(0px); }
 }

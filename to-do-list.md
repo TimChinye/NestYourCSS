@@ -10,13 +10,17 @@
 
 ## List of (potential) parts to add to the site:
 - History of all conversions to Nested CSS
-  - Auto-save every minute? Or just "Nest" button (probably both, with a toggleable auto-save)
+- Auto-save every minute? Or just "Nest" button (probably both, with a toggleable auto-save)
 - Button to use the previous selector instead (a.k.a. previous `diff`, but only for selectors) edit: not sure why this is only for selectors
 - Paredit may be useful
 - Keyboard Shortcuts extension has a lot of useful stuff
 - Will have to re-develop to limit features and re-design.
 - Add a minimap (might need to DIY)
+- Show minimap checkbox (and scroll using it?)
 - Sticky Scroll – Official Ace Extensions (DIY)
+Button to enable diffs (and a note of sorts to recommend use it as this tool re-formats code & removes comments
+- List Keyboard shortcuts + allow the creation of custom ones
+- Allow Editor Customization [Demo](https://ace.c9.io/demo/keyboard_shortcuts.html)
 - Add a Table of Contents page within settings section (similar to Figma's Layers component) for all nested selectors within the code editor
 - Add an anti-adblock background, along with a border
 

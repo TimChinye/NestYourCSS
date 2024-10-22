@@ -1116,6 +1116,6 @@ body {
 
 @media (max-aspect-ratio: 1.477 / 1) {
     body {
-        background: orange;
+        background: orange !important;
     }
 }

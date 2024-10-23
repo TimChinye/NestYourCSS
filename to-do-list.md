@@ -16,6 +16,18 @@
 - Keyboard Shortcuts extension has a lot of useful stuff
 - Will have to re-develop to limit features and re-design.
 - Add a minimap (might need to DIY)
+- Add ability to change the colour theme for greenish-blue to whatever:
+```css
+#main-content {
+    --rotation: 2300deg;
+    filter: hue-rotate(var(--rotation));
+
+    #textSide > figure > div > img {
+        filter: hue-rotate(calc(0deg - mod(var(--rotation), 360deg)));
+    }
+}
+```
+If you use the new relative colours syntax, we can apply a hue rotation via `oklch(from var(--pri-colour-medium) l c calc(h + var(--rotation)))`, and this will preserve saturation and luminosity... well, chroma and lightness.
 - Show minimap checkbox (and scroll using it?)
 - Sticky Scroll – Official Ace Extensions (DIY)
 Button to enable diffs (and a note of sorts to recommend use it as this tool re-formats code & removes comments

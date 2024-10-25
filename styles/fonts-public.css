@@ -5,7 +5,7 @@
   src:
     local("Orelo SemiCondensed DemiBold Regular"),
     local("Orelo SemiCondensed DemiBold"),
-    url("https://nestyourcss.com/assets/fonts/orelo-semicondensed-demibold.otf")
+    url("../assets/fonts/orelo-semicondensed-demibold.otf")
     format("opentype");
   font-weight: 600;
 }

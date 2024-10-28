@@ -5,7 +5,7 @@
   Last Updated: 01.04.2024
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap'); */
   
 .ace-tm.ace_editor {
   --background-colour: rgb(from var(--shades-black) r g b / var(--opacity-low));
@@ -21,7 +21,7 @@
   color: var(--code-text-colour);
   
   font-family: "Fira Code", monospace;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
 }
 
 .ace-tm .ace_gutter {
@@ -242,7 +242,7 @@
   border: 1px solid var(--pri-colour-m-darker);
   border-radius: 8px;
   color: var(--shades-lighter);
-  font-size: 16px;
+  font-size: 1rem;
   min-width: 15em;
 
   &:hover {
@@ -255,23 +255,27 @@
   }
 }
 
+.ace-tm.ace_tooltip * {
+  font-size: inherit;
+}
+
 .ace-tm.ace_tooltip code {
   font-family: "Fira Code", monospace;
-  font-size: 12px;
-  font-style: normal;
   color: var(--shades-medium);
 }
 
 .ace-tm.ace_tooltip p {
-  font-family: "Poppins", Calibri, sans-serif;
-  font-size: 12px;
-  font-style: normal;
+  font-family: 'Poppins', 'Calibri', sans-serif;
   color: var(--shades-lighter);
 }
 
 .ace-tm.ace_tooltip a {
   color: var(--sec-colour-medium);
   text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .ace-tm .ace_constant.ace_language {  /*  Escaped characters within quotes  */
@@ -333,6 +337,10 @@
 
 .ace-tm .ace_search_form.ace_nomatch {
   outline-color: var(--red-colour-m-darker);
+}
+
+.ace-tm .ace_fold-widget {
+  background-size: 0.4rem;
 }
 
 /* Everything Above is Fixed */

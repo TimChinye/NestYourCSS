@@ -65,6 +65,7 @@ body {
     margin: 0;
     min-height: 100dvh;
 	--cursorHorizPosition: 50%;
+	background-color: var(--shades-black);
 	animation: lightenBackgroundColour linear;
 	animation-timeline: scroll(root);
 
@@ -88,6 +89,7 @@ body {
 
 			> #main-settings {
 				margin-right: 0;
+				contain: size paint;
 				flex: 0;
 			}
 
@@ -113,24 +115,25 @@ body {
 					width: 100%;
 					height: 100%;
 					display: flex;
+					padding: 2rem;
 					flex-direction: column;
 					justify-content: space-between;
-					padding: 2rem;
 	
 					> header {
 						margin-top: 2rem;
 						margin-left: 2rem;
+						font-size: clamp(0.5rem, 16px, 1.75rem);
 	
 						> hgroup {
 							color: rgb(from var(--shades-white) r g b / var(--opacity-high));
-							font-family: 'Poppins';
+							font-family: 'Poppins', 'Calibri', sans-serif;
 	
 							> * { margin: 0; }
 	
 							> h3 {
 								line-height: 125%;
 								font-weight: 200;
-								font-size: 3rem;
+								font-size: 3em;
 								height: 2lh;
 								width: 24ch;
 							}
@@ -138,7 +141,7 @@ body {
 							> h1 {
 								line-height: 125%;
 								font-weight: 900;
-								font-size: 6rem;
+								font-size: 6em;
 								white-space: nowrap;
 								transition: 0.25s;
 	
@@ -150,8 +153,8 @@ body {
 	
 						> menu {
 							display: inline-flex;
-							--primary-colour: rgb(from var(--shades-white) r g b / var(--opacity-medium));
-							font-size: 1rem;
+							--primary-colour: var(--shades-darker);
+							--icon-colour-hover: color-mix(in srgb, var(--primary-colour) 75%, var(--shades-lightest));
 							gap: 0.33em;
 							margin: 1em 0;
 							padding: 0;
@@ -181,7 +184,6 @@ body {
 									height: 3em;
 									width: auto;
 									aspect-ratio: 1 / 1;
-									border: 0 solid var(--icon-colour);
 									border-radius: inherit;
 									box-sizing: border-box;
 							
@@ -218,18 +220,18 @@ body {
 								
 								&:hover {
 									cursor: pointer;
-									--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, var(--shades-lightest));
+									--icon-colour: var(--icon-colour-hover);
 									transition: --icon-colour 0.5s;
 
 									> svg > path {
 									transition: 0.5s 0s;
 									
-									&:first-child {
-										--icon-colour: transparent;
-									}
-							
-									&:last-child {
-										--icon-colour: color-mix(in srgb, var(--primary-colour) 75%, var(--shades-lightest));
+										&:first-child {
+											--icon-colour: transparent;
+										}
+								
+										&:last-child {
+										--icon-colour: var(--icon-colour-hover);
 										}
 									}
 
@@ -251,11 +253,12 @@ body {
 						margin: 0;
 						margin-left: 2rem;
 						width: min(40vw, 100%);
+						min-height: 0;
 						container-type: inline-size;
 	
 						> figcaption {
 							color: rgb(from var(--shades-white) r g b / var(--opacity-high));
-							font-family: 'Poppins';
+							font-family: 'Poppins', 'Calibri', sans-serif;
 							font-weight: 200;
 							font-size: 1.25rem;
 						}
@@ -263,15 +266,31 @@ body {
 						> div {
 							display: flex;
 							width: fit-content;
+							min-height: 0;
 							border: 0.125rem solid rgb(from var(--shades-darker) r g b / var(--opacity-low));
 							padding: 1rem;
 							gap: 1rem;
 							transition: 0.25s;
 	
-							> img {
+							> picture {
+								position: relative;
+								display: block;
 								cursor: pointer;
-								width: calc(25cqw - (4rem / 3));
+								border: none;
+								max-height: 100%;
+								--ad-count: 3;
+								--width: calc((100cqw / var(--ad-count)) - ((2rem + (1rem * (var(--ad-count) - 1))) / var(--ad-count)));
+								min-height: calc(var(--width) * 0.820895522);
+								min-width: var(--width);
 								transition: inherit;
+
+								> ins {
+									display: inline-block;
+									/* height: 100%; */
+									max-height: inherit;
+									min-height: inherit;
+									width: inherit;
+								}
 							}
 	
 							&:hover {
@@ -310,7 +329,7 @@ body {
 						border-radius: 50%;
 						font-size: 0.75rem;
 						font-weight: bold;
-						background-color: var(--pri-colour-lighter);
+						background-image: linear-gradient(135deg, var(--sec-colour-lighter), var(--pri-colour-darker));
 						transform-origin: bottom right;
 						transition: 0.5s, --color1 0s, --color2 0s, --color3 0s;
 						animation: shadowRotate 3s infinite both;
@@ -325,9 +344,9 @@ body {
 							transition: 0.5s, --color1 2s, --color2 2s, --color3 2s;
 							
 							/* Using variables so I can transition from transparent to their individual colours */
-							--color1: rgb(from var(--pri-colour-medium) r g b / 0.5);
-							--color2: rgb(from var(--sec-colour-medium) r g b / 0.5);
-							--color3: rgb(from color-mix(in srgb, var(--pri-colour-medium), var(--sec-colour-medium)) r g b / 0.5);
+							--color1: rgb(from var(--pri-colour-medium) r g b / var(--opacity-medium));
+							--color2: rgb(from var(--sec-colour-medium) r g b / var(--opacity-medium));
+							--color3: rgb(from color-mix(in srgb, var(--pri-colour-medium), var(--sec-colour-medium)) r g b / var(--opacity-medium));
 						}
 					}
  
@@ -371,19 +390,20 @@ body {
 							}
 						
 							> .tabButtons {
-								font-size: 0.5rem;
 								display: flex;
 								gap: 1em;
 						
 								> button {
 									font-size: inherit;
-									height: 4em;
-									width: 4em;
+									height: 2rem;
+									width: 2rem;
+									padding: 0;
 									border: none;
 									border-radius: 50%;
 									background-color: transparent;
 									background-position: center;
-									background-size: cover;
+									background-size: contain;
+									background-repeat: no-repeat;
 									filter: invert(0.4431);
 									opacity: var(--opacity-medium);
 									cursor: pointer;
@@ -420,25 +440,27 @@ body {
 					> #editorSide > #code-editor {
 						.editorWrapper {
 							transition: 1s;
-							border-left: 1px solid rgb(from var(--shades-darker) r g b / 0.5);
+							border-left: calc(1rem / 16) solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
 
 							&#inputEditorWrapper {
 								padding: var(--padding);
 								padding-left: 0;
 								border-radius: 0 1rem 1rem 0;
-								border-color: rgb(from var(--shades-darker) r g b / 0.25);
+								border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
 								background: rgb(from var(--shades-white) r g b / 3%);
 
 								> #shadowEditorsWrapper {
 									height: calc(100% + (var(--padding) * 2));
 									translate: 0 calc(-100% + var(--padding));
-									pointer-events: none;
-									/* position: relative; */
 
 									> .shadowEditorWrapper {
 										overflow: hidden;
 										position: absolute;
 										height: 100%;
+									}
+
+									&, * {
+										pointer-events: none;
 									}
 								}
 							}
@@ -449,8 +471,7 @@ body {
 							}
 						}
 
-						.editor {
-							transform-origin: left;
+						.editorGroup {
 						}
 					}
 				}
@@ -462,19 +483,324 @@ body {
 
 				& + article,
 				& + article section {
-					height: 0px;
-					gap: 0px;
+					height: 0;
+					gap: 0;
 					opacity: 0;
 					transition: gap 1s 1s, height 1s 1s, opacity 1s 0s;
+					pointer-events: none; 
 				}
 
 				> #main-settings {
 					margin-right: var(--padding);
+					height: 100%;
 					max-width: 25vw;
 					flex: 1;
 					transition: margin-right 2s;
-					border-radius: 3rem;
-					/* Primary text colour: hsl(200deg 40% 6.25%) */
+					display: flex;
+					flex-direction: column;
+					gap: var(--padding);
+					overflow: hidden auto;
+
+					> section {
+						border-radius: 3rem;
+						background-color: rgb(from var(--shades-darkest) r g b / var(--opacity-low));
+						padding: var(--padding);
+						display: flex;
+						flex-direction: column;
+						gap: var(--padding);
+						font-family: 'Poppins', 'Calibri', sans-serif;
+
+						> h2 {
+							font-size: 1.25rem;
+							font-weight: normal;
+							color: var(--shades-medium);
+						}
+
+						> ul {
+							list-style: none;
+							margin: 0;
+							padding: 0;
+							display: flex;
+							flex-direction: column;
+							--component-gap: calc(var(--padding) / 4);
+							--component-background: color-mix(in srgb, var(--shades-black), var(--shades-darkest));
+							--component-background-selected: linear-gradient(to right, var(--shades-m-darker), var(--shades-em-darker));
+							--component-box-shadow-selected: inset 0 calc(1rem / 16) oklch(100% none none / var(--opacity-low));
+							--component-text: color-mix(in srgb, var(--shades-darker), var(--shades-medium));
+							--component-text-hover: var(--shades-medium);
+							gap: var(--component-gap);
+
+
+							> li {
+								display: grid;
+								grid-template-columns: repeat(8, 1fr);
+
+								> label {
+									cursor: auto;
+									grid-column: span 3;
+									align-content: center;
+									font-size: 1.125rem;
+									font-weight: 300;
+									color: var(--component-text);
+
+									> p {
+										margin: 0;
+										font-size: 0.625rem;
+										color: var(--shades-m-darker);
+									}
+								}
+	
+								> div {
+									grid-column: span 5;
+									display: flex;
+									flex-direction: row;
+									justify-content: space-between;
+									gap: var(--component-gap);
+									color: var(--component-text);
+									font-size: 1rem;
+
+									#typefaces {
+										flex: 1;
+									}
+
+									#fontsizes {
+										width: auto;
+										margin: 0;
+										flex: 0;
+									}
+
+									#indentationType {
+										flex: 0;
+									}
+
+									#indentationSize {
+										flex: 0;
+										display: flex;
+										align-items: center;
+										gap: var(--component-gap);
+									}
+
+									#coordinates {
+										flex: 1;
+									}
+
+									#mode {
+										flex: 1;
+									}
+
+									#auto {
+										flex: 1;
+									}
+									
+									#externalCss {
+										flex: 1;
+									}
+
+									#samples {
+										flex: 1;
+									}
+
+									/* Components */
+
+									.radio-group {
+										user-select: none;
+										display: flex;
+										gap: var(--component-gap);
+
+										> label {
+											flex: 1;
+											cursor: pointer;
+											padding: 1rem 1.75ch;
+											text-align: center;
+											align-content: center;
+											border-radius: 1rem;
+											background: linear-gradient(to bottom, var(--shades-m-darker), var(--shades-em-darker) 45%, var(--component-background) 55%) 0% 100% / 100% 210% no-repeat, var(--component-background);
+											transition: background-position 0.125s ease-out;
+
+											&:has(:checked) {
+												box-shadow: var(--component-box-shadow-selected);
+												background-position: 0% 0%;
+											}
+									
+											&:hover {
+												color: var(--component-text-hover);
+											}
+
+											> input {
+												appearance: none;
+												position: absolute;
+												margin: 0;
+											}
+										}
+									}
+
+									.checkbox {
+										user-select: none;
+										position: relative;
+										display: flex;
+										border-radius: 1rem;
+										background: var(--component-background);
+										
+										&::before {
+											position: absolute;
+											content: '';
+											height: 100%;
+											left: 0%;
+											width: 50%;
+											border-radius: inherit;
+											background: var(--component-background-selected);
+											box-shadow: var(--component-box-shadow-selected);
+											z-index: 0;
+											transition: 0.25s;
+										}
+
+										&:has(:checked)::before {
+											left: 50%;
+										}
+
+										> input {
+											appearance: none;
+											position: absolute;
+											margin: 0;
+										}
+
+										> span {
+											position: relative;
+											cursor: pointer;
+											flex: 1;
+											padding: 1rem 2.5ch;
+											text-align: center;
+											align-content: center;
+									
+											&:hover {
+												color: var(--component-text-hover);
+											}
+										}
+									}
+
+									.number {
+										user-select: none;
+										position: relative;
+										width: fit-content;
+										color: var(--component-text);
+										border: none;
+									
+										&:hover {
+											color: var(--component-text-hover);
+										}
+
+										span {
+											cursor: auto;
+											display: inline-block;
+											background: var(--component-background);
+											border-radius: 1rem;
+											padding: 1rem;
+											padding-right: calc(1rem + 2ch);
+									
+											&:focus {
+												outline: none;
+												box-shadow: 0 0 2em var(--component-background);
+											}
+
+											+ div {
+												position: absolute;
+												width: 1ch;
+												top: 50%;
+												right: 1rem;
+												translate: 0 -50%;
+												display: flex;
+												flex-direction: column;
+												gap: 0.25em;
+
+												> svg {
+													cursor: pointer;
+												}
+											}
+										}
+									}
+
+									.select-menu {
+										user-select: none;
+										display: inline-flex;
+										flex-direction: column;
+										width: auto;
+										margin: 0;
+										text-align: left;
+										box-sizing: content-box;
+										position: relative;
+										z-index: 999;
+
+										> input {
+											appearance: none;
+											position: absolute;
+											margin: 0;
+										}
+										
+										> output {
+											display: block;
+											align-content: center;
+											white-space: nowrap;
+											width: 100%;
+											text-overflow: ellipsis;
+											overflow: hidden;
+											background: url("data:image/svg+xml,%3Csvg fill='%23484848' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z'%3E%3C/path%3E%3C/svg%3E") right 1rem top 50% / 1ch no-repeat, var(--component-background);
+											border-radius: 1rem;
+											padding: 1rem;
+											padding-right: calc(1rem + 2ch);
+											
+											&:hover {
+												color: var(--component-text-hover);
+												cursor: pointer;
+											}
+										}
+										
+										:checked {
+											+ output {
+												border-radius: 1rem 1rem 0 0;
+											}
+									
+											~ menu {
+												position: absolute;
+												top: 100%;
+												width: 100%;
+												display: flex;
+												margin: 0;
+												margin-top: 0.25rem;
+												padding: 1em;
+												gap: 0.5em;
+												flex-direction: column;
+												background: var(--component-background);
+												border-bottom-left-radius: 1rem;
+												border-bottom-right-radius: 1rem;
+												
+												> option:hover {
+													color: var(--component-text-hover);
+													cursor: pointer;
+												}
+										
+												> option:focus {
+													color: var(--component-text-hover);
+													outline: none;
+												}
+											}
+										}
+										
+										:is(:focus, :active) + output {
+												box-shadow: 0 0 2em var(--component-background);
+										}
+									}									
+								}
+							}
+						}
+
+						> menu {
+							
+						}
+
+						> table {
+							
+						}
+					}
 				}
 
 				> #main-content {
@@ -494,7 +820,6 @@ body {
 
 						> #nestBtn {
 							opacity: 0;
-							pointer-events: none;
 							transition: opacity 1s, pointer-events 0s 1s;
 						}
  
@@ -547,7 +872,7 @@ body {
 						text-decoration: none;
 						text-transform: uppercase;
 						line-height: 100%;
-						font-family: "Poppins";
+						font-family: 'Poppins', 'Calibri', sans-serif;
 						font-weight: 500;
 						font-size: 2rem;
 						display: flex;
@@ -570,7 +895,7 @@ body {
 						left: 8rem;
 						cursor: text;
 						color: var(--shades-white);
-						font-family: "Poppins";
+						font-family: 'Poppins', 'Calibri', sans-serif;
 						font-weight: 300;
 						font-size: 2rem;
 						width: 52ch;
@@ -637,7 +962,7 @@ body {
 						color: var(--shades-white);
 						text-align: center;
 						text-transform: capitalize;
-						letter-spacing: 16px;
+						letter-spacing: 0.25ch;
 						font-family: "Orelo Semi Expanded", sans-serif;
 						font-size: 5rem;
 						display: flex;
@@ -671,7 +996,7 @@ body {
 						right: 5vw;
 						bottom: 12rem;
 						color: var(--shades-white);
-						font-family: "Poppins";
+						font-family: 'Poppins', 'Calibri', sans-serif;
 						font-weight: 300;
 						font-size: 2rem;
 						width: 56ch;
@@ -759,7 +1084,7 @@ body {
 						right: 7.5vw; 
 						bottom: 16rem;
 						color: var(--shades-white);
-						font-family: "Poppins";
+						font-family: 'Poppins', 'Calibri', sans-serif;
 						font-weight: 300;
 						font-size: 2rem;
 						line-height: 3rem;
@@ -783,7 +1108,7 @@ body {
 					
 								&:hover {
 									color: var(--pri-colour-lightest);
-									-webkit-text-stroke: var(--shades-black) 1px;
+									-webkit-text-stroke: var(--shades-black) calc(1rem / 16);
 								}
 							}
 						}
@@ -813,16 +1138,15 @@ body {
 							position: relative;
 							z-index: 1;
 							border: 0.25rem dashed rgb(from var(--shades-white) r g b / var(--opacity-low));
-							animation: lightenBackgroundColour linear backwards;
-							animation-timeline: scroll(root);
+							background: rgb(from var(--pri-colour-darkest) r g b / var(--opacity-high));
 							
 							& + #grouped-text {
 								top: 0;
 								left: 0;
 								position: absolute;
 								z-index: -1;
-								background: var(--shades-darkest);
-								animation: changeCard 10s linear infinite 5s;
+								animation: lightenBackgroundColour linear backwards, changeCard 10s linear infinite 5s;
+								animation-timeline: scroll(root), auto;
 							}
 						}
 					}
@@ -833,7 +1157,6 @@ body {
 						margin-right: 7.5vw;
 						display: flex;
 						font-family: 'Fira Code', monospace;
-						font-weight: 300;
 						font-size: 2rem;
 						line-height: 1em;
 						gap: 3ch;
@@ -940,7 +1263,7 @@ body {
 						top: 4lh;
 						right: 8ch;
 						color: var(--shades-white);
-						font-family: "Poppins";
+						font-family: 'Poppins', 'Calibri', sans-serif;
 						font-weight: 300;
 						font-size: 1.75rem;
 						width: 64ch;
@@ -1004,7 +1327,7 @@ body {
 						> h1 {
 							font-size: 1em;
 							font-weight: 900;
-							font-family: 'Poppins';
+							font-family: 'Poppins', 'Calibri', sans-serif;
 							animation: moveDown linear both;
 							animation-timeline: view();
 							animation-range: cover -2lh cover 2lh;
@@ -1012,7 +1335,7 @@ body {
 							
 							&:hover {
 								scale: 1.1;
-								text-shadow: 0 -10px 20px var(--shades-black);
+								text-shadow: 0 -0.1lh 1rem var(--shades-black);
 							}
 						}
 

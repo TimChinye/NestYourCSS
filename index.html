@@ -22,8 +22,153 @@
   </script>
   <div id="site-wrapper">
     <main>
+    <!-- <main class="nesting"> -->
       <aside id="main-settings">
+        <section>
+          <h2>Editor</h2>
+          <ul>
+            <li>
+              <label>Font</label>
+              <div>
+                <label id="typefaces" class="select-menu">
+                  <input type="checkbox">
+                  <output>Fira Code</output>
 
+                  <menu hidden>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">DejaVu Mono</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">Fira Code</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">iA Writer Mono</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">Jetbrains Mono</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">PT Sans</option>
+                  </menu>
+              
+                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
+                </label>
+                <label id="fontsizes" class="select-menu">
+                  <input type="checkbox">
+                  <output>1.25rem</output>
+
+                  <menu hidden>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">0.5rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">0.75rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">1rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">1.25rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">1.5rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">1.75rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">2rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">2.25rem</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">2.5rem</option>
+                  </menu>
+                
+                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
+                </label>
+              </div>
+            </li>
+            <li>
+              <label>Indentation</label>
+              <div>
+                <label id="indentationType" class="checkbox">
+                  <input type="checkbox">
+                  <span>Soft</span>
+                  <span>Hard</span>
+                </label>
+                <label id="indentationSize" class="number">
+                  Size:
+                  <output>
+                    <span contenteditable="true" inputmode="numeric" oninput="(this.textContent = +this.textContent.replace(/\D+/g, '')) && numberHandler(this, event)" onkeydown="numberHandler(this, event)">4</span>
+                    <div>
+                      <svg fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="numberHandler(this, event)" onmousedown="numberHandler(this, event)" onmouseup="numberHandler(this, event)" ontouchstart="numberHandler(this, event)" ontouchend="numberHandler(this, event)"><path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z"></path></svg>
+                      <svg fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="numberHandler(this, event)" onmousedown="numberHandler(this, event)" onmouseup="numberHandler(this, event)" ontouchstart="numberHandler(this, event)" ontouchend="numberHandler(this, event)"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
+                    </div>
+                  </output>
+                </label>
+              </div>
+            </li>
+            <li>
+              <label>Coordinates</label>
+              <div>
+                <label id="coordinates" class="radio-group">
+                  <label>None<input type="radio" name="coordinates"></label>
+                  <label>Line<input type="radio" name="coordinates"></label>
+                  <label>Col<input type="radio" name="coordinates" checked></label>
+                  <label>Both<input type="radio" name="coordinates"></label>
+                </label>
+              </div>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2>Functionality</h2>
+          <ul>
+            <li>
+              <label>Mode</label>
+              <div>
+                <label id="mode" class="radio-group">
+                  <label>Minify<input type="radio" name="mode"></label>
+                  <label>Nest<input type="radio" name="mode"></label>
+                  <label>Unnest<input type="radio" name="mode" checked></label>
+                </label>
+              </div>
+            </li>
+            <li>
+              <label>Auto</label>
+              <div>
+                <label id="auto" class="checkbox">
+                  <input type="checkbox">
+                  <span>On</span>
+                  <span>Off</span>
+                </label>
+              </div>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2>Input</h2>
+          <ul>
+            <li>
+              <label>
+                External CSS
+                <p>(press enter to inject)</p>
+              </label>
+              <div>
+                <!-- Custom made with Inherited styles from dropdown -->
+                <label id="externalCss" class="select-menu">
+                  <input type="checkbox">
+                  <output placeholder="https://...">https://google.com/assets/styles.css</output>
+
+                  <menu hidden>
+                    <!-- <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0"></option> -->
+                  </menu>
+                
+                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
+                </label>
+              </div>
+            </li>
+            <li>
+              <label>Samples</label>
+              <div>
+                <label id="samples" class="select-menu">
+                  <input type="checkbox" style="appearance: none; position: absolute;">
+                  <output>Default</output>
+
+                  <menu hidden>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">Default</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">NYCSS Syntax Highlighter</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">-----</option>
+                  </menu>
+                
+                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
+                </label>
+              </div>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <menu>5 Buttons</menu>
+        </section>
+        <section>
+          <table>Errors</table>
+        </section>
       </aside>
       <section id="main-content">
         <article id="textSide">
@@ -185,9 +330,9 @@
           <figure>
             <figcaption>Sorry about the ads...</figcaption>
             <div>
-              <img src="https://i.imgur.com/1ZPqQQL.png" />
-              <img src="https://i.imgur.com/1ZPqQQL.png" />
-              <img src="https://i.imgur.com/1ZPqQQL.png" />
+              <picture><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script><ins class="adsbygoogle" style="display:inline-block;width:250px;height:250px" data-ad-client="ca-pub-9088468190661086" data-ad-slot="2515261006"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></picture>
+              <picture><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script><ins class="adsbygoogle" style="display:inline-block;width:250px;height:250px" data-ad-client="ca-pub-9088468190661086" data-ad-slot="2515261006"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></picture>
+              <picture><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script><ins class="adsbygoogle" style="display:inline-block;width:250px;height:250px" data-ad-client="ca-pub-9088468190661086" data-ad-slot="2515261006"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></picture>
             </div>
           </figure>
         </article>
@@ -329,7 +474,7 @@
                   shadowEditorWrapper.style.width = `${shadowWidth}px`;
           
                   previousShadowTranslation += shadowWidth + (2 * shadowWidthDiff);
-                  shadowEditorWrapper.style.translate = `-${previousShadowTranslation}px`;
+                  shadowEditorWrapper.style.translate = `-${previousShadowTranslation / 16}rem`;
           
                   shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
                   shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;
@@ -547,11 +692,7 @@
     let codeChanged = false;
     let isProcessing = false;
 
-    inputEditor.getSession().on('change', () => {
-      codeChanged = true;
-
-      console.log("test");
-    });
+    inputEditor.getSession().on('change', () => codeChanged = true);
 
     inputEditor.getSession().on('changeAnnotation', () => {
       if (!isProcessing) {

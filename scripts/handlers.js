@@ -118,18 +118,94 @@ function setupDragAndDrop(editor) {
       handleDrag(e);
 
       const file = e.dataTransfer.files[0];
-      const text = e.dataTransfer.getData('text/plain');
 
       if (file && (file.type === "text/css" || file.name.endsWith('.css'))) { // css file
           const reader = new FileReader();
           reader.onload = (event) => window.inputEditor.setValue(event.target.result);
           reader.readAsText(file);
       }
-      else if (text) { // plain text
-          const cursorPosition = window.inputEditor.getCursorPosition();
-          window.inputEditor.insertText(cursorPosition, text);
-      } else {
+      else if (e.dataTransfer.getData('text/plain'));
+      else {
           alert("Only .css files or text are allowed!");
       }
   });
+}
+
+function selectHandler(optionElem, close) {
+  let labelElem = optionElem.closest('label');
+  
+  if (close) labelElem.control.checked = false;
+  labelElem.control.value = labelElem.control.nextElementSibling.innerHTML = optionElem.innerHTML;
+  
+  switch (labelElem.id) {
+    case "typefaces": {
+      outputEditor.container.style.fontFamily = inputEditor.container.style.fontFamily = labelElem.control.value + ', monospace';
+      break;
+    }
+    case "fontsizes": {
+      outputEditor.container.style.fontSize = inputEditor.container.style.fontSize = labelElem.control.value;
+      document.querySelectorAll('.ace_tooltip').forEach((elem) => elem.style.fontSize = `${parseFloat(outputEditor.container.style.fontSize) * 0.8}rem`);
+      break;
+    }
+  }
+}
+
+function numberHandler(inputElem, event) {
+  let displayElem = inputElem.closest('.number').querySelector('span');
+
+  function updateNumber(updateDirection) {
+    if (updateDirection) displayElem.textContent = +displayElem.textContent + 1; // Increment
+    else if (+displayElem.textContent >= 1) displayElem.textContent -= 1; // Decrement
+  }
+
+  switch (event.type) {
+    case "keydown": if (!event.key) break;
+    case "click": {
+      let isKeyEvent = event.type === "keydown";
+      let isClickEvent = event.type === "click";
+      
+      let upArrowCheck = (isKeyEvent && event.key === "ArrowUp") || (isClickEvent && !inputElem.previousElementSibling);
+      let downArrowCheck = (isKeyEvent && event.key === "ArrowDown") || (isClickEvent && inputElem.previousElementSibling);
+      
+      if (upArrowCheck || downArrowCheck) updateNumber(upArrowCheck || !downArrowCheck);
+
+      break;
+    }
+    case "touchstart":
+    case "mousedown": {
+      console.log(event.type);
+      let updateDirection = !inputElem.previousElementSibling;
+
+      // Set the initial timeout and the interval after a delay
+      displayElem.holdInitial = setTimeout(() => {
+        updateNumber(updateDirection);
+        displayElem.holdDelay = setTimeout(() => {
+          displayElem.holdInterval = setInterval(() => updateNumber(updateDirection), 33.4);
+        }, 500);
+      }, 100);
+
+      break;
+    }
+    case "touchend":
+    case "mouseup": {
+      // Clear timeouts and intervals safely
+      clearTimeout(displayElem.holdInitial);
+      clearTimeout(displayElem.holdDelay);
+      clearInterval(displayElem.holdInterval);
+      
+      // Reset hold state
+      displayElem.holdInitial = undefined;
+      displayElem.holdDelay = undefined;
+      displayElem.holdInterval = undefined;
+      break;
+    }
+  }
+
+  let labelElem = inputElem.closest('label');
+  switch (labelElem.id) {
+    case "indentationSize": {
+      console.log("test");
+      break;
+    }
+  }
 }

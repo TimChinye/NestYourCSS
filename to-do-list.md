@@ -18,7 +18,7 @@
 - Keyboard Shortcuts extension has a lot of useful stuff
 - Will have to re-develop to limit features and re-design.
 - Add a minimap (might need to DIY)
-- Add ability to change the colour theme for greenish-blue to whatever:
+- Add ability to change the colour theme from greenish-blue to whatever:
 ```css
 #main-content {
     --rotation: 2300deg;

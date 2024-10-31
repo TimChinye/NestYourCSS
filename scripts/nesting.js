@@ -1473,7 +1473,7 @@ body {
 ];
 
 function nestCode() {
-	(mainEl = document.querySelector('main')).classList.contains('nesting') || mainEl.classList.add('nesting');
+	(mainEl = document.querySelector('main')).classList.contains('nesting') || mainEl.classList.add('nesting', 'fade-out'), setTimeout(() => mainEl.classList.remove('fade-out'), 1000);
 
 	const annotations = inputEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
 	if (annotations.length == 0) {

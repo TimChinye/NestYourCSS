@@ -133,7 +133,7 @@
 
 @keyframes slideUp {
 	to {
-		padding-bottom: 64rem;
+		padding-bottom: 32em;
 	}
 }
 
@@ -142,7 +142,7 @@
 	
 	6.25% {
 		scale: 0.75;
-		translate: 180px -180px;
+		translate: 6em -6em;
 		rotate: 20 -4 20 60deg;
 		z-index: 1;
 	}
@@ -156,7 +156,7 @@
 }
 
 @keyframes slideInLines {
-	from { translate: -100px calc(5lh + (var(--charIndex) * 1em)); }
+	from { translate: -3.25em calc(5lh + (var(--charIndex) * 1em)); }
 
 	to { translate: 0; }
 }
@@ -278,6 +278,16 @@
 }
 
 @keyframes unblur {
-	0% { filter: blur(25px); }
-	100% { filter: blur(0px); }
+	0% { filter: blur(1em); }
+	100% { filter: blur(0); }
+}
+
+@keyframes fadeOut {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
 }

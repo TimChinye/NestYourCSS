@@ -472,10 +472,10 @@
                   shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
           
                   let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (index + 1));
-                  shadowEditorWrapper.style.width = `${shadowWidth}px`;
+                  shadowEditorWrapper.style.width = `${shadowWidth / 10.4}rch`; /* 16 * 0.65 */
           
                   previousShadowTranslation += shadowWidth + (2 * shadowWidthDiff);
-                  shadowEditorWrapper.style.translate = `-${previousShadowTranslation / 16}rem`;
+                  shadowEditorWrapper.style.translate = `-${previousShadowTranslation / 10.4}rch`;
           
                   shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
                   shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;

@@ -326,7 +326,7 @@ function comboHandler(inputElem, close) {
   
   switch (labelElem.id) {
     case "externalCss": {
-      fetch('https://proxy.cors.sh/' + inputElem.innerHTML).then((response) => {
+      fetch("https://timchinye.com/private-proxy/" + inputElem.innerHTML).then((response) => {
           if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
           }

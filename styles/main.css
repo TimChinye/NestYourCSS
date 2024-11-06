@@ -922,6 +922,19 @@ body {
 							max-height: 100%;
 							aspect-ratio: var(--total-width) / 7;
 							animation: moveLeft 2s cubic-bezier(1, 0, 0.5, 1) both;
+
+							/* moveLeft Animation Variables */
+							& {
+								--code-editor-height: (100cqh);
+								--code-editor-width: (100%);
+								--vertical-padding: (2 * var(--padding));
+								--content-height: (var(--code-editor-height) - var(--vertical-padding));
+								--combined-editor-width: ((var(--total-width) / 7) * var(--content-height));
+								--difference-of-both-full-widths: (var(--code-editor-width) - var(--combined-editor-width));
+								--align-left: (0% - (var(--difference-of-both-full-widths) / 2));
+								--single-editor-width: ((var(--editor-width) / var(--total-width)) * var(--combined-editor-width));
+								/* translate: calc(var(--align-left) + var(--code-editor-width) - var(--single-editor-width)); */
+							}
 							
 							#editorGap {
 								height: 100%;

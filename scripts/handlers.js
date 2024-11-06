@@ -326,7 +326,7 @@ function comboHandler(inputElem, close) {
   
   switch (labelElem.id) {
     case "externalCss": {
-      fetch("https://timchinye.com/private-proxy/" + inputElem.innerHTML).then((response) => {
+      fetch(inputElem.innerHTML).then((response) => {
           if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
           }
@@ -334,7 +334,7 @@ function comboHandler(inputElem, close) {
           // Check if the Content-Type is CSS
           const contentType = response.headers.get('Content-Type');
           if (!contentType || !contentType.includes('text/css')) {
-              throw new Error("The file is not a CSS file.");
+              throw new Error("Fetched a non-CSS file");
           }
 
           return response.text();
@@ -350,8 +350,19 @@ function comboHandler(inputElem, close) {
           }
       })
       .catch(error => {
-          console.error('Error fetching the CSS file:', error);
-          alert("Failed to load the external CSS file. Please check the URL.");
+        window.currentError = error;
+
+        switch (error.message) {
+          case "Failed to fetch":
+            alert("Couldn't fetch any file. Please check the URL and ensure it's publicly fetchable.");
+            break;
+          case "Fetched a non-CSS file":
+            alert("Successfully fetched the external file, but it wasn't a CSS file.");
+            break;
+          default:
+            alert("An error occurred while fetching the external file - please see the console.");
+            console.error('Error fetching the external CSS file:', error);
+        }
       });
 
       break;

@@ -8,7 +8,6 @@
 - Make "reducing boilerplate code" animate out as well
 - Finish making the animations responsive
 - Show a different number of ads dependent on @container
-- Re make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
 - Browser support
@@ -17,6 +16,7 @@
 - Make a 'dev.nestyourcss.com'
 
 ## List of (potential) parts to add to the site:
+- Re make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)
 - History of all conversions to Nested CSS
 - Auto-save every minute? Or just "Nest" button (probably both, with a toggleable auto-save)
 - Button to use the previous selector instead (a.k.a. previous `diff`, but only for selectors) edit: not sure why this is only for selectors

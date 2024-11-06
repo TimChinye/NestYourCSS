@@ -21105,13 +21105,15 @@ function renestCSS(withHtml, cssProvided) {
                 let urlDepth = 0;
                 let result = parts.map((part, index, array) => {
                     // Calculate how far within a url() that the part is in
-                    if (part.startsWith('url(')) {
+                    if (part.includes('url(')) {
                         const openBrackets = part.split('(').length - 1; // Count '('
                         const closeBrackets = part.split(')').length - 1; // Count ')'
 
                         urlDepth = openBrackets - closeBrackets;
                     }
 
+                    console.log(part);
+                    console.log(urlDepth);
                     // Check if we're within a url()
                     if (urlDepth > 0) {
                         // Combine the current part with the next part

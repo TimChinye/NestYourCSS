@@ -1,4 +1,4 @@
- <!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -21,17 +21,63 @@
       document.body.style.setProperty('--cursorHorizPosition', roundNumber((window.cursorX / document.body.clientWidth) * 100) + '%');
     };
   </script>
-  <div id="site-wrapper">
+  <div id="siteWrapper">
     <main>
     <!-- <main class="nesting"> -->
-      <aside id="main-settings">
+      <aside id="mainSettings">
+        <section>
+          <h2>Input</h2>
+          <ul>
+            <li>
+              <label>Samples</label>
+              <div>
+                <label id="samples" class="dropdown">
+                  <input type="checkbox" style="appearance: none; position: absolute;">
+                  <output>Unnested Showcase</output>
+                  
+                  <menu hidden>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="unnestedShowcase">Unnested Showcase</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="nestedShowcase">Nested Showcase</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="complexSelectorGroups">Complex selector group</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="escapedCharacters">Escaped characters</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="unnestedNavbar">Unnested navbar</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="aphellaLoginPage">Aphella Login</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="aphellaDashboard">Aphella Dashboard</option>
+                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0" value="amazonHomepage">Amazon Homepage</option>
+                  </menu>
+                  
+                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
+                </label>
+              </div>
+            </li>
+            <li>
+              <label>
+                External CSS
+                <p>(press enter to inject)</p>
+              </label>
+              <div>
+                <label id="externalCss" class="combobox" onclick="event.preventDefault(); this.control.checked ^= 1">
+                  <input type="checkbox" tabindex="-1">
+                  <output tabindex="0"><div contenteditable="true" onkeydown="(event.code === 'Enter') && comboHandler(this, true)" onpaste="event.preventDefault(); document.execCommand('insertText', false, (event.clipboardData || window.clipboardData).getData('text'));" oninput="if (this.innerText.includes('\n')) this.textContent = this.textContent.replace(/\n/g, ''), window.getSelection().collapse(this.lastChild, this.lastChild?.length);" onblur="this.scrollLeft = 0;" placeholder="https://..."></div></output>
+      
+                  <menu hidden>
+                    <!-- <option disabled>-----</option> -->
+                    <option onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">https://nestyourcss.com/styles/main.css</option>
+                  </menu>
+                
+                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.firstElementChild.checked = false)))()</script>
+                </label>
+              </div>
+            </li>
+          </ul>
+        </section>
         <section>
           <h2>Editor</h2>
           <ul>
             <li>
               <label>Font</label>
               <div>
-                <label id="typefaces" class="select-menu">
+                <label id="typefaces" class="dropdown">
                   <input type="checkbox">
                   <output>Fira Code</output>
 
@@ -45,7 +91,7 @@
               
                   <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
                 </label>
-                <label id="fontsizes" class="select-menu">
+                <label id="fontsizes" class="dropdown">
                   <input type="checkbox">
                   <output>1.25rem</output>
 
@@ -69,17 +115,17 @@
               <label>Indentation</label>
               <div>
                 <label id="indentationType" class="checkbox">
-                  <input type="checkbox">
+                  <input type="checkbox" onchange="checkboxHandler(this)" checked>
                   <span>Soft</span>
                   <span>Hard</span>
                 </label>
                 <label id="indentationSize" class="number">
                   Size:
                   <output>
-                    <span contenteditable="true" inputmode="numeric" oninput="(this.textContent = +this.textContent.replace(/\D+/g, '')) && numberHandler(this, event)" onkeydown="numberHandler(this, event)">4</span>
+                    <span contenteditable="true" inputmode="numeric" oninput="(this.textContent = +this.textContent.replace(/(\D)+/g, '')) && numberHandler(this, event)" onkeydown="numberHandler(this, event)">4</span>
                     <div>
-                      <svg fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="numberHandler(this, event)" onmousedown="numberHandler(this, event)" onmouseup="numberHandler(this, event)" ontouchstart="numberHandler(this, event)" ontouchend="numberHandler(this, event)"><path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z"></path></svg>
-                      <svg fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="numberHandler(this, event)" onmousedown="numberHandler(this, event)" onmouseup="numberHandler(this, event)" ontouchstart="numberHandler(this, event)" ontouchend="numberHandler(this, event)"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
+                      <svg fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="numberHandler(this, event)" onmousedown="numberHandler(this, event)" onmouseup="numberHandler(this, event)" onmouseleave="numberHandler(this, event)" ontouchstart="numberHandler(this, event)" ontouchend="numberHandler(this, event)"><path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z"></path></svg>
+                      <svg fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="numberHandler(this, event)" onmousedown="numberHandler(this, event)" onmouseup="numberHandler(this, event)" onmouseleave="numberHandler(this, event)" ontouchstart="numberHandler(this, event)" ontouchend="numberHandler(this, event)"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
                     </div>
                   </output>
                 </label>
@@ -88,11 +134,11 @@
             <li>
               <label>Coordinates</label>
               <div>
-                <label id="coordinates" class="radio-group">
-                  <label>None<input type="radio" name="coordinates"></label>
-                  <label>Line<input type="radio" name="coordinates"></label>
-                  <label>Col<input type="radio" name="coordinates" checked></label>
-                  <label>Both<input type="radio" name="coordinates"></label>
+                <label id="coordinates" class="radio-group" for="">
+                  <label>Both<input type="radio" name="coordinates" onchange="radioHandler(this)"></label>
+                  <label>Line<input type="radio" name="coordinates" onchange="radioHandler(this)"></label>
+                  <label>Col<input type="radio" name="coordinates" onchange="radioHandler(this)"></label>
+                  <label>None<input type="radio" name="coordinates" onchange="radioHandler(this)" checked></label>
                 </label>
               </div>
             </li>
@@ -104,10 +150,10 @@
             <li>
               <label>Mode</label>
               <div>
-                <label id="mode" class="radio-group">
-                  <label>Minify<input type="radio" name="mode"></label>
-                  <label>Nest<input type="radio" name="mode"></label>
-                  <label>Unnest<input type="radio" name="mode" checked></label>
+                <label id="mode" class="radio-group" for="">
+                  <label>Minify<input type="radio" name="mode" onchange="radioHandler(this)" onclick="if (!(window.processAuto ?? true) && (Array.from(this.parentElement.parentElement.children).indexOf(this.parentElement) == window.processMode)) nestCode();"></label>
+                  <label>Nest<input type="radio" name="mode" onchange="radioHandler(this)" onclick="if (!(window.processAuto ?? true) && (Array.from(this.parentElement.parentElement.children).indexOf(this.parentElement) == window.processMode)) nestCode();" checked></label>
+                  <label>Unnest<input type="radio" name="mode" onchange="radioHandler(this)" onclick="if (!(window.processAuto ?? true) && (Array.from(this.parentElement.parentElement.children).indexOf(this.parentElement) == window.processMode)) nestCode();" disabled></label>
                 </label>
               </div>
             </li>
@@ -115,50 +161,9 @@
               <label>Auto</label>
               <div>
                 <label id="auto" class="checkbox">
-                  <input type="checkbox">
-                  <span>On</span>
+                  <input type="checkbox" onchange="checkboxHandler(this)" checked>
                   <span>Off</span>
-                </label>
-              </div>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h2>Input</h2>
-          <ul>
-            <li>
-              <label>
-                External CSS
-                <p>(press enter to inject)</p>
-              </label>
-              <div>
-                <!-- Custom made with Inherited styles from dropdown -->
-                <label id="externalCss" class="select-menu">
-                  <input type="checkbox">
-                  <output placeholder="https://...">https://google.com/assets/styles.css</output>
-
-                  <menu hidden>
-                    <!-- <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0"></option> -->
-                  </menu>
-                
-                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
-                </label>
-              </div>
-            </li>
-            <li>
-              <label>Samples</label>
-              <div>
-                <label id="samples" class="select-menu">
-                  <input type="checkbox" style="appearance: none; position: absolute;">
-                  <output>Default</output>
-
-                  <menu hidden>
-                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">Default</option>
-                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">NYCSS Syntax Highlighter</option>
-                    <option onclick="selectHandler(this)" onkeydown="(event.code === 'Space') && selectHandler(this, true)" tabindex="0">-----</option>
-                  </menu>
-                
-                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))()</script>
+                  <span>On</span>
                 </label>
               </div>
             </li>
@@ -171,7 +176,7 @@
           <table>Errors</table>
         </section>
       </aside>
-      <section id="main-content">
+      <section id="mainContent">
         <article id="textSide">
           <header>
             <hgroup>
@@ -280,7 +285,7 @@
               <h1>Nest Your CSS!</h1>
             </hgroup>
             <menu>
-              <button class="navButton" id="githubBtn">
+              <button class="nav-button" id="githubBtn">
                 <a href="https://github.com/TimChinye/NestYourCSS/" target="_blank"></a>
                 <svg width="100%" height="100%" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
                   <path d="M47.3,8.1C51.5,8 56.3,8.7 60.3,10C63.7,11.2 68.7,13.7 71.5,15.8C74.2,17.8 78.1,21.8 80.2,24.5C82.3,27.3 84.9,32.4 86,36C87.1,39.6 88,45.1 88,48.3C88,51.4 87.1,56.8 86,60.3C84.8,63.7 82.2,68.8 80.2,71.5C78.1,74.3 74.2,78.2 71.5,80.3C68.7,82.3 63.6,84.9 60,86C56.4,87.1 50.9,88 47.8,88C44.6,88 39.2,87.1 35.8,86C32.3,84.8 27.3,82.3 24.5,80.2C21.8,78.2 17.9,74.3 15.8,71.5C13.7,68.7 11.1,63.6 10,60C8.9,56.4 8,50.9 8,47.7C8,44.6 8.9,39.2 10,35.8C11.2,32.3 13.8,27.3 15.8,24.5C17.9,21.8 21.8,17.8 24.5,15.8C27.3,13.7 32,11.1 35,10.1C38.2,9 43.4,8.1 47.3,8.1ZM28.1,20.5C25.8,22.1 22.3,25.8 20.4,28.5C18.5,31.3 16.3,35.8 15.5,38.5C14.6,41.3 14,45.5 14,48C14,50.5 14.7,54.8 15.5,57.5C16.3,60.3 18.5,64.8 20.3,67.5C22.2,70.3 25.4,73.7 27.6,75.2C29.7,76.7 33.2,78.6 35.3,79.5L39,81C39,68.6 39,68.5 36,67.7C34.1,67.3 32.6,66 31.8,64.3C31.2,62.7 29.9,60.7 29.1,59.7C27.7,58.2 27.7,57.9 29,57.9C29.8,57.9 31.6,59.1 33,60.5C34.4,61.9 36.2,63 37,63C37.8,63 39.5,61.7 40.8,60L43,57C37.2,54.3 34.5,51.9 33.2,50C31.3,47.1 31,45.7 31.4,42C31.8,39.5 32.2,35 32.5,32C32.7,29 33.2,26.3 33.5,26C33.8,25.7 35.4,26.2 37,27C38.7,27.8 40.1,28.8 40,29.3C40,29.7 43,29.9 46.8,29.7C51,29.5 54.5,28.8 56.3,27.7C57.8,26.8 59.6,26.2 60.3,26.4C60.9,26.6 61.8,29.3 62.2,32.6C62.7,35.9 63.2,40.3 63.5,42.5C63.9,45.5 63.6,47.3 62,49.8C60.9,51.5 58.2,53.9 56,55C52.1,57 52,57 53.8,59.1C55.1,60.7 55.6,63.4 55.8,71.1C56,80.8 56,81 58.3,80.4C59.5,80.1 62.3,78.8 64.5,77.5C66.7,76.3 70.5,73 72.9,70.4C75.4,67.7 78.3,63.5 79.4,61C81,57.6 81.5,54.4 81.5,48C81.5,41.3 81,38.5 79.2,34.7C78,32.1 74.9,27.7 72.3,24.9C69.6,22.1 65.1,18.7 62,17.2C58.1,15.4 54.5,14.5 49.5,14.3C44.6,14 41,14.5 37.4,15.7C34.7,16.7 30.5,18.9 28.1,20.5Z" />
@@ -288,7 +293,7 @@
                 </svg>
                 <span>Contribute</span>
               </button>
-              <button class="navButton" id="historyBtn">
+              <button class="nav-button" id="historyBtn">
                 <a href="https://github.com/TimChinye/NestYourCSS/"></a>
                 <svg width="100%" height="100%" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
                   <path d="M47.3,8.01C50.4,7.91 55.4,8.61 58.3,9.41C61.1,10.21 66.4,12.81 69.9,15.11C73.9,17.71 77.8,21.51 80.2,24.91C82.3,27.91 85,33.31 86.1,36.91C87.2,40.51 88,45.41 88,47.91C88,50.41 87.2,55.31 86.1,58.91C85,62.51 82.3,67.91 80.2,70.91C77.8,74.31 73.9,78.11 69.9,80.71C66.4,83.01 61.1,85.61 58.3,86.41C55.4,87.21 50.8,87.91 48,87.91C45.3,87.91 40.2,87.01 36.8,85.91C33.3,84.81 28.1,82.21 25.1,80.21C22.1,78.11 18,73.91 15.8,70.91C13.7,67.91 11,62.51 9.9,58.91C8.8,55.31 8,50.31 8,47.61C8,45.01 8.9,40.11 10,36.71C11.1,33.21 13.5,28.21 15.4,25.41C17.3,22.71 20.6,19.01 22.7,17.31C24.8,15.61 28.1,13.41 30,12.41C31.9,11.41 35.3,10.01 37.5,9.31C39.7,8.61 44.1,8.01 47.3,8.01ZM35.5,16.61C33.3,17.51 29.7,19.71 27.5,21.41C25.3,23.21 21.7,27.21 19.5,30.41C15.6,36.01 15.5,36.31 15.1,46.31C14.8,55.61 15,56.81 17.4,61.71C18.8,64.51 21.7,68.71 23.8,71.01C25.8,73.21 30.2,76.41 33.5,78.01C38.7,80.61 40.6,80.91 48,80.91C55.4,80.91 57.3,80.61 62.5,78.01C65.8,76.41 70.2,73.21 72.3,71.01C74.3,68.71 77.1,64.71 78.5,61.91C80.6,57.71 81,55.51 81,47.91C81,41.11 80.5,37.91 79,34.61C78,32.31 75.2,28.21 72.8,25.51C70.1,22.51 66.2,19.61 62.5,17.81C58.5,15.91 54.3,14.81 50,14.51C46.4,14.21 42.6,14.21 41.5,14.51C40.4,14.81 37.7,15.71 35.5,16.61ZM51.9,25.01C54.4,25.31 58.4,26.91 60.8,28.51C63.2,30.11 66.4,33.21 67.8,35.41C70.2,39.01 70.5,40.31 70.5,48.01C70.5,55.61 70.2,57.01 67.8,60.71C66.2,63.01 63.3,66.01 61.3,67.41C59.2,68.71 55.5,70.21 53,70.71C50.5,71.11 46.3,71.11 43.5,70.71C40.6,70.31 36.9,68.71 34.7,67.21C32.6,65.61 29.7,62.61 28.2,60.41C26.5,57.71 25.5,54.71 25.3,51.11C25,46.51 25.2,45.91 27,45.91C28.6,45.91 29.3,47.11 30.6,51.71C31.7,55.41 33.3,58.41 35.4,60.41C37.1,62.11 40.8,64.01 43.5,64.81C47.4,65.91 49.3,65.91 52.3,65.01C54.3,64.41 57.6,62.41 59.7,60.71C61.7,58.91 63.9,55.91 64.7,54.21C65.4,52.41 66,49.41 66,47.71C66,45.91 65,42.41 63.7,39.91C62.3,37.01 60,34.51 57,32.71C54.1,30.91 51.1,29.91 48.8,29.91C46.7,29.91 43.2,30.61 41,31.41C38.8,32.21 37,33.41 37,33.91C37,34.41 37.7,35.11 38.5,35.41C39.3,35.71 40,36.61 40,37.41C40,38.21 39.3,39.11 38.5,39.41C37.7,39.71 34.8,39.91 27,39.91L27,33.91C27,30.11 27.5,27.71 28.3,27.31C28.9,26.91 30.4,27.21 31.5,27.91C33.1,28.91 34,28.81 36,27.51C37.4,26.61 40.5,25.61 42.9,25.11C45.4,24.71 49.4,24.61 51.9,25.01ZM48.2,34.91C48.6,34.91 49.2,35.91 49.5,37.21C49.7,38.41 50.1,41.21 50.2,43.41C50.5,47.31 50.6,47.41 54.3,47.71C57.3,47.91 58,48.31 58,49.91C58,51.01 57.3,52.11 56.5,52.41C55.7,52.71 53,52.91 46,52.91L45.8,44.61C45.7,40.01 46,35.91 46.5,35.61C47,35.21 47.7,34.91 48.2,34.91Z" />
@@ -296,7 +301,7 @@
                 </svg>
                 <span>Nesting History</span>
               </button>
-              <button class="navButton" id="userSettingsBtn">
+              <button class="nav-button" id="userSettingsBtn">
                 <a href="https://github.com/TimChinye/NestYourCSS/"></a>
                 <svg width="100%" height="100%" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
                   <path d="M47.3,8.1C51.5,8 56.3,8.7 60.3,10C63.7,11.2 68.7,13.7 71.5,15.8C74.2,17.8 78.1,21.8 80.2,24.5C82.3,27.3 84.9,32.4 86,36C87.1,39.6 88,45.1 88,48.3C88,51.4 87.1,56.8 86,60.3C84.8,63.7 82.2,68.8 80.2,71.5C78.1,74.3 74.2,78.2 71.5,80.2C68.7,82.3 63.8,84.9 60.5,86C57,87.2 51.9,88 48.3,88C44.7,88 39.3,87.1 35.8,86C32.3,84.8 27.3,82.3 24.5,80.2C21.8,78.2 17.9,74.3 15.8,71.5C13.7,68.7 11.1,63.6 10,60C8.9,56.4 8,50.9 8,47.8C8,44.6 8.9,39.2 10,35.8C11.2,32.3 13.8,27.3 15.8,24.5C17.9,21.8 21.8,17.8 24.5,15.8C27.3,13.7 32,11.1 35,10.1C38.2,9 43.4,8.1 47.3,8.1ZM29.1,20C25.3,22.4 22.4,25.3 19.8,29.5C17.7,32.8 15.5,37.8 14.9,40.5C14.2,43.3 14,48 14.2,51C14.5,54 15.7,58.6 16.9,61.3C18,63.9 21.1,68.3 23.8,71.1C26.4,73.9 31,77.4 34,78.8C38.6,81.1 40.8,81.5 48,81.5C55.2,81.5 57.4,81.1 62,78.8C65,77.4 69.6,73.9 72.3,71.1C74.9,68.3 78,63.9 79.2,61.2C81,57.5 81.5,54.7 81.5,48C81.5,41.3 81,38.5 79.2,34.7C78,32.1 74.9,27.7 72.3,24.9C69.6,22.1 65.1,18.7 62,17.2C58,15.3 54.5,14.5 49.5,14.3C45.7,14.1 40.7,14.6 38.5,15.3C36.3,16 32,18.1 29.1,20ZM48.4,25.2C53.4,25.5 53.5,25.5 54,29.3C54.3,31.3 55.2,33.4 56,33.9C57,34.5 58.6,34.4 60.8,33.4C62.5,32.6 64.5,32.2 65,32.5C65.6,32.8 66.9,34.9 70.1,41.5L67.1,44.5C65.4,46.1 64,47.8 64,48.3C64,48.7 65.5,50.3 67.3,51.9C70.3,54.6 70.4,55.1 69.3,57.7C68.6,59.2 67.1,61.3 66,62.3C64.3,63.8 63.5,63.8 60.5,62.8C58.167,61.933 56.667,61.833 56,62.5C55.4,63 54.6,65.1 54.2,67C53.4,70.5 53.4,70.5 48,70.5C42.6,70.5 42.6,70.5 41.8,67C41.4,65.1 40.6,63 40,62.5C39.333,61.833 37.833,61.933 35.5,62.8C32.7,63.8 31.7,63.8 30.3,62.8C29.4,62.1 28.1,59.9 27.3,58C25.9,54.6 25.9,54.4 28.9,51.8C30.6,50.2 32,48.5 32,48C32,47.5 30.6,45.8 25.8,41.5L27.9,37.3C29.1,34.9 30.5,32.8 31,32.5C31.6,32.2 33.6,32.7 35.5,33.5C38.6,34.8 39.2,34.8 40.5,33.5C41.3,32.7 41.9,30.7 41.8,29.2C41.7,27.6 42.1,26 42.5,25.6C43,25.2 45.7,25 48.4,25.2ZM40,48C40,49.9 40.9,51.9 42.5,53.5C44.1,55.1 46.1,56 48,56C50,56 52,55.1 53.5,53.5C55.1,52 56,49.8 56,48C56,46.1 55.1,44.1 53.5,42.5C51.9,40.9 49.9,40 48,40C46,40 44,40.9 42.5,42.5C41.1,43.9 40.1,46.1 40,48Z" />
@@ -304,7 +309,7 @@
                 </svg>
                 <span>User Settings</span>
               </button>
-              <button class="navButton" id="reportBugBtn">
+              <button class="nav-button" id="reportBugBtn">
                 <a href="https://github.com/TimChinye/NestYourCSS/"></a>
                 <svg width="100%" height="100%" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
                   <path d="M47.3,8.1C51.5,8 56.3,8.7 60.3,10C63.7,11.2 68.7,13.7 71.5,15.8C74.2,17.8 78.1,21.8 80.2,24.5C82.3,27.3 84.9,32.4 86,36C87.1,39.6 88,45.1 88,48.3C88,51.4 87.1,56.8 86,60.3C84.8,63.7 82.2,68.8 80.2,71.5C78.1,74.3 74.2,78.2 71.5,80.2C68.7,82.3 63.8,84.9 60.5,86C57,87.2 51.9,88 48.3,88C44.7,88 39.3,87.1 35.8,86C32.3,84.8 27.3,82.3 24.5,80.2C21.8,78.2 17.9,74.3 15.8,71.5C13.7,68.7 11.1,63.6 10,60C8.9,56.4 8,50.9 8,47.8C8,44.6 8.9,39.2 10,35.8C11.2,32.3 13.8,27.3 15.8,24.5C17.9,21.8 21.8,17.8 24.5,15.8C27.3,13.7 32,11.1 35,10.1C38.2,9 43.4,8.1 47.3,8.1ZM31,18.7C29.1,19.9 25.5,23 23.1,25.7C20.6,28.3 17.7,32.5 16.6,35C15,38.4 14.5,41.6 14.5,48C14.5,54.7 15,57.5 16.8,61.3C18,63.9 21.1,68.3 23.8,71.1C26.4,73.9 31,77.4 34,78.8C38.6,81.1 40.8,81.5 48,81.5C55.2,81.5 57.4,81.1 62,78.8C65,77.4 69.4,74.2 71.8,71.8C74.1,69.4 77.3,65 78.8,62C81.1,57.3 81.5,55.2 81.5,48C81.5,41.3 81,38.5 79.2,34.7C78,32.1 74.9,27.7 72.3,24.9C69.6,22.1 65.1,18.7 62,17.2C58,15.3 54.5,14.5 49.5,14.3C45.7,14.1 40.7,14.6 38.5,15.3C36.3,16 32.9,17.5 31,18.7ZM42.3,26C43.4,26 44.3,27.2 44.8,29C45.2,30.7 46.1,32.2 46.8,32.5C47.4,32.8 48.6,32.8 49.3,32.5C49.9,32.2 50.8,30.7 51.3,29C51.7,27.1 52.6,26 53.8,26C55.2,26 55.4,26.6 54.8,29.7C54.3,32.8 54.6,33.7 56.1,34.8C57.1,35.4 58.5,37.1 59,38.5C59.6,39.9 60.3,41 60.8,41C61.2,41 62.3,40.5 63.3,39.8C64.4,39 65.3,37 65.4,35C65.7,32.5 66.3,31.4 67.6,31.1C69.3,30.8 69.4,31.2 68.8,35.6C68.4,39 67.5,41 65.8,42.3C64.5,43.3 62.7,44.1 61.8,44C60.5,44 60,44.8 60,46.5C60,48.9 60.3,49 65.5,49C69.7,49 71,49.3 71,50.5C71,51.7 69.7,52 65.5,52C60.7,52 60,52.2 60,54C60,55.1 60.7,56 61.5,56C62.3,56 64.3,57.4 66,59C68.3,61.3 69,62.9 69,66C69,68.9 68.6,70 67.5,70C66.7,70 65.8,69.3 65.5,68.5C65.2,67.7 65,66 65,64.8C65,63.5 64.5,61.9 63.8,61.2C63.1,60.5 61.9,60 61.3,60C60.6,60 58.5,61.5 56.8,63.4C55,65.3 52.2,67.1 50.5,67.5C48.9,67.9 46.4,67.9 45,67.5C43.6,67.1 41,65.3 39.3,63.4C37.5,61.5 35.4,60 34.7,60C34,60 32.9,60.6 32.2,61.3C31.5,61.9 31,63.5 31,64.8C31,66 30.8,67.7 30.5,68.5C30.2,69.3 29.3,70 28.5,70C27.4,70 27,68.9 27,66C27,62.9 27.7,61.3 29.9,59C31.5,57.4 33.6,56 34.4,56C35.3,56 36,55.2 36,54C36,52.2 35.3,52 30.5,52C26.3,52 25,51.7 25,50.5C25,49.3 26.3,49 30.5,49C35.7,49 36,48.9 36,46.5C36,44.8 35.5,44 34.3,44C33.3,44.1 31.5,43.3 30.2,42.3C28.5,41 27.6,39 27.2,35.6C26.6,31.2 26.7,30.8 28.4,31.1C29.7,31.4 30.3,32.5 30.6,35C30.7,37 31.6,39 32.7,39.8C33.7,40.5 34.8,41 35.3,41C35.7,41 36.5,39.9 37,38.5C37.6,37.1 38.9,35.4 39.9,34.8C41.4,33.8 41.7,32.7 41.3,29.8C40.8,26.7 41,26 42.3,26Z" />
@@ -312,7 +317,7 @@
                 </svg>
                 <span>Report a Bug</span>
               </button>
-              <button class="navButton" id="feedbackBtn">
+              <button class="nav-button" id="feedbackBtn">
                 <a href="https://github.com/TimChinye/NestYourCSS/"></a>
                 <svg width="100%" height="100%" viewBox="0 0 96 96" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
                   <path d="M47.3,8.1C51.5,8 56.3,8.7 60.3,10C63.7,11.2 68.7,13.7 71.5,15.8C74.2,17.8 78.1,21.8 80.2,24.5C82.3,27.3 84.9,32.4 86,36C87.1,39.6 88,45.1 88,48.3C88,51.4 87.1,56.8 86,60.3C84.8,63.7 82.2,68.8 80.2,71.5C78.1,74.3 74.2,78.2 71.5,80.2C68.7,82.3 63.8,84.9 60.5,86C57,87.2 51.9,88 48.3,88C44.7,88 39.3,87.1 35.8,86C32.3,84.8 27.3,82.3 24.5,80.2C21.8,78.2 17.9,74.3 15.8,71.5C13.7,68.7 11.1,63.6 10,60C8.9,56.4 8,50.9 8,47.8C8,44.6 8.9,39.2 10,35.8C11.2,32.3 13.8,27.3 15.8,24.5C17.9,21.8 21.8,17.8 24.5,15.8C27.3,13.7 32,11.1 35,10.1C38.2,9 43.4,8.1 47.3,8.1ZM29.1,20C25.8,22.2 22.3,25.6 20.1,29C18,32 15.8,37 15.1,40C14.3,43 13.9,48 14.2,51C14.5,54 15.9,59.1 17.4,62.3C18.8,65.4 20.3,68 20.8,68C21.2,68 22.6,66.4 24,64.5C25.4,62.7 27.6,60.6 29,60C30.7,59.2 34.4,59.1 41.2,59.7C48.5,60.3 51.1,60.9 51.5,62C51.8,62.8 51.4,64.1 50.8,64.8C50.1,65.5 47.3,66.1 44.6,66.3C41.7,66.4 39.5,67 39.3,67.7C39.1,68.6 40.7,69 45,69C49.7,69 51.4,68.6 53,67C54.1,65.9 55,64.1 55,63C55,61.667 56.333,60.333 59,59C61.2,57.9 64,57.1 65.2,57.2C66.4,57.4 67.5,58.1 67.7,58.8C67.9,59.4 64.7,63.4 60.8,67.6C56.8,71.8 52.4,75.8 51,76.5C49.3,77.4 46.1,77.6 40.7,77.1C34.9,76.7 33,76.8 33,77.7C33,78.4 35.6,79.7 38.8,80.6C42.8,81.8 46.5,82.1 51,81.7C54.9,81.3 59.5,80.1 62.5,78.6C65.3,77.3 69.6,73.9 72.3,71.1C74.9,68.3 78,63.9 79.2,61.2C81,57.5 81.5,54.7 81.5,48C81.5,40.8 81.1,38.7 78.8,34C77.3,31 74.1,26.6 71.8,24.2C69.4,21.8 65,18.7 62,17.2C58.1,15.3 54.5,14.5 49.5,14.3C45.7,14.1 40.7,14.6 38.5,15.3C36.3,16 32.1,18.1 29.1,20ZM51.5,26C53.1,26 55,27.2 56.7,29.2C58.1,31 60.3,33 61.4,33.5C62.7,34.2 63.5,35.5 63.5,39.5L47.8,39.7C32.6,40 32,39.9 32,38C32,36.9 34,34 36.5,31.5C38.9,29 41.7,27 42.7,27C43.7,26.9 45.3,27.7 46.3,28.7C47.6,30 48,31.3 47.6,33.2C47.3,34.8 47.4,36 48,36C48.6,36 49.1,35.2 49.3,34.2C49.5,33.3 49.3,31.5 48.8,30.2C48.4,29 48.2,27.6 48.5,27C48.9,26.4 50.2,26 51.5,26ZM39.3,36C38,36 37.8,36.3 38.5,37.1C39.1,37.7 40.5,37.9 41.8,37.6C43.1,37.2 44,36.2 44,35C44,33.9 43.6,33 43.1,33C42.6,33 41.9,33.7 41.6,34.5C41.3,35.3 40.2,36 39.3,36ZM54.8,37.7C56,37.9 57,37.5 57,37C57,36.5 56.3,36 55.5,36C54.7,36 54,35.3 54,34.5C54,33.7 53.5,33 52.9,33C52.3,33 52,34 52.2,35.2C52.4,36.7 53.3,37.6 54.8,37.7ZM63.5,42.5L63.5,45C63.5,46.5 62.7,47.8 61.4,48.5C60.3,49 58.1,51 56.7,52.7C54.9,54.8 53.1,56 51.5,56C50.1,56 48.8,55.5 48.5,55C48.2,54.5 48.4,53 48.9,51.7C49.6,50.1 49.5,48.9 48.4,47.5C47.1,45.6 47,45.7 47.6,48.5C48,50.7 47.7,52 46.3,53.3C45.3,54.3 43.7,55.1 42.8,55C41.8,55 39,53 36.5,50.5C34,48 32,45.1 32,44C32.1,42 32.6,42 63.5,42.5ZM39.5,46C40.3,46 41.4,46.8 41.9,47.7C42.4,48.7 43.2,49.1 43.7,48.7C44.1,48.3 44,47.1 43.4,46.2C42.8,45.3 41.6,44.4 40.8,44.2C39.9,44 39,44.4 38.6,44.9C38.3,45.5 38.7,46 39.5,46ZM51.8,47.2C51.9,48.2 52.5,49 53,49C53.6,49 54,48.3 54,47.5C54,46.7 54.7,46 55.5,46C56.3,46 57,45.5 57,45C57,44.5 56.2,44 55.2,44C54.2,44 53,44.3 52.5,44.7C52,45 51.7,46.2 51.8,47.2Z" />
@@ -339,7 +344,7 @@
         </article>
         <article id="editorSide">
           <button id="nestBtn" onclick="nestCode();">Nest!</button>
-          <div id="code-editor">
+          <div id="codeEditor">
             <div class="editor" id="inputEditor"></div>
             <div id="editorGap"></div>
             <div class="editor" id="outputEditor"></div>
@@ -430,6 +435,7 @@
               [inputEditor, outputEditor].forEach((editor) => {
                 const editorTab = createEditorTab(editor, editor === inputEditor, false);
                 wrapEditorWithGroup(editor, editorTab);
+                updateCoordinateDisplay(ace.edit(editor));
               });
           
               // Shadow editor creation
@@ -493,6 +499,8 @@
                   shadowEditors.forEach((shadowEditor) => {
                     shadowEditor.innerHTML = inputEditor.innerHTML;
                   });
+
+                  if (window.getComputedStyle(shadowEditors[0].parentElement.parentElement).opacity == 0) return observer.disconnect(), shadowEditors[0].parentElement.parentElement.parentElement.remove();
                 });
               });
           
@@ -509,19 +517,19 @@
     <article>
       <section id="reducingBoilerplateCode">
         <a href="#reducingBoilerplateCode">BUT WHY THOUGH?</a>
-        <p id="repeating-text">With nesting, you can <b>avoid repeating <span class="repeat">common styles</span></b> in multiple <span class="repeat">selectors</span>. This helps reduce the size of your code and makes any future modifications <span class="repeat">easier</span>.</p>
-        <h1 id="parallax-text"><span>Reducing</span><span>Boilerplate</span><span>Code</span></h1>
+        <p id="repeatingText">With nesting, you can <b>avoid repeating <span class="repeat">common styles</span></b> in multiple <span class="repeat">selectors</span>. This helps reduce the size of your code and makes any future modifications <span class="repeat">easier</span>.</p>
+        <h1 id="parallaxText"><span>Reducing</span><span>Boilerplate</span><span>Code</span></h1>
       </section>
       <section id="easierMaintenance">
-        <p id="merging-text"><span>Easier</span><span>Maintenance</span></p>
-        <p id="changing-text">By using CSS nesting, any style <s>chnages</s> <b>changes</b> can be implemented <s>better</s> <b>more efficiently</b>. It promotes readability, maintainability, <s>and</s> <b>&</b> modularity in your stylesheets.</p>
+        <p id="mergingText"><span>Easier</span><span>Maintenance</span></p>
+        <p id="changingText">By using CSS nesting, any style <s>chnages</s> <b>changes</b> can be implemented <s>better</s> <b>more efficiently</b>. It promotes readability, maintainability, <s>and</s> <b>&</b> modularity in your stylesheets.</p>
       </section>
       <section id="improvedCodeReadability">
-        <p id="background-text"><span>Improved</span><span>Code</span><span>Readability</span></p>
-        <p id="visible-text">Nesting makes your code easier to read and understand for both yourself and <u><b><span>o</span><span>t</span><span>h</span><span>e</span><span>r</span><span> </span><span>d</span><span>e</span><span>v</span><span>e</span><span>l</span><span>o</span><span>p</span><span>e</span><span>r</span><span>s</span></b></u>. It allows you to write cleaner, easier-to-read nested selectors, making code much <u><b><span>e</span><span>a</span><span>s</span><span>i</span><span>e</span><span>r</span><span> </span><span>t</span><span>o</span><span> </span><span>m</span><span>a</span><span>i</span><span>n</span><span>t</span><span>a</span><span>i</span><span>n</span></b></u> and increase development productivity.</p>
+        <p id="backgroundText"><span>Improved</span><span>Code</span><span>Readability</span></p>
+        <p id="visibleText">Nesting makes your code easier to read and understand for both yourself and <u><b><span>o</span><span>t</span><span>h</span><span>e</span><span>r</span><span> </span><span>d</span><span>e</span><span>v</span><span>e</span><span>l</span><span>o</span><span>p</span><span>e</span><span>r</span><span>s</span></b></u>. It allows you to write cleaner, easier-to-read nested selectors, making code much <u><b><span>e</span><span>a</span><span>s</span><span>i</span><span>e</span><span>r</span><span> </span><span>t</span><span>o</span><span> </span><span>m</span><span>a</span><span>i</span><span>n</span><span>t</span><span>a</span><span>i</span><span>n</span></b></u> and increase development productivity.</p>
       </section>
       <section id="groupingStylesTogether">
-        <div id="grouped-text-wrapper"><p id="grouped-text"><span>Grouping</span><span>Styles</span><span>Together</span></p><p id="grouped-text"><span>Grouping</span><span>Styles</span><span>Together</span></p></div>
+        <div id="groupedTextWrapper"><p id="groupedText"><span>Grouping</span><span>Styles</span><span>Together</span></p><p id="groupedText"><span>Grouping</span><span>Styles</span><span>Together</span></p></div>
         <div id="miniEditor">
           <div id="lineNumbers">
           </div>
@@ -602,10 +610,10 @@
       </section>
       <section id="mechanicsOfNesting">
         <a id="backToStart" href="#"></a>
-        <img id="nyss-cursor" src="../assets/images/nycss-cursor.webp">
+        <img id="nyssCursor" src="../assets/images/nycss-cursor.webp">
         <script>
           function moveCursorBackground() {
-            let cursorElem = document.getElementById('nyss-cursor');
+            let cursorElem = document.getElementById('nyssCursor');
             let cssBadge = document.getElementById('nycssBadge');
 
             // Check if user is at the bottom
@@ -614,9 +622,9 @@
             }
           }
         </script>
-        <p id="splitting-text">Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that <b>reflects your HTML structure</b> document, making your CSS code more intuitive and easier to manage.</p>
+        <p id="splittingText">Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that <b>reflects your HTML structure</b> document, making your CSS code more intuitive and easier to manage.</p>
         <script>
-          let splitText = document.getElementById('splitting-text');
+          let splitText = document.getElementById('splittingText');
 
           function onFirstView(e) {
             if (e.animationName != 'viewed') return;
@@ -626,11 +634,11 @@
           }
           splitText.addEventListener("animationstart", onFirstView);
         </script>
-        <hgroup id="nesting-text">
+        <hgroup id="nestingText">
           <h1><a href="#">Nest Your CSS</a></h1>
           <p><a href="#">Click anywhere to...</a></p>
         </hgroup>
-        <p id="streching-text"><span>M</span><span>e</span><span>c</span><span>h</span><span>a</span><span>n</span><span>i</span><span>c</span><span>s</span>&nbsp;<span>o</span><span>f</span>&nbsp;<span>N</span><span>e</span><span>s</span><span>t</span><span>i</span><span>n</span><span>g</span></p>
+        <p id="strechingText"><span>M</span><span>e</span><span>c</span><span>h</span><span>a</span><span>n</span><span>i</span><span>c</span><span>s</span>&nbsp;<span>o</span><span>f</span>&nbsp;<span>N</span><span>e</span><span>s</span><span>t</span><span>i</span><span>n</span><span>g</span></p>
         <button id="nycssLogoGroup" onclick="window.location.href='#'">
           <img id="nycssLogo" hidden src="./assets/images/nycss-logo.webp" />
           <img id="nycssBadge" class="main-animation" src="./assets/images/nycss-badge.webp" />
@@ -643,13 +651,14 @@
           let scrollTimer, hovered = false;
 
           // Event listener for scroll events
+          updateLogoState();
           function updateLogoState() {
             if (scrollTimer) clearTimeout(scrollTimer);
 
             const { pageYOffset, document: { documentElement: { scrollTop, scrollHeight, clientHeight } } } = window;
 
             // Check if user is at the bottom
-            if ((pageYOffset || scrollTop) + clientHeight >= scrollHeight) {
+            if ((((pageYOffset || scrollTop) + clientHeight) / scrollHeight) >= 0.9995) {
               cssBadge.className = 'hover-animation';
               if (!hovered) moveCursorBackground(), hovered = true;
             } else if (cssBadge.className != 'main-animation') {
@@ -660,7 +669,7 @@
                 if (cssBadge.className == 'main-animation') cssBadge.className = 'idle-animation';
               }, 1000);
             }
-          };
+          }
         </script>
       </section>
     </article>
@@ -676,57 +685,6 @@
   <!-- <script src="./scripts/ext-stickyscroll.js"></script> -->
   <!-- <script src="./lib/ext-language_tools.min.js"></script> -->
 
-  <script>
-    let editorId = 'code-editor';
-    let sample;
-    sample = cssSamples[1];
-    // sample = cssSamples[21];
-    // sample = cssSamples.slice(0, 2).join('');
-    // sample = cssSamples.join('');
-
-    const provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
-
-    window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
-    window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
-
-    // Auto Nest
-    let codeChanged = false;
-    let isProcessing = false;
-
-    inputEditor.getSession().on('change', () => codeChanged = true);
-
-    inputEditor.getSession().on('changeAnnotation', () => {
-      if (!isProcessing) {
-        isProcessing = true;
-
-        setTimeout(() => {
-          if (codeChanged) {
-            nestCode();
-            codeChanged = false;
-          }
-
-          isProcessing = false;
-        }, 0);
-      }
-    });
-
-    function initializeEditor(editorId, value) {
-      const editor = ace.edit(editorId, {
-        mode: "ace/mode/css",
-        showPrintMargin: false
-      });
-
-      editor.setValue(value, -1);
-      provider.registerEditor(editor);
-
-      editor.renderer.on('afterRender', () => {
-          editor.container.getElementsByClassName('ace_scrollbar-h')[0].style.setProperty('--gutter-width', editor.container.getElementsByClassName('ace_gutter')[0].style.width);
-      });
-      
-      return editor;
-    }
-    
-    setupEditors(inputEditor.container);
-  </script>
+  <script src="./scripts/setup.js" type="text/javascript"></script>
 </body>
 </html>

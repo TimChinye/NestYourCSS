@@ -1,14 +1,20 @@
 # To-do List
 
 ## Next up:
-- List up all the settings that can be done quickly, and design the settings panel.
+- Add functionality for all settings
 
 ## To-do now, before [release]:
 - Allow the `input.css` file can be clicked on, when it’s clicked on it turns into an input field with the placeholder text “Insert url...”, if you un-focus it or press enter goes back to “input.css”, if you provide a url and then un-focus it or press enter, it’ll inject the css to into the editor, and change the file name from “input.css” to the provided file’s name (or if it’s too long or doesn’t end with .css: “provided.css”, “linked.css” or “external.css”)
+- Make "reducing boilerplate code" animate out as well
+- Finish making the animations responsive
+- Show a different number of ads dependent on @container
+- Re make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
-- Mobile version - (Editors, stacked on top each other, top/bottom - everything else, just reduce the size to fit the width)
-- Add actual ads
+- Browser support
+- Finally: optimise for lighthouse
+- Add SEO features
+- Make a 'dev.nestyourcss.com'
 
 ## List of (potential) parts to add to the site:
 - History of all conversions to Nested CSS
@@ -20,7 +26,7 @@
 - Add a minimap (might need to DIY)
 - Add ability to change the colour theme from greenish-blue to whatever:
 ```css
-#main-content {
+#mainContent {
     --rotation: 2300deg;
     filter: hue-rotate(var(--rotation));
 
@@ -32,7 +38,7 @@
 If you use the new relative colours syntax, we can apply a hue rotation via `oklch(from var(--pri-colour-medium) l c calc(h + var(--rotation)))`, and this will preserve saturation and luminosity... well, chroma and lightness.
 - Show minimap checkbox (and scroll using it?)
 - Sticky Scroll – Official Ace Extensions (DIY)
-Button to enable diffs (and a note of sorts to recommend use it as this tool re-formats code & removes comments
+- Button to enable diffs (and a note of sorts to recommend use it as this tool re-formats code & removes comments)
 - List Keyboard shortcuts + allow the creation of custom ones
 - Allow Editor Customization [Demo](https://ace.c9.io/demo/keyboard_shortcuts.html)
 - Add a Table of Contents page within settings section (similar to Figma's Layers component) for all nested selectors within the code editor

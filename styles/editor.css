@@ -5,8 +5,6 @@
   Last Updated: 01.04.2024
 */
 
-/* @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap'); */
-  
 .ace-tm.ace_editor {
   --background-colour: rgb(from var(--shades-black) r g b / var(--opacity-low));
   --window-text-colour: rgb(from var(--shades-darker) r g b / var(--opacity-medium));
@@ -39,7 +37,7 @@
 
 .ace-tm .ace_gutter-active-line {
   font-weight: bold;
-  background: rgb(from color-mix(in srgb, var(--pri-colour-em-darker), var(--sec-colour-em-darker)) r g b / var(--opacity-medium));
+  background: rgb(from color-mix(in srgb, var(--pri-colour-em-darker), var(--sec-colour-em-darker)) r g b / var(--opacity-low));
 }
 
 .ace-tm .ace_marker-layer .ace_active-line {

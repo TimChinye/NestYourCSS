@@ -82,6 +82,16 @@ function tabButtonHandler(e) {
                 border-radius: 2rem 0 0;
                 clip-path: inset(0 round 0.5rem);
               ">${content.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
+
+              <script>
+                document.addEventListener('copy', function(e) {
+                  const text_only = document.getSelection().toString();
+                  const clipdata = e.clipboardData || window.clipboardData;  
+                  clipdata.setData('text/plain', text_only);
+                  clipdata.setData('text/html', text_only);
+                  e.preventDefault();
+                });
+              </script>
             </body>
         </html>
       `);
@@ -131,11 +141,35 @@ function setupDragAndDrop(editor) {
   });
 }
 
-function selectHandler(optionElem, close) {
-  let labelElem = optionElem.closest('label');
+function updateCoordinateDisplay(editor) {
+  let { row, column } = editor.getCursorPosition();
+
+  let cursorText = "";
+  switch (window.coordDisplayMode ??= 3) {
+    case 0:
+      cursorText = ` | Ln ${++row}, Col ${column}`;
+      break;
+    case 1:
+      cursorText = ` | Ln ${++row}`;
+      break;
+    case 2:
+      cursorText = ` | Col ${column}`;
+      break;
+    case 3:
+    default:
+      cursorText = "";
+  }
+
+  editor.container.previousElementSibling.firstElementChild.setAttribute('cursor', cursorText);
+}
+
+/* Component Handler */
+
+function selectHandler(inputElem, close) {
+  let labelElem = inputElem.closest('label[id]');
   
   if (close) labelElem.control.checked = false;
-  labelElem.control.value = labelElem.control.nextElementSibling.innerHTML = optionElem.innerHTML;
+  labelElem.control.value = labelElem.control.nextElementSibling.innerHTML = inputElem.innerHTML;
   
   switch (labelElem.id) {
     case "typefaces": {
@@ -147,10 +181,18 @@ function selectHandler(optionElem, close) {
       document.querySelectorAll('.ace_tooltip').forEach((elem) => elem.style.fontSize = `${parseFloat(outputEditor.container.style.fontSize) * 0.8}rem`);
       break;
     }
+    case "samples": {
+      window.cssSample = inputElem.value;
+
+      window.inputEditor.setValue(cssSamples[window.cssSample]);
+      nestCode();
+      break;
+    }
   }
 }
 
 function numberHandler(inputElem, event) {
+  let labelElem = inputElem.closest('label[id]');
   let displayElem = inputElem.closest('.number').querySelector('span');
 
   function updateNumber(updateDirection) {
@@ -173,38 +215,145 @@ function numberHandler(inputElem, event) {
     }
     case "touchstart":
     case "mousedown": {
-      console.log(event.type);
       let updateDirection = !inputElem.previousElementSibling;
 
+      labelElem.holds ??= [];
+
+      // Initialize hold values
+      let holdInitial, holdDelay, holdInterval = null;
+      
+      // Use a Proxy to keep an updated view of the hold states
+      labelElem.holds.push(new Proxy({
+        get holdInitial() { return holdInitial; },
+        get holdDelay() { return holdDelay; },
+        get holdInterval() { return holdInterval; }
+      }, {
+        get(target, prop) {
+          return target[prop];
+        }
+      }));
+      
       // Set the initial timeout and the interval after a delay
-      displayElem.holdInitial = setTimeout(() => {
+      holdInitial = setTimeout(() => {
         updateNumber(updateDirection);
-        displayElem.holdDelay = setTimeout(() => {
-          displayElem.holdInterval = setInterval(() => updateNumber(updateDirection), 33.4);
-        }, 500);
-      }, 100);
+        
+        holdDelay = setTimeout(() => {
+          holdInterval = setInterval(() => updateNumber(updateDirection), 33.4);
+        }, 300);
+      }, 200);
 
       break;
     }
     case "touchend":
-    case "mouseup": {
+    case "mouseup":
+    case "mouseleave": {
+      if (!labelElem.holds) return;
+
       // Clear timeouts and intervals safely
-      clearTimeout(displayElem.holdInitial);
-      clearTimeout(displayElem.holdDelay);
-      clearInterval(displayElem.holdInterval);
+      labelElem.holds.forEach((hold) => {
+        clearTimeout(hold.holdInitial);
+        clearTimeout(hold.holdDelay);
+        clearInterval(hold.holdInterval);
+      });
       
-      // Reset hold state
-      displayElem.holdInitial = undefined;
-      displayElem.holdDelay = undefined;
-      displayElem.holdInterval = undefined;
+      labelElem.holds = [];
       break;
     }
   }
-
-  let labelElem = inputElem.closest('label');
+ 
+  // if (event.type != "mouseup") return;
   switch (labelElem.id) {
     case "indentationSize": {
-      console.log("test");
+      inputEditor.getSession().setTabSize(+displayElem.textContent);
+      outputEditor.getSession().setTabSize(+displayElem.textContent);
+
+      if (window.editorIndentChar?.startsWith(' ')) {
+        window.editorIndentChar = ' '.repeat(+displayElem.textContent);
+        nestCode();
+      }
+      break;
+    }
+  }
+}
+
+function checkboxHandler(inputElem) {
+  let labelElem = inputElem.closest('label[id]');
+  switch (labelElem.id) {
+    case "indentationType": {
+      inputEditor.getSession().setUseSoftTabs(!inputElem.checked);
+      outputEditor.getSession().setUseSoftTabs(!inputElem.checked);
+
+      window.editorIndentChar = (!inputElem.checked) ? ' '.repeat(inputEditor.getSession().getTabSize()) : '\t';
+      nestCode();
+      break;
+    }
+    case "auto": {
+      let modeLabelElem = inputElem.closest('ul').querySelector('#mode');
+
+      window.processAuto = inputElem.checked;
+      modeLabelElem.classList.toggle('button', !window.processAuto);
+      
+      if (window.processAuto) nestCode();
+    }
+  }
+}
+
+function radioHandler(inputElem) {
+  let labelElem = inputElem.closest('label[id]');
+  let radioIndex = Array.from(labelElem.children).indexOf(inputElem.parentElement);
+  
+  switch (labelElem.id) {
+    case "coordinates": {
+      window.coordDisplayMode = radioIndex;
+      
+      updateCoordinateDisplay(inputEditor);
+      updateCoordinateDisplay(outputEditor);
+      break;
+    }
+    case "mode": {
+      window.processMode = radioIndex;
+
+      if (window.processAuto ?? true) nestCode();
+      break;
+    }
+  }
+}
+function comboHandler(inputElem, close) {
+  let labelElem = inputElem.closest('label[id]');
+  
+  if (close) labelElem.control.checked = false;
+  labelElem.control.value = labelElem.control.nextElementSibling.firstElementChild.innerHTML = inputElem.innerHTML;
+  
+  switch (labelElem.id) {
+    case "externalCss": {
+      fetch('https://cors-anywhere.herokuapp.com/' + inputElem.innerHTML).then((response) => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          // Check if the Content-Type is CSS
+          const contentType = response.headers.get('Content-Type');
+          if (!contentType || !contentType.includes('text/css')) {
+              throw new Error("The file is not a CSS file.");
+          }
+
+          return response.text();
+      })
+      .then(cssContent => {
+          window.inputEditor.setValue(cssContent);
+                
+          let menuElem = inputElem.parentElement.nextElementSibling;
+          const existingOption = Array.from(menuElem.children).find(option => option.textContent === inputElem.textContent);
+          if (!existingOption) {
+            if (menuElem.children.length >= 5) menuElem.lastElementChild.remove();
+            menuElem.insertAdjacentHTML('afterbegin', `<option onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">${inputElem.textContent}</option>`);
+          }
+      })
+      .catch(error => {
+          console.error('Error fetching the CSS file:', error);
+          alert("Failed to load the external CSS file. Please check the URL.");
+      });
+
       break;
     }
   }

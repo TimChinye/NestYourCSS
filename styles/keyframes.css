@@ -202,9 +202,25 @@
 	to { translate: -0.96ch -0.31em; opacity: 1; }
 }
 
-@keyframes moveLeft { /* width of an editor the gap */
-	from { translate: calc((((var(--editor-width) + var(--gutter-width)) / var(--total-width)) * 100%)); }
-	to { translate: 0; }
+#codeEditor {
+	--code-editor-height: (100cqh);
+	--code-editor-width: (100%);
+	--vertical-padding: (2 * var(--padding));
+	--content-height: (var(--code-editor-height) - var(--vertical-padding));
+	--combined-editor-width: ((var(--total-width) / 7) * var(--content-height));
+	--difference-of-both-full-widths: (var(--code-editor-width) - var(--combined-editor-width));
+	--align-left: (0% - (var(--difference-of-both-full-widths) / 2));
+	--single-editor-width: ((var(--editor-width) / var(--total-width)) * var(--combined-editor-width));
+}
+
+@keyframes moveLeft {
+	from {
+		translate: calc(var(--align-left) + var(--code-editor-width) - var(--single-editor-width));
+	}
+
+	to {
+		translate: calc(0% + 0px);
+	}
 }
 
 @keyframes shadowRotate {

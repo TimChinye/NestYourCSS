@@ -20674,14 +20674,29 @@ function nestCode() {
 	const annotations = inputEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
 	if (annotations.length == 0) {
 		outputEditor.getSession().setValue(convertToNestedCSS(inputEditor.getValue()) || '/* Your output CSS will appear here */');
+        
+        document.getElementById('errors').tBodies[0].innerHTML = '';
 	} else {
-		console.log('Code Errors:', annotations);
 		outputEditor.getSession().setValue('/* Your input CSS contains errors */');
+		console.log('Code Errors:', annotations);
 		
-		// Show a list of the errors if any.
-		
-		// "Your code doesn't seem to be valid, do you want to try nesting anyways?"
-		// "It may not work properly."
+        let tableBodyElem = document.getElementById('errors').tBodies[0];
+        tableBodyElem.innerHTML = '';
+
+		annotations.forEach(({ column, row, text }) => {
+            const errorRow = tableBodyElem.insertRow();
+
+            errorRow.setAttribute('onclick', `inputEditor.gotoLine(${row});`);
+            errorRow.insertCell().textContent = text;
+            errorRow.insertCell().textContent = row;
+            errorRow.insertCell().textContent = column;
+        });
+
+        tableBodyElem.closest('section').scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            inline: 'nearest'
+        });
 	}
 };
 
@@ -21112,8 +21127,6 @@ function renestCSS(withHtml, cssProvided) {
                         urlDepth = openBrackets - closeBrackets;
                     }
 
-                    console.log(part);
-                    console.log(urlDepth);
                     // Check if we're within a url()
                     if (urlDepth > 0) {
                         // Combine the current part with the next part

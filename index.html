@@ -22,8 +22,8 @@
     };
   </script>
   <div id="siteWrapper">
-    <main>
-    <!-- <main class="nesting"> -->
+    <!-- <main> -->
+    <main class="nesting">
       <aside id="mainSettings">
         <section>
           <h2>Input</h2>
@@ -170,10 +170,31 @@
           </ul>
         </section>
         <section>
-          <menu>5 Buttons</menu>
+          <h2>5 Buttons</h2>
+          <menu></menu>
         </section>
         <section>
-          <table>Errors</table>
+          <h2>Errors</h2>
+          <div>
+            <table id="errors">
+              <colgroup>
+                <col></col>
+                <col span="2"></col>
+              </colgroup>
+              <thead>
+                <tr>
+                    <th rowspan="2" scope="col">Coords</th>
+                    <th colspan="2" scope="colgroup">Coordinates</th>
+                </tr>
+                <tr>
+                    <th scope="col">(Line)</th>
+                    <th scope="col">(Column)</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
         </section>
       </aside>
       <section id="mainContent">

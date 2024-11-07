@@ -340,7 +340,7 @@ function comboHandler(inputElem, close) {
           return response.text();
       })
       .then(cssContent => {
-          window.inputEditor.setValue(cssContent);
+          inputEditor.setValue(cssContent);
                 
           let menuElem = inputElem.parentElement.nextElementSibling;
           const existingOption = Array.from(menuElem.children).find(option => option.textContent === inputElem.textContent);

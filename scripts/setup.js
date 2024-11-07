@@ -35,6 +35,7 @@ function initializeEditor(editorId, value) {
 
   editor.setValue(value, -1);
   provider.registerEditor(editor);
+  editor.setAnimatedScroll(true);
 
   editor.renderer.on('afterRender', () => {
       editor.container.getElementsByClassName('ace_scrollbar-h')[0].style.setProperty('--gutter-width', editor.container.getElementsByClassName('ace_gutter')[0].style.width);

@@ -172,21 +172,22 @@
 .ace_scrollbar {
   --track-colour: var(--background-colour);
   --thumbnail-colour: var(--sec-colour-darker);
-  --scrollbar-padding: 8px;
+  --scrollbar-padding: 4px;
+  --scrollbar-margin: 8px;
   --scrollbar-width: 12px;
 
   align-self: flex-end;
-  margin: var(--scrollbar-padding);
+  margin: var(--scrollbar-margin);
 
   &.ace_scrollbar-v {
-    bottom: calc(var(--scrollbar-width) + (var(--scrollbar-padding) / 2)) !important;
-    height: calc(100% - (2 * var(--scrollbar-padding)) - var(--scrollbar-width)) !important;
+    bottom: calc(var(--scrollbar-width) + (var(--scrollbar-margin) / 2)) !important;
+    height: calc(100% - (2 * var(--scrollbar-margin)) - var(--scrollbar-width)) !important;
     z-index: 7;
   }
 
   &.ace_scrollbar-h {
     --gutter-width: 73px;
-    width: calc(100% - (var(--gutter-width) + (2 * var(--scrollbar-padding)))) !important;
+    width: calc(100% - (var(--gutter-width) + (2 * var(--scrollbar-margin)))) !important;
     z-index: 7;
   }
 
@@ -206,7 +207,7 @@
       &::-webkit-scrollbar-thumb {
         background: var(--thumbnail-colour);
         border-radius: 999px;
-        border: 4px solid transparent;
+        border: var(--scrollbar-padding) solid transparent;
         background-clip: padding-box;
       }
   

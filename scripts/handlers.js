@@ -4,11 +4,6 @@ document.body.addEventListener('mousemove', (e) => {
     window.cursorY = e.clientY;
 
     const target = e.target;
-
-    const navButton = target.classList.contains('navButton') ? target : target.closest('.navButton');
-    if (navButton) {
-      repositionButtonBG(navButton);
-    };
     
     if (target === splashTextElem) {
       attemptSplashTextUpdate();

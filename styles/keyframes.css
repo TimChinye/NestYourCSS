@@ -296,3 +296,13 @@
 		opacity: 0;
 	}
 }
+	
+@keyframes colour-rotate {
+	0% {
+		background-color: white;
+	}
+
+	100% {
+		background-color: rgb(from white r g b / 0.25);
+	}
+}

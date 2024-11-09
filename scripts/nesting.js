@@ -20671,25 +20671,22 @@ html:not(.nav-ewc-persistent-hover) #navbar #nav-flyout-ewc .nav-flyout-body #ew
 function nestCode() {
 	(mainEl = document.querySelector('main')).classList.contains('nesting') || mainEl.classList.add('nesting', 'fade-out'), setTimeout(() => mainEl.classList.remove('fade-out'), 1000);
 
+    let tableBodyElem = document.getElementById('errors').tBodies[0];
 	const annotations = inputEditor.getSession().getAnnotations().filter((a) => a.type == 'error');
 	if (annotations.length == 0) {
 		outputEditor.getSession().setValue(convertToNestedCSS(inputEditor.getValue()) || '/* Your output CSS will appear here */');
         
-        document.getElementById('errors').tBodies[0].innerHTML = '';
+        if (tableBodyElem.rows.length) tableBodyElem.innerHTML = '';
 	} else {
 		outputEditor.getSession().setValue('/* Your input CSS contains errors */');
 		console.log('Code Errors:', annotations);
 		
-        let tableBodyElem = document.getElementById('errors').tBodies[0];
         tableBodyElem.innerHTML = '';
 
 		annotations.forEach(({ column, row, text }) => {
             const errorRow = tableBodyElem.insertRow();
-
-            errorRow.setAttribute('onclick', `inputEditor.gotoLine(${row});`);
-            errorRow.insertCell().textContent = text;
-            errorRow.insertCell().textContent = row;
-            errorRow.insertCell().textContent = column;
+            errorRow.onclick = () => inputEditor.gotoLine(row);
+            [text, row, column].forEach(content => errorRow.insertCell().textContent = content);
         });
 
         tableBodyElem.closest('section').scrollIntoView({

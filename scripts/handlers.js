@@ -2,6 +2,9 @@ document.body.addEventListener('mousemove', (e) => {
   requestAnimationFrame(() => {
     window.cursorX = e.clientX;
     window.cursorY = e.clientY;
+    
+    document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
+    document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
 
     const target = e.target;
     
@@ -21,11 +24,6 @@ document.body.addEventListener('mousemove', (e) => {
     let mainSection = document.getElementsByTagName('main')[0];
     if (e.pageY > 0 && e.pageY < mainSection.offsetTop + ((mainSection.offsetHeight * (1 / 0.96)) * 2)) {
       moveMainBackground();
-    }
-    
-    let nycssBadge = document.getElementById('nycssBadge');
-    if (nycssBadge.className == 'hover-animation') {
-      debounce(moveCursorBackground, 100)();
     }
   });
 });

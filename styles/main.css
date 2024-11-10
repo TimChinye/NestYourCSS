@@ -89,7 +89,6 @@ body {
 			> #mainSettings {
 				display: none;
 				margin-right: 0;
-				contain: size paint;
 				flex: 0;
 			}
 
@@ -1014,7 +1013,7 @@ body {
 							> figure {
 								margin: 0;
 								container-type: size;
-								background: rgb(from white r g b / 0.55);
+								background: rgb(from white r g b / 0.25);
 								
 								> svg {
 									contain: size;
@@ -1506,6 +1505,7 @@ body {
 			
 						> #nyssCursor {
 							opacity: 1;
+							translate: calc(var(--cursor-x-pos) - 50%) calc(var(--cursor-y-pos) - 50%);
 						}
 					}
 

@@ -674,17 +674,6 @@
       <section id="mechanicsOfNesting">
         <a id="backToStart" href="#"></a>
         <img id="nyssCursor" src="../assets/images/nycss-cursor.webp">
-        <script>
-          function moveCursorBackground() {
-            let cursorElem = document.getElementById('nyssCursor');
-            let cssBadge = document.getElementById('nycssBadge');
-
-            // Check if user is at the bottom
-            if (cssBadge.className == 'hover-animation') {
-              cursorElem.style.translate = `calc(${window.cursorX}px - 50%) calc(${window.cursorY}px - 50%)`;
-            }
-          }
-        </script>
         <p id="splittingText">Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that <b>reflects your HTML structure</b> document, making your CSS code more intuitive and easier to manage.</p>
         <script>
           let splitText = document.getElementById('splittingText');

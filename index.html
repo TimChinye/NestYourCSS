@@ -22,8 +22,8 @@
     };
   </script>
   <div id="siteWrapper">
-    <!-- <main> -->
-    <main class="nesting">
+    <main>
+    <!-- <main class="nesting"> -->
       <aside id="mainSettings">
         <section>
           <h2>Input</h2>
@@ -712,10 +712,10 @@
             // Check if user is at the bottom
             if ((((pageYOffset || scrollTop) + clientHeight) / scrollHeight) >= 0.9995) {
               cssBadge.className = 'hover-animation';
-              if (!hovered) moveCursorBackground(), hovered = true;
+              if (!hovered) hovered ^= 1;
             } else if (cssBadge.className != 'main-animation') {
               cssBadge.className = 'main-animation';
-              if (hovered) moveCursorBackground(), hovered = false;
+              if (hovered) hovered ^= 1;
             } else {
               scrollTimer = setTimeout(() => {
                 if (cssBadge.className == 'main-animation') cssBadge.className = 'idle-animation';

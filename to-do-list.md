@@ -1,19 +1,18 @@
 # To-do List
 
 ## Next up:
-- Add functionality for all settings
+- Make "reducing boilerplate code" animate out as well
 
 ## To-do now, before [release]:
-- Allow the `input.css` file can be clicked on, when it’s clicked on it turns into an input field with the placeholder text “Insert url...”, if you un-focus it or press enter goes back to “input.css”, if you provide a url and then un-focus it or press enter, it’ll inject the css to into the editor, and change the file name from “input.css” to the provided file’s name (or if it’s too long or doesn’t end with .css: “provided.css”, “linked.css” or “external.css”)
-- Make "reducing boilerplate code" animate out as well
 - Finish making the animations responsive
+- Allow the `input.css` file can be clicked on, when it’s clicked on it turns into an input field with the placeholder text “Insert url...”, if you un-focus it or press enter goes back to “input.css”, if you provide a url and then un-focus it or press enter, it’ll inject the css to into the editor, and change the file name from “input.css” to the provided file’s name (or if it’s too long or doesn’t end with .css: “provided.css”, “linked.css” or “external.css”)
 - Show a different number of ads dependent on @container
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
 - Browser support
-- Finally: optimise for lighthouse
-- Add SEO features
+- Optimise for lighthouse
 - Make a 'dev.nestyourcss.com'
+- Add SEO features
 
 ## List of (potential) parts to add to the site:
 - Re make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)

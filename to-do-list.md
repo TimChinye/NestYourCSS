@@ -1,10 +1,9 @@
 # To-do List
 
 ## Next up:
-- Make "reducing boilerplate code" animate out as well
+- Finish making the animations responsive
 
 ## To-do now, before [release]:
-- Finish making the animations responsive
 - Allow the `input.css` file can be clicked on, when it’s clicked on it turns into an input field with the placeholder text “Insert url...”, if you un-focus it or press enter goes back to “input.css”, if you provide a url and then un-focus it or press enter, it’ll inject the css to into the editor, and change the file name from “input.css” to the provided file’s name (or if it’s too long or doesn’t end with .css: “provided.css”, “linked.css” or “external.css”)
 - Show a different number of ads dependent on @container
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)

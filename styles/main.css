@@ -1192,20 +1192,20 @@ body {
 							margin-left: 0.5ch;
 								text-align: left;
 								animation-range-start: cover -0.5lh;
-								animation-range-end: cover calc(min(100dvh, 1600px) + -0.5lh);
+								animation-range-end: contain calc(min(100dvh, 1600px) + -0.5lh);
 							}
 					
 							&:nth-child(2) {
 								text-align: center;
 								animation-range-start: cover 0lh;
-								animation-range-end: cover calc(min(100dvh, 1600px) + 0lh);
+								animation-range-end: contain calc(min(100dvh, 1600px) + 0lh);
 							}
 					
 							&:nth-child(3) {
 								margin-right: 0.5ch;
 								text-align: right;
 								animation-range-start: cover 0.5lh;
-								animation-range-end: cover calc(min(100dvh, 1600px) + 0.5lh);
+								animation-range-end: contain calc(min(100dvh, 1600px) + 0.5lh);
 							}
 						}
 					}

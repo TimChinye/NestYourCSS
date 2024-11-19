@@ -90,9 +90,8 @@
 }
 
 @keyframes swapText {
-	from { padding-top: 0lh; }
-	
-	to { padding-top: 1lh; }
+	from, to { padding-top: 0lh; }
+	30%, 70% { padding-top: 1lh; }
 }
 
 @keyframes showText {

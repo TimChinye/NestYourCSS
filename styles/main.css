@@ -125,7 +125,7 @@ body {
 	
 					> header {
 						margin: 2rem 2rem 0 4rem;
-						font-size: clamp(0.5rem, 16px, 1.75rem);
+						font-size: clamp(0.5rem, 16px, 1.125rem);
 	
 						> hgroup {
 							color: rgb(from var(--shades-white) r g b / var(--opacity-high));
@@ -1192,20 +1192,20 @@ body {
 							margin-left: 0.5ch;
 								text-align: left;
 								animation-range-start: cover -0.5lh;
-								animation-range-end: cover 5lh;
+								animation-range-end: cover calc(min(100dvh, 1600px) + -0.5lh);
 							}
 					
 							&:nth-child(2) {
 								text-align: center;
 								animation-range-start: cover 0lh;
-								animation-range-end: cover 4lh;
+								animation-range-end: cover calc(min(100dvh, 1600px) + 0lh);
 							}
 					
 							&:nth-child(3) {
 								margin-right: 0.5ch;
 								text-align: right;
 								animation-range-start: cover 0.5lh;
-								animation-range-end: cover 3lh;
+								animation-range-end: cover calc(min(100dvh, 1600px) + 0.5lh);
 							}
 						}
 					}
@@ -1545,15 +1545,15 @@ body {
 						&:not(.viewed) { /* check if hover-animation */
 							animation: viewed linear, revealText linear backwards;
 							animation-timeline: view(), view();
-							animation-range-start: contain calc(min(100dvh, 1600px) - 10lh), cover;
-							animation-range-end: cover, contain calc(min(100dvh, 1600px) - 10lh);
+							animation-range-start: contain calc(min(50dvh, 800px) - 10lh), contain;
+							animation-range-end: contain, contain calc(min(50dvh, 800px) - 10lh);
 						}
 			
 						&.viewed {
 							animation: widenGap 3s ease-in-out infinite alternate backwards, unblur ease-out both;
 							animation-timeline: auto, view();
-							animation-range-start: normal, 0lh;
-							animation-range-end: normal, 20lh;
+							animation-range-start: normal, cover;
+							animation-range-end: normal, contain calc(min(50dvh, 800px));
 						}
 					}
 

@@ -1,12 +1,13 @@
 # To-do List
 
 ## Next up:
-- Finish making the animations responsive
+- Show a different number of ads dependent on @container
 
 ## To-do now, before [release]:
-- Allow the `input.css` file can be clicked on, when it’s clicked on it turns into an input field with the placeholder text “Insert url...”, if you un-focus it or press enter goes back to “input.css”, if you provide a url and then un-focus it or press enter, it’ll inject the css to into the editor, and change the file name from “input.css” to the provided file’s name (or if it’s too long or doesn’t end with .css: “provided.css”, “linked.css” or “external.css”)
-- Show a different number of ads dependent on @container
+- Store settings to localStorage
+- Store 
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
+- - View History => 
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
 - Browser support
 - Optimise for lighthouse
@@ -41,6 +42,7 @@ If you use the new relative colours syntax, we can apply a hue rotation via `okl
 - Allow Editor Customization [Demo](https://ace.c9.io/demo/keyboard_shortcuts.html)
 - Add a Table of Contents page within settings section (similar to Figma's Layers component) for all nested selectors within the code editor
 - Add an anti-adblock background, along with a border
+- Allow the `input.css` file can be clicked on, when it’s clicked on it turns into an input field with the placeholder text “Insert url...”, if you un-focus it or press enter goes back to “input.css”, if you provide a url and then un-focus it or press enter, it’ll inject the css to into the editor, and change the file name from “input.css” to the provided file’s name (or if it’s too long or doesn’t end with .css: “provided.css”, “linked.css” or “external.css”)
 
 ## Much later:
 - Full revamp

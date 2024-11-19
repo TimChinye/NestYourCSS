@@ -62,7 +62,9 @@
       
                   <menu hidden>
                     <!-- <option disabled>-----</option> -->
-                    <option onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">https://nestyourcss.com/styles/main.css</option>
+                    <option onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">/styles/main.css</option>
+                    <option onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">/styles/keyframes.css</option>
+                    <option onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">/styles/editor.css</option>
                   </menu>
                 
                   <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.firstElementChild.checked = false)))()</script>
@@ -524,14 +526,24 @@
           
               // Resize and reposition shadow editors
               function styleShadowEditors() {
-                let baseShadowOpacity = 0.5;
-                let baseShadowBlur = 2;
-                let shadowHeightDiff = inputEditor.offsetHeight / 10;
-                let baseShadowWidth = inputEditor.offsetWidth / 3.75;
+                const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
+                const convertPxToRch = (px) => (px * (16 / remInPixels)) / (16 * 0.65);
+                
+                const shadowHeightDiff = inputEditor.offsetHeight / 10;
+                const baseShadowOpacity = 0.5;
+                const baseShadowBlur = 2;
+                const maxWidth = parseFloat(document.getElementById('textSide').offsetWidth) + (remInPixels / 0.35); /* I don't know why remInPixels * "0.35" works, but it does */
+                let baseShadowWidth = inputEditor.offsetWidth / 3;
                 let shadowWidthDiff = baseShadowWidth / 15;
                 let previousShadowTranslation = 0;
+
+                // if (((2 * baseShadowWidth) + (shadowWidthDiff / 7.5)) > maxWidth + 50) { /* The first part simplifies to 32/15 */
+                if (((32 / 15) * baseShadowWidth) > maxWidth) {
+                  baseShadowWidth = maxWidth * (5/12); /* 5/12 because the shadow widths are split into: 3/6 4/5 5/6 of inputEditor, the biggest/base one is 5/6, and maxWidth is 2x of the inputEditor, therefore 5/12 */
+                  shadowWidthDiff = baseShadowWidth / 15;
+                }
           
-                shadowEditors.forEach((shadowEditor, index) => {
+                  shadowEditors.forEach((shadowEditor, index) => {
                   const shadowEditorWrapper = document.createElement("div");
                   shadowEditorWrapper.classList.add("shadowEditorWrapper", "editorWrapper");
                   shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
@@ -541,16 +553,18 @@
                   shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
           
                   let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (index + 1));
-                  shadowEditorWrapper.style.width = `${shadowWidth / 10.4}rch`; /* 16 * 0.65 */
-          
+                  shadowEditorWrapper.style.width = `${convertPxToRch(shadowWidth)}rch`;
+                  
                   previousShadowTranslation += shadowWidth + (2 * shadowWidthDiff);
-                  shadowEditorWrapper.style.translate = `-${previousShadowTranslation / 10.4}rch`;
+                  shadowEditorWrapper.style.translate = `-${convertPxToRch(previousShadowTranslation)}rch`;
+
+                  // console.log([shadowWidth, baseShadowWidth, inputEditor.offsetWidth, document.getElementById('textSide').offsetWidth]);
           
                   shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
                   shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;
                   shadowEditorWrapper.style.backgroundColor = `rgb(from white r g b / ${(2 - index)}%)`;
 
-                  shadowEditorWrapper.getElementsByClassName('editorTab')[0].style.width = getComputedStyle(shadowEditor).width;
+                  // shadowEditorWrapper.getElementsByClassName('editorTab')[0].style.width = getComputedStyle(shadowEditor).width;
                 });
               }
           

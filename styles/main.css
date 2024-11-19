@@ -1,3 +1,5 @@
+/* The actual main CSS file for this website */
+
 :root {
     font-size: clamp(0px, 1.5dvh, 24px);
 

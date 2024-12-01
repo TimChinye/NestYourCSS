@@ -9,6 +9,7 @@
   
   <script src="./lib/ace.min.js"></script>
   
+  <link href="./styles/ads-container.css" rel="stylesheet">
   <link href="./styles/properties.css" rel="stylesheet">
   <link href="./styles/keyframes.css" rel="stylesheet">
   <link href="./styles/editor.css" rel="stylesheet">
@@ -58,7 +59,7 @@
               <div>
                 <label id="externalCss" class="combobox" onclick="event.preventDefault(); this.control.checked ^= 1">
                   <input type="checkbox" tabindex="-1">
-                  <output tabindex="0"><div contenteditable="true" onkeydown="(event.code === 'Enter') && comboHandler(this, true)" onpaste="event.preventDefault(); document.execCommand('insertText', false, (event.clipboardData || window.clipboardData).getData('text'));" oninput="if (this.innerText.includes('\n')) this.textContent = this.textContent.replace(/\n/g, ''), window.getSelection().collapse(this.lastChild, this.lastChild?.length);" onblur="this.scrollLeft = 0;" placeholder="https://..."></div></output>
+                  <output tabindex="0"><div contenteditable="true" onkeydown="(event.code === 'Enter') && comboHandler(this, true)" onpaste="event.preventDefault(); document.execCommand('insertText', false, (event.clipboardData || window.clipboardData).getData('text'));" oninput="if (this.innerText.includes('\n')) this.textContent = this.textContent.replace(/\n/g, ''), window.getSelection().collapse(this.lastChild, this.lastChild?.length);" onblur="this.scrollLeft = 0;" placeholder="https://corsproxy.io/?https://.../styles.css"></div></output>
       
                   <menu hidden>
                     <!-- <option disabled>-----</option> -->
@@ -400,11 +401,6 @@
           </header>
           <figure>
             <figcaption>Sorry about the ads...</figcaption>
-            <div>
-              <picture><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script><ins class="adsbygoogle" style="display:inline-block;width:250px;height:250px" data-ad-client="ca-pub-9088468190661086" data-ad-slot="2515261006"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></picture>
-              <picture><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script><ins class="adsbygoogle" style="display:inline-block;width:250px;height:250px" data-ad-client="ca-pub-9088468190661086" data-ad-slot="2515261006"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></picture>
-              <picture><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script><ins class="adsbygoogle" style="display:inline-block;width:250px;height:250px" data-ad-client="ca-pub-9088468190661086" data-ad-slot="2515261006"></ins><script>(adsbygoogle=window.adsbygoogle||[]).push({});</script></picture>
-            </div>
           </figure>
         </article>
         <article id="editorSide">

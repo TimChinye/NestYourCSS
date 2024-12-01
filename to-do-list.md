@@ -5,16 +5,16 @@
 
 ## To-do now, before [release]:
 - Store settings to localStorage
-- Store 
+- Disable history, settings, and share feedback
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
-- - View History => 
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
 - Browser support
 - Optimise for lighthouse
 - Make a 'dev.nestyourcss.com'
 - Add SEO features
 
-## List of (potential) parts to add to the site:
+## List of (potential) stuff to add to the site, after release:
+- Make history, settings, and a custom "share feedback" and "report a bug".
 - Re make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)
 - History of all conversions to Nested CSS
 - Auto-save every minute? Or just "Nest" button (probably both, with a toggleable auto-save)
@@ -56,21 +56,3 @@ If you use the new relative colours syntax, we can apply a hue rotation via `okl
 - Add support for comments (may require a code revamp)
 - Enable nesting multiple CSS files simultaneously
 - Option to allow Emmet
-
-## Code to go to a specific line in Ace Editor:
-
-```javascript
-// Assuming 'editor' is your Ace Editor instance
-var lineNumber = 10; // Replace with your desired line number
-
-// Get the content of the line
-var lineContent = editor.session.getLine(lineNumber - 1); // Ace Editor uses 0-based index
-
-// Scroll to the line
-editor.scrollToLine(lineNumber, true, true, function () {});
-
-// Optionally, highlight the line
-editor.gotoLine(lineNumber, 0, true);
-
-console.log("Line Content: ", lineContent);
-```

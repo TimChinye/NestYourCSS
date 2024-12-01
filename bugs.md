@@ -64,3 +64,47 @@ Expected Output:
 +     }
 + }
 ```
+
+## Uh...
+```css
+html > :has(table) {
+	overflow-y: scroll;
+	max-height: 16rem;
+	padding: calc(var(--padding) / 2);
+	border-radius: 1.5rem;
+	--table-background: color-mix(in srgb, var(--shades-darkest), var(--panel-background) 75%);
+	background-color: var(--table-background);
+	scrollbar-width: 0.75rem;
+
+	--track-colour: color-mix(in srgb, var(--shades-black), var(--panel-background) 75%);
+	--thumbnail-colour: var(--shades-m-darker);
+	--scrollbar-padding: 4px;
+	--scrollbar-width: 12px;
+
+	/* Non-Standard Properties */
+	@supports selector(::-webkit-scrollbar) {
+	  &::-webkit-scrollbar {
+		width: var(--scrollbar-width);
+		height: var(--scrollbar-width);
+	  }
+  
+	  &::-webkit-scrollbar-thumb {
+		background: var(--thumbnail-colour);
+		border-radius: 999px;
+		border: var(--scrollbar-padding) solid transparent;
+		background-clip: padding-box;
+	  }
+  
+	  &::-webkit-scrollbar-track {
+		background: var(--track-colour);
+		border-radius: 999px;
+	  }
+	}
+  
+	/* Standard Properties */
+	@supports not selector(::-webkit-scrollbar) {
+	  scrollbar-color: var(--thumbnail-colour) var(--track-colour);
+	  scrollbar-width: thin;
+	}
+}
+```

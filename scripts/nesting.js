@@ -20698,7 +20698,7 @@ function nestCode() {
 };
 
 function convertToNestedCSS(cssProvided, htmlString) {
-	window.processMode ??= 2;
+	window.processMode ??= 1;
 
 	cssProvided = minimizeCSS(cssProvided);
 	if (window.processMode == 0) return cssProvided;

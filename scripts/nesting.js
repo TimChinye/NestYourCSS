@@ -20698,17 +20698,17 @@ function nestCode() {
 };
 
 function convertToNestedCSS(cssProvided, htmlString) {
-	window.processMode ??= 1;
+	window.processMode ??= 2;
 
 	cssProvided = minimizeCSS(cssProvided);
 	if (window.processMode == 0) return cssProvided;
 
 	cssProvided = splitCSS(cssProvided);
 	cssProvided = unnestCSS(cssProvided);
-	if (window.processMode == 2) console.log(cssProvided);
+	if (window.processMode == 2) return beautifyUnnestedCSS(cssProvided);
 
 	cssProvided = renestCSS(htmlString, cssProvided);
-	if (window.processMode == 1) return beautifyCSS(cssProvided);
+	if (window.processMode == 1) return beautifyNestedCSS(cssProvided);
 };
 
 function minimizeCSS(cssProvided) {
@@ -20914,6 +20914,165 @@ function unnestCSS(cssProvided, prefix = '') {
 
     // Return the parsed CSS
     return parsedCSS;
+}
+
+function beautifyUnnestedCSS(cssArray) {
+    // Helper function to split declarations while respecting url() and quotes
+    function splitDeclarations(declarationsString) {
+        const declarations = [];
+        if (!declarationsString || declarationsString.trim() === "") {
+            return declarations;
+        }
+
+        let current = 0;
+        let inParens = 0;
+        let inQuotes = null; // null, "'", '"'
+        let lastNonWhitespaceChar = -1;
+
+        for (let i = 0; i < declarationsString.length; i++) {
+            const char = declarationsString[i];
+
+            if (char !== ' ' && char !== '\t' && char !== '\n' && char !== '\r') {
+                lastNonWhitespaceChar = i;
+            }
+
+            if (inQuotes) {
+                if (char === inQuotes && (i === 0 || declarationsString[i - 1] !== '\\')) {
+                    inQuotes = null;
+                }
+            } else if (char === "'" || char === '"') {
+                inQuotes = char;
+            } else if (char === '(') {
+                inParens++;
+            } else if (char === ')') {
+                inParens--;
+            } else if (char === ';' && inParens === 0 && !inQuotes) {
+                declarations.push(declarationsString.substring(current, i).trim());
+                current = i + 1;
+            }
+        }
+        // Add the last declaration if any (it might not end with a semicolon)
+        // Only consider up to the last non-whitespace character to handle trailing semicolons gracefully
+        const finalDeclPart = declarationsString.substring(current, lastNonWhitespaceChar + 1).trim();
+        if (finalDeclPart) {
+            declarations.push(finalDeclPart);
+        }
+        
+        return declarations.filter(d => d.length > 0);
+    }
+
+    // Helper function to format a single declaration (e.g., "color:red" to "color: red;")
+    function formatDeclaration(declStr) {
+        let parts = declStr.split(':'); // Split on the first colon, s flag for dotall
+        if (parts.length === 2) {
+            let key = parts[0].trim();
+            let value = parts[1].trim();
+            // Remove trailing semicolon from value if it's already there from input
+            if (value.endsWith(';')) {
+                value = value.slice(0, -1).trim();
+            }
+            return `${key}: ${value};`;
+        }
+        console.log(parts);
+        // Fallback for malformed or non-key:value strings (should not happen with valid CSS properties)
+        let trimmed = declStr.trim();
+        if (trimmed && !trimmed.endsWith(';')) trimmed += ';';
+        [key, ...value] = trimmed.split(':');
+        return `${key}: ${value.join(':')};`;
+    }
+
+    // Helper function to resolve selectors with '&'
+    function resolveSelectorStrict(selStr) {
+        // Handles cases like:
+        // "#unique-id&:hover" -> "#unique-id:hover"
+        // "#unique-id&::before" -> "#unique-id::before"
+        // ".box .container &.active" -> ".box .container.active"
+        // ".button&:hover" -> ".button:hover"
+        // "body&:hover" -> "body:hover"
+        let resolved = selStr;
+        // Replace " &modifier" or "  &modifier" patterns where modifier is a class, id, pseudo, or attribute
+        resolved = resolved.replace(/\s+&\s*([.#:\[])/g, '$1');
+        // Replace remaining "&" (usually for direct concatenation like "selector&:pseudo")
+        resolved = resolved.replace(/&/g, '');
+        return resolved;
+    }
+
+    // Helper function to format a single CSS rule block
+    function formatSingleRule(selector, declarationsArray, indent) {
+        let ruleString = `${indent}${resolveSelectorStrict(selector)} {\n`;
+        if (declarationsArray.length === 0) {
+            // Optionally, you could add a comment like /* empty rule */
+        } else {
+            declarationsArray.forEach(decl => {
+                ruleString += `${indent}\t${formatDeclaration(decl)}\n`;
+            });
+        }
+        ruleString += `${indent}}\n`;
+        return ruleString;
+    }
+
+    // Helper function to generate CSS for a list of rules (handles indentation and spacing)
+    function generateCssForBlock(rulesList, baseIndent) {
+        const ruleStrings = rulesList.map(rule => {
+            return formatSingleRule(rule.selector, rule.declarations, baseIndent);
+        });
+        // Join rule blocks with an additional newline for "empty line" spacing
+        return ruleStrings.join("\n");
+    }
+
+    // Main processing logic
+    const imports = [];
+    const globalRules = [];
+    const mediaRulesMap = new Map();
+
+    for (const item of cssArray) {
+        if (item.length === 1) {
+            imports.push(item[0].trim()); // Assuming @import or similar top-level at-rules
+        } else if (item.length === 2) {
+            let [rawSelector, rawDeclarationsStr] = item;
+            rawSelector = rawSelector.trim();
+            
+            const declarations = splitDeclarations(rawDeclarationsStr);
+
+            if (rawSelector.startsWith("@media")) {
+                const parts = rawSelector.split(';');
+                const mediaQuery = parts[0].trim();
+                const actualSelector = parts.slice(1).join(';').trim(); // Handle selectors with ';' if any
+
+                if (!mediaRulesMap.has(mediaQuery)) {
+                    mediaRulesMap.set(mediaQuery, []);
+                }
+                mediaRulesMap.get(mediaQuery).push({ selector: actualSelector, declarations });
+            } else {
+                globalRules.push({ selector: rawSelector, declarations });
+            }
+        }
+    }
+
+    const finalCssBlocks = [];
+
+    imports.forEach(imp => {
+        finalCssBlocks.push(imp.endsWith(';') ? imp : imp + ';');
+    });
+
+    const globalCssOutput = generateCssForBlock(globalRules, "");
+    if (globalCssOutput.trim()) {
+        finalCssBlocks.push(globalCssOutput.trimEnd()); // trimEnd to remove last \n from generate
+    }
+
+    mediaRulesMap.forEach((rules, mediaQuery) => {
+        const mediaBlockContent = generateCssForBlock(rules, "\t");
+        if (mediaBlockContent.trim()) {
+            // Remove trailing newline from mediaBlockContent before wrapping in media query
+            finalCssBlocks.push(`${mediaQuery} {\n${mediaBlockContent.trimEnd()}\n}`);
+        }
+    });
+    
+    let resultCss = finalCssBlocks.join("\n\n");
+    if (resultCss) { // Add a final newline if there's any content
+        resultCss += "\n";
+    }
+    return resultCss;
 }
 
 function renestCSS(withHtml, cssProvided) {
@@ -21174,7 +21333,7 @@ function renestCSS(withHtml, cssProvided) {
     }
 }
 
-function beautifyCSS(declarations, indent = '') {
+function beautifyNestedCSS(declarations, indent = '') {
     // Initialize the parsed CSS string
     let parsedCSS = '';
 	window.editorIndentChar ??= '\t';
@@ -21273,7 +21432,7 @@ function beautifyCSS(declarations, indent = '') {
 
             // If there are nested declarations, recursively call beautifyCSS
             if (nestedDeclarations.length > 0 && Array.isArray(nestedDeclarations[0])) {
-                parsedCSS += beautifyCSS(nestedDeclarations, indent + window.editorIndentChar);
+                parsedCSS += beautifyNestedCSS(nestedDeclarations, indent + window.editorIndentChar);
             }
 
             // Close the selector

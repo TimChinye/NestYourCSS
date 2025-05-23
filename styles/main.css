@@ -320,9 +320,17 @@ body {
 									}
 								}
 							}
+
+							> img {
+								transition: inherit;
+							}
 	
 							&:hover {
 								border-color: rgb(from var(--shades-lighter) r g b / var(--opacity-low));
+								
+								:not(:hover) {
+									filter: grayscale(1);
+								}
 							}
 	
 							&:has(> img:hover) {

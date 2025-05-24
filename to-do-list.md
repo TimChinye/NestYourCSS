@@ -1,21 +1,23 @@
 # To-do List
 
 ## Next up:
-- Show a different number of ads dependent on @container
+- Make the code unnest properly.
 
 ## To-do now, before [release]:
+- Show a different number of ads dependent on @container
 - Store settings to localStorage
-- Disable history, settings, and share feedback
-- Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
+- "Disable" history, settings, and share feedback
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
-- Browser support
+- Browser support (currently the CSS only works for Chrome, a lot of modern/experimental features were used)
 - Optimise for lighthouse
-- Make a 'dev.nestyourcss.com'
+- Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)
 - Add SEO features
 
 ## List of (potential) stuff to add to the site, after release:
+- Refine nesting logic, optimize it.
+- Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
 - Make history, settings, and a custom "share feedback" and "report a bug".
-- Re make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)
+- Re-make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)
 - History of all conversions to Nested CSS
 - Auto-save every minute? Or just "Nest" button (probably both, with a toggleable auto-save)
 - Button to use the previous selector instead (a.k.a. previous `diff`, but only for selectors) edit: not sure why this is only for selectors

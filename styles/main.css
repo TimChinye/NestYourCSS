@@ -286,9 +286,7 @@ body {
 							> picture {
 								--column-count: 0;
 								--width: calc((100cqw / var(--column-count)) - ((2rem + (1rem * (var(--column-count) - 1))) / var(--column-count)));
-								transition: inherit;
 								position: relative;
-								cursor: pointer;
 								border: none;
 								/* max-height: 100%;
 								min-height: calc(var(--width) * 0.820895522);
@@ -321,20 +319,17 @@ body {
 								}
 							}
 
-							> img {
+							> * {
 								transition: inherit;
+								cursor: pointer;
 							}
 	
 							&:hover {
 								border-color: rgb(from var(--shades-lighter) r g b / var(--opacity-low));
-								
-								:not(:hover) {
-									filter: grayscale(1);
-								}
-							}
 	
-							&:has(> img:hover) {
-								border-color: rgb(from var(--shades-lighter) r g b / var(--opacity-medium));
+								&:has(> img:hover) {
+									border-color: rgb(from var(--shades-lighter) r g b / var(--opacity-medium));
+								}
 								
 								:not(:hover) {
 									filter: grayscale(1);

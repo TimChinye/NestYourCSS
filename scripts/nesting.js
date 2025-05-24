@@ -361,46 +361,43 @@ function flattenCSS(cssProvided, prefix = '') {
     
             // 2. Space before certain characters (*, [, #, .) if not already spaced and not inside () or []
             //    and not immediately after another combinator or start of string.
-            //    (This logic ensures that if input is `foo.bar`, output becomes `foo .bar` if desired,
-            //     and if input is `foo .bar`, it stays `foo .bar`)
             if (spaceBeforeChars.includes(char) && parenthesisDepth === 0 && bracketDepth === 0) {
-                if (prevChar && prevChar !== ' ' && !combinators.includes(prevChar) && prevChar !== '(' /* Ensure not adding space like `( .foo` */ ) {
+                // MODIFIED CONDITION:
+                if (prevChar && prevChar !== ' ' && !combinators.includes(prevChar) && prevChar !== '(' &&
+                    // --- Start of new conditions ---
+                    // Do NOT add a space if prevChar is '&' and current char is a class/id/pseudo selector start
+                    !(prevChar === '&' && (char === '.' || char === '#' || char === ':')) &&
+                    // Do NOT add a space if prevChar is alphanumeric and current char is a class/id selector start
+                    !(/[a-zA-Z0-9]/.test(prevChar) && (char === '.' || char === '#')) &&
+                    // Do NOT add a space if prevChar is a closing bracket/paren or '*' and current char is class/id
+                    !((prevChar === ']' || prevChar === ')' || prevChar === '*') && (char === '.' || char === '#'))
+                    // --- End of new conditions ---
+                ) {
                     result += ' ';
                 }
             }
             
             // 3. Special handling for universal selector '*'
-            //    - Space after '*' if it's a universal selector (not part of an identifier)
-            //      and followed by an attribute selector, ID, class, or another element.
             if (char === '*' && parenthesisDepth === 0 && bracketDepth === 0) {
-                // Add the '*' first. If space is needed before it, rule #2 should have handled it.
                 result += char;
-
                 if (nextChar && (nextChar === '[' || nextChar === '#' || nextChar === '.' || /^[a-zA-Z]/.test(nextChar))) {
-                    // Ensure space AFTER * if followed by attribute/id/class/element,
-                    // unless nextChar is already a space (which \s+/g ' ' handles later)
-                    // Example: `*[` -> `* [` if desired. Current code adds space for `*[`.
                     if (nextChar !== ' ') {
-                         if (nextChar === '[') { // Specific request for `* [` for `*[...]`
+                         if (nextChar === '[') { 
                             result += ' ';
                          }
-                         // Add more conditions here if `*#`, `*.`, `*element` need space after *
                     }
                 }
                 i++;
                 continue;
             }
     
-            // Add the character by default if not handled by a continue above
             result += char;
     
-            // 4. Space after comma (if not already handled by other logic, e.g. in function params)
-            if (char === ',' && parenthesisDepth > 0) { // Typically for function arguments
+            if (char === ',' && parenthesisDepth > 0) { 
                 if (nextChar && nextChar !== ' ') {
                     result += ' ';
                 }
             }
-            // Top-level commas are usually handled by splitting selectors, but if one remains:
             else if (char === ',' && parenthesisDepth === 0 && bracketDepth === 0) {
                  if (nextChar && nextChar !== ' ') {
                     result += ' ';
@@ -410,13 +407,11 @@ function flattenCSS(cssProvided, prefix = '') {
             i++;
         }
     
-        // Final trim and cleanup multiple spaces
         return result
-            .replace(/\s+/g, ' ')                            // Consolidate multiple spaces to one
-            // .replace(/\s*([>+~,{};()])\s*/g, '$1')         // THIS LINE WAS REMOVED as it caused the issue
-            .replace(/([>+~])(?![=\s])/g, '$1 ')            // Ensure space after explicit combinators >+~ (if not followed by = or space)
-            .replace(/(?<![\s>+~])([>+~])/g, ' $1')         // Ensure space before explicit combinators >+~ (if not preceded by space or combinator)
-            .replace(/,\s*/g, ', ')                         // Standardize space after commas to one space (e.g. `a,b` -> `a, b` and `a,  b` -> `a, b`)
+            .replace(/\s+/g, ' ')                            
+            .replace(/([>+~])(?![=\s])/g, '$1 ')            
+            .replace(/(?<![\s>+~])([>+~])/g, ' $1')         
+            .replace(/,\s*/g, ', ')                         
             .trim();
     }
 
@@ -473,7 +468,7 @@ function flattenCSS(cssProvided, prefix = '') {
                     relativeSelector = tempSelector;
                 }
             }
-            
+
             relativeSelector = _formatSelectorString(relativeSelector);
 
             // If the declarations are an array, there are nested rules within the current rule
@@ -555,6 +550,7 @@ function flattenCSS(cssProvided, prefix = '') {
 
 function denestCSS(cssProvided) {
     let parsedCSS = [];
+    console.logNow(cssProvided);
 
     cssProvided.forEach(([selector, declarations]) => { // declarations parameter is not used in this selector parsing logic
         let selectorParts = [];
@@ -615,12 +611,13 @@ function denestCSS(cssProvided) {
             for (let i = 0; i < str.length; i++) {
                 const char = str[i];
                 if (char === '&') {
-                    // Ampersand found. We need to remove any trailing whitespace
-                    // from what we've accumulated so far in resultChars.
-                    let resultChar = resultChars[resultChars.length - 1];
-                    const isSassWhitespace = resultChar === ' ' || resultChar === '\t' || resultChar === '\n' || resultChar === '\r';
-                    while (resultChars.length > 0 && isSassWhitespace) {
-                        resultChars.pop(); // Remove last character if it's whitespace.
+                    while (resultChars.length > 0) {
+                        let lastAccumulatedChar = resultChars[resultChars.length - 1];
+                        if (lastAccumulatedChar === ' ' || lastAccumulatedChar === '\t' || lastAccumulatedChar === '\n' || lastAccumulatedChar === '\r') {
+                            resultChars.pop();
+                        } else {
+                            break; // Stop if a non-whitespace character is encountered
+                        }
                     }
                     // The ampersand itself is skipped (not added to resultChars).
                 } else resultChars.push(char); // Add current character to our list.
@@ -733,6 +730,7 @@ function denestCSS(cssProvided) {
     });
 
     // Return the parsed CSS
+    console.logNow(parsedCSS);
     return beautifyCSS(parsedCSS);
 }
 

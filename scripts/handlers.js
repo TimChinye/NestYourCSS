@@ -1,3 +1,12 @@
+document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
+	['transitionrun', 'transitionstart', 'transitioncancel', 'transitionend'].forEach(event => btn.lastElementChild.addEventListener(event, repositionButtonBG));
+
+	function repositionButtonBG(e) {
+		let { top, left } = e.target.getBoundingClientRect();
+		e.target.style.backgroundPosition = `top -${top}px left -${left}px`;
+	}
+});
+
 document.body.addEventListener('mousemove', (e) => {
   requestAnimationFrame(() => {
     window.cursorX = e.clientX;

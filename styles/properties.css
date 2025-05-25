@@ -1,6 +1,18 @@
-@property --icon-colour {
+@property --button-bg {
 	syntax: "<color>";
-	inherits: false;
+	inherits: true;
+	initial-value: transparent;
+}
+
+@property --icon-path-one-fill {
+	syntax: "<color>";
+	inherits: true;
+	initial-value: transparent;
+}
+
+@property --icon-path-two-fill {
+	syntax: "<color>";
+	inherits: true;
 	initial-value: transparent;
 }
 

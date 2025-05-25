@@ -42,17 +42,12 @@
     </defs>
 
     <style>
-      .icon-path-one,
-      .icon-path-two {
-        cursor: pointer;
-        transition: var(--path-fill-transition);
-      }
+      svg[hidden]:has(defs) :is(.icon-path-one, .icon-path-two) {
+          cursor: pointer;
+          transition: var(--icon-paths-fill-transition);
 
-      .icon-path-one {
-        fill: var(--icon-path-one-fill);
-      }
-      .icon-path-two {
-        fill: var(--icon-path-two-fill);
+          &.icon-path-one { fill: var(--icon-path-one-fill); }
+          &.icon-path-two { fill: var(--icon-path-two-fill); }
       }
     </style>
   </svg>

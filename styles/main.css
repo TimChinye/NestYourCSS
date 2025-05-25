@@ -1,3 +1,9 @@
+/* @starting-style {
+	#siteWrapper *:not(:has(menu), menu, menu *) {
+		display: none !important;
+	}
+} */
+
 /* The actual main CSS file for this website */
 
 :root {
@@ -18,7 +24,7 @@
     --sec-colour-m-darker: oklch(from var(--sec-colour-hue) 40% 0.0679 h); /* #015259 */
     --sec-colour-darker: oklch(from var(--sec-colour-hue) 55% 0.0935 h); /* #02818b */
     --sec-colour-medium: oklch(from var(--sec-colour-hue) 75% 0.1278 h); /* #03c4d4 */
-    --sec-colour-lighter: oklch(from var(--sec-colour-hue) 85% 0.0821 h); /* #8adee7 */
+    --sec-colour-lighter: oklch(from var(--sec-colour-hue) 85% 0.0821 h); /* #8aDee7 */
     --sec-colour-lightest: oklch(from var(--sec-colour-hue) 90% 0.0522 h); /* #b6e9ee */
 
 	--red-colour-hue: oklch(none none 15);
@@ -47,7 +53,9 @@
     --opacity-high: 0.75;
 }
 
-/* #(\w|\d){3,6} */
+/* Match any & all hex codes */
+/* #([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})(?=[^0-9a-z]) */
+/* #([0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})(?=[^0-9a-zA-Z]) */
 
 * {
 	box-sizing: border-box;
@@ -100,8 +108,8 @@ body {
 
 			> #mainContent {
 				--background: url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
-				linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))),
-				linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) var(--cursorHorizPosition), transparent),
+				linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
+				linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) var(--cursorHorizPosition), transparent) 0 0 / 100dvw 100dvh,
 				var(--shades-black);
 				contain: content;
 				display: flex;
@@ -163,12 +171,40 @@ body {
 						> menu {
 							display: inline-flex;
 							--primary-colour: var(--shades-darker);
-							--icon-colour-hover: color-mix(in srgb, var(--primary-colour) 75%, var(--shades-lightest));
+							--secondary-colour: color-mix(in srgb, var(--shades-lightest), var(--primary-colour) 75%);
 							gap: 0.33em;
 							margin: 1em 0;
 							padding: 0;
 	
+							/* Sourced from: https://codepen.io/TigerYT/pen/bNdGKQq */
+
 							> button {
+								/* --- Animation Duration & Delay Variables --- */
+								  
+								/* Part 1: Icon changing (on hover) */
+								--anim-duration-icon-in: 0.5s;
+								--anim-duration-bg-in: 0s;
+								--delay-icon-in-paths: 0s;
+								--delay-icon-in-bg: calc(var(--delay-icon-in-paths) + var(--anim-duration-icon-in) + 0s);
+											
+								/* Part 2: Text being shown (on hover) */
+								--anim-duration-text-show: 0.5s;
+								--anim-duration-text-opacity-show: 0.25s;
+								--delay-text-show-font: calc(var(--delay-icon-in-bg) + 0s);
+								--delay-text-show-opacity: calc(var(--delay-text-show-font) + var(--anim-duration-text-show) + 0s);
+							  
+								/* Part 3: Text being hidden (on mouse out) */
+								--anim-duration-text-hide: 0.5s;
+								--anim-duration-text-opacity-hide: 0.25s;
+								--delay-text-hide-opacity: 0s;
+								--delay-text-hide-font: 0.5s;
+							  
+								/* Part 4: Icon changing back (on mouse out) */
+								--anim-duration-icon-out: 0.5s;
+								--anim-duration-bg-out: 0s;
+								--delay-icon-out-paths: calc(var(--delay-text-hide-font) + var(--anim-duration-text-hide) + 0s);
+								--delay-icon-out-bg: calc(var(--delay-icon-out-paths) + 0s);
+
 								display: flex;
 								font-size: inherit;
 								flex-direction: row;
@@ -176,13 +212,13 @@ body {
 								position: relative;
 								padding: 0;
 								border: none;
-								background: radial-gradient(circle at 1.5em, transparent calc(1.5em - 0.125em), var(--icon-colour) 0, var(--icon-colour) 100%);
+								background: radial-gradient(circle at 1.5em, transparent calc(1.5em - 0.125em), var(--button-bg) 0, var(--button-bg) 100%);
 								border-radius: 999px;
-									
-								--icon-path-one-fill: var(--primary-colour);
-								--icon-path-two-fill: transparent;
-								--path-fill-transition: --icon-colour 0s 1s;
-	
+
+								/* Initial state of icon fills and button background */
+								--button-bg: transparent;
+								transition: --button-bg var(--anim-duration-bg-out) var(--delay-icon-out-bg);
+
 								> a {
 									position: absolute;
 									top: 0;
@@ -199,12 +235,20 @@ body {
 									aspect-ratio: 1 / 1;
 									border-radius: inherit;
 									box-sizing: border-box;
+		
+									/* Transitions for HOVER-OUT */
+									--icon-path-one-fill: var(--primary-colour);
+									--icon-path-two-fill: transparent;
+									
+									--icon-paths-fill-transition: 
+										--icon-path-one-fill var(--anim-duration-icon-out) var(--delay-icon-out-paths), 
+										--icon-path-two-fill var(--anim-duration-icon-out) var(--delay-icon-out-paths);
 								}
 							
 								> span {
 									flex: 1;
 									display: block;
-									color: var(--icon-colour);
+									color: transparent;
 									font-weight: 600;
 									font-size: 0;
 									opacity: 0;
@@ -214,22 +258,40 @@ body {
 									translate: 1ch;
 									background: var(--background);
 									background-clip: text;
-									transition: font-size 0.5s 0.5s, opacity 0.25s 0s;
+    
+									/* Transitions for HOVER-OUT */
+									transition: 
+									  font-size var(--anim-duration-text-hide) var(--delay-text-hide-font), 
+									  opacity var(--anim-duration-text-opacity-hide) var(--delay-text-hide-opacity),
+											color var(--anim-duration-bg-out) var(--delay-icon-out-bg);
 								}
 								
 								&:hover {
-									--icon-colour: var(--icon-colour-hover);
 									cursor: pointer;
 									
-									--icon-path-one-fill: transparent;
-									--icon-path-two-fill: var(--icon-colour-hover);
-									--path-fill-transition: --icon-colour 0.5s 0s;
+									/* Hover state of icon fills and button background */
+									--button-bg: var(--secondary-colour);
+									transition: --button-bg var(--anim-duration-bg-in) var(--delay-icon-in-bg);
+									
+									> svg {
+										/* Transitions for HOVER-IN */
+										--icon-path-one-fill: transparent;
+										--icon-path-two-fill: var(--secondary-colour);
 
+										--icon-paths-fill-transition: 
+											fill var(--anim-duration-icon-in) var(--delay-icon-in-paths);
+									}
+    
 									> span {
-										translate: 1ch 0;
-										font-size: unset;
-										opacity: 1;
-										transition: font-size 0.5s 0.5s, opacity 0.25s 1s;
+									  translate: 1ch 0;
+									  font-size: unset;
+									  opacity: 1;
+									  
+									  /* Transitions for HOVER-IN */
+									  transition: 
+										font-size var(--anim-duration-text-show) var(--delay-text-show-font), 
+										opacity var(--anim-duration-text-opacity-show) var(--delay-text-show-opacity),
+										color var(--anim-duration-icon-in) var(--delay-icon-in-bg);
 									}
 								}
 							}
@@ -1668,7 +1730,7 @@ body {
 							#nycssBadge {
 								pointer-events: none;
 								filter: drop-shadow(0 var(--shadow-distance) 0 var(--shadow-color)) drop-shadow(0 calc(-1 * var(--shadow-distance)) 0 var(--shadow-color));
-								--shadow-color: #1474B833;
+								--shadow-color: #1474B833; /* Taken directly from the CSS Logo */
 								--shadow-distance: 0;
 								transition: 1s;
 					
@@ -1685,7 +1747,7 @@ body {
 					
 								&.hover-animation {
 									animation: hover 2s infinite alternate;
-									--shadow-color: #1474B833;
+									--shadow-color: #1474B833; /* Taken directly from the CSS Logo */
 									--shadow-distance: 1.5em;
 								}
 							}
@@ -1694,7 +1756,7 @@ body {
 								clip-path: inset(19.3% 1.3% 1.3% 7.3%);
 					
 								&:hover #nycssBadge.hover-animation {
-									--shadow-color: #26A2D933;
+									--shadow-color: #26A2D933; /* Taken directly from the CSS Logo */
 									--shadow-distance: 2em;
 								}
 							}

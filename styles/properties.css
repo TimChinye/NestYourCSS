@@ -4,19 +4,19 @@
 	initial-value: transparent;
 }
 
-@property --color1 {
+@property --nestBtn-shadow-colour-1 {
   syntax: '<color>';
   inherits: false;
   initial-value: transparent;
 }
 
-@property --color2 {
+@property --nestBtn-shadow-colour-2 {
   syntax: '<color>';
   inherits: false;
   initial-value: transparent;
 }
 
-@property --color3 {
+@property --nestBtn-shadow-colour-3 {
   syntax: '<color>';
   inherits: false;
   initial-value: transparent;

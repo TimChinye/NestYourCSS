@@ -362,3 +362,123 @@ function comboHandler(inputElem, close) {
     }
   }
 }
+
+/* Custom Inputs */
+
+document.querySelectorAll('[data-input="dropdown"]').forEach(dropdownOption => {
+  dropdownOption.addEventListener('click', () => selectHandler(dropdownOption));
+  dropdownOption.addEventListener('keydown', (event) => {
+      if (event.code === 'Space') {
+          event.preventDefault(); // Prevent scrolling
+          selectHandler(dropdownOption, true);
+      }
+  });
+});
+
+document.querySelectorAll('[data-input="number-stepper"]').forEach(numberStepper => {
+    const eventTypes = ['click', 'mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touchend'];
+    eventTypes.forEach(eventType => {
+        numberStepper.addEventListener(eventType, function(event) {
+            // 'this' refers to the stepperSVG element
+            // The 'event' object is automatically passed
+            if (typeof numberHandler === 'function') {
+                numberHandler(this, event);
+            }
+        });
+    });
+});
+
+document.querySelectorAll('[data-input="number-display"]').forEach(numberDisplay => {
+    // Replicating: oninput="(this.textContent = +this.textContent.replace(/(\D)+/g, '')) && numberHandler(this, event)"
+    numberDisplay.addEventListener('input', function(event) {
+        event.preventDefault();
+        // Sanitize input to be numeric
+        this.textContent = (+(this.textContent.replace(/(\D)+/g, '')));
+        // Call numberHandler after sanitization
+        if (typeof numberHandler === 'function') {
+            numberHandler(this, event); // 'event' here is the input event
+        }
+    });
+
+    // Replicating: onkeydown="numberHandler(this, event)"
+    numberDisplay.addEventListener('keydown', function(event) {
+        if (typeof numberHandler === 'function') {
+            numberHandler(this, event);
+        }
+    });
+});
+
+document.querySelectorAll('[data-input="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        // 'this' refers to the checkbox element
+        if (typeof checkboxHandler === 'function') {
+            checkboxHandler(this);
+        }
+    });
+});
+
+document.querySelectorAll('[data-input="radio"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        // 'this' refers to the radio button element
+        if (typeof radioHandler === 'function') {
+            radioHandler(this);
+        }
+    });
+});
+
+document.querySelectorAll('[data-input="combo-dropdown"]').forEach(dropdownOption => {
+    dropdownOption.addEventListener('click', function() {
+        // 'this' refers to the option element
+        if (typeof comboHandler === 'function') {
+            comboHandler(this);
+        }
+    });
+    dropdownOption.addEventListener('keydown', function(event) {
+        // 'this' refers to the option element
+        if (event.code === 'Space') {
+            event.preventDefault(); // Prevent default space action (e.g., scrolling)
+            if (typeof comboHandler === 'function') {
+                comboHandler(this, true);
+            }
+        }
+    });
+});
+
+document.querySelectorAll('[data-input="combo-text"]').forEach(textInput => {
+  textInput.addEventListener('keydown', function(event) {
+      if (event.code === 'Enter') {
+          event.preventDefault();
+          if (typeof comboHandler === 'function') {
+              comboHandler(this, true);
+          }
+      }
+  });
+
+  // Replicating: onpaste="event.preventDefault(); document.execCommand('insertText', false, (event.clipboardData || window.clipboardData).getData('text'));"
+  textInput.addEventListener('paste', function(event) {
+      event.preventDefault();
+      const text = (event.clipboardData || window.clipboardData).getData('text');
+      document.execCommand('insertText', false, text);
+  });
+
+  textInput.addEventListener('input', function() {
+      if (this.innerText.includes('\n')) {
+          this.textContent = this.textContent.replace(/\n/g, '');
+          // After removing newline, collapse selection to the end of the current content
+          const selection = window.getSelection();
+          if (selection && this.lastChild) {
+              selection.collapse(this.lastChild, this.lastChild.length || 0);
+          }
+      }
+      // Note: The original inline oninput also called numberHandler.
+      // If comboHandler needs to be called on input (e.g., for filtering options), add it here:
+      // if (typeof comboHandler === 'function') {
+      //     comboHandler(this, false); // or based on some logic
+      // }
+  });
+
+  // Replicating: onblur="this.scrollLeft = 0;"
+  textInput.addEventListener('blur', function() {
+      this.scrollLeft = 0;
+  });
+});

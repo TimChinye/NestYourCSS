@@ -1,14 +1,14 @@
 # To-do List
 
 ## Next up:
-- Make the code unnest properly.
+- Show a different number of ads dependent on @container
 
 ## To-do now, before [release]:
-- Show a different number of ads dependent on @container
 - Store settings to localStorage
 - "Disable" history, settings, and share feedback
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
 - Browser support (currently the CSS only works for Chrome, a lot of modern/experimental features were used)
+- Improve performance
 - Optimise for lighthouse
 - Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)
 - Add SEO features

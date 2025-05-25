@@ -3,9 +3,14 @@
 @keyframes scaleDown {
 	1%, 99% { pointer-events: none; }
 
-	0% { scale: 1; }
-	50% { scale: calc(6/8); }
-	100% { scale: calc(6/8); }
+	0% {
+		scale: 1;
+		filter: grayscale(0);
+	}
+	50%, 100% {
+		scale: calc(3 / 4);
+		filter: grayscale(1);
+	}
 }
 
 /* ((96vh {firstSectionHeight} + ((100vh {sectionHeight} + 50vh {gap})  * 4 {otherSectionsCount})) / 696 {totalHeight}) */
@@ -218,36 +223,36 @@
 		box-shadow:
 			var(--animationControls),
 			0em 0em 1em 0 var(--shades-black),
-			1em 3em 0 -1em var(--color1),
-			3em 0.5em 0 -1em var(--color2),
-			2.5em 2.5em 0 -0.5em  var(--color3);
+			1em 3em 0 -1em var(--nestBtn-shadow-colour-1),
+			3em 0.5em 0 -1em var(--nestBtn-shadow-colour-2),
+			2.5em 2.5em 0 -0.5em  var(--nestBtn-shadow-colour-3);
 	}
 	
 	33% {
 		box-shadow:
 			var(--animationControls),
 			0em 0em 1em 0 var(--shades-black),
-			2.5em 2.5em 0 -0.5em  var(--color3),
-			1em 3em 0 -1em var(--color1),
-			3em 0.5em 0 -1em var(--color2);
+			2.5em 2.5em 0 -0.5em  var(--nestBtn-shadow-colour-3),
+			1em 3em 0 -1em var(--nestBtn-shadow-colour-1),
+			3em 0.5em 0 -1em var(--nestBtn-shadow-colour-2);
 	}
 	
 	67% {
 		box-shadow:
 			var(--animationControls),
 			0em 0em 1em 0 var(--shades-black),
-			3em 0.5em 0 -1em var(--color2),
-			2.5em 2.5em 0 -0.5em  var(--color3),
-			1em 3em 0 -1em var(--color1);
+			3em 0.5em 0 -1em var(--nestBtn-shadow-colour-2),
+			2.5em 2.5em 0 -0.5em  var(--nestBtn-shadow-colour-3),
+			1em 3em 0 -1em var(--nestBtn-shadow-colour-1);
 	}
 	
 	100% {
 		box-shadow:
 			var(--animationControls),
 			0em 0em 1em 0 var(--shades-black),
-			1em 3em 0 -1em var(--color1),
-			3em 0.5em 0 -1em var(--color2),
-			2.5em 2.5em 0 -0.5em  var(--color3);
+			1em 3em 0 -1em var(--nestBtn-shadow-colour-1),
+			3em 0.5em 0 -1em var(--nestBtn-shadow-colour-2),
+			2.5em 2.5em 0 -0.5em  var(--nestBtn-shadow-colour-3);
 	}
 }
 

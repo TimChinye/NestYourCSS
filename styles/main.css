@@ -174,7 +174,10 @@ body {
 								border: none;
 								background: radial-gradient(circle at 1.5em, transparent calc(1.5em - 0.125em), var(--icon-colour) 0, var(--icon-colour) 100%);
 								border-radius: 999px;
-								transition: --icon-colour 0s 1s;
+									
+								--icon-path-one-fill: var(--primary-colour);
+								--icon-path-two-fill: transparent;
+								--path-fill-transition: --icon-colour 0s 1s;
 	
 								> a {
 									position: absolute;
@@ -192,20 +195,6 @@ body {
 									aspect-ratio: 1 / 1;
 									border-radius: inherit;
 									box-sizing: border-box;
-							
-									> path {
-										cursor: pointer;
-										fill: var(--icon-colour);
-										transition: --icon-colour 0.5s 1s;
-							
-										&:first-child {
-											--icon-colour: var(--primary-colour);
-										}
-							
-										&:last-child {
-											--icon-colour: transparent;
-										}
-									}
 								}
 							
 								> span {
@@ -225,21 +214,12 @@ body {
 								}
 								
 								&:hover {
-									cursor: pointer;
 									--icon-colour: var(--icon-colour-hover);
-									transition: --icon-colour 0.5s;
-
-									> svg > path {
-									transition: 0.5s 0s;
+									cursor: pointer;
 									
-										&:first-child {
-											--icon-colour: transparent;
-										}
-								
-										&:last-child {
-										--icon-colour: var(--icon-colour-hover);
-										}
-									}
+									--icon-path-one-fill: transparent;
+									--icon-path-two-fill: var(--icon-colour-hover);
+									--path-fill-transition: --icon-colour 0.5s 0s;
 
 									> span {
 										translate: 1ch 0;
@@ -363,22 +343,22 @@ body {
 						font-weight: bold;
 						background-image: linear-gradient(135deg, var(--sec-colour-lighter), var(--pri-colour-darker));
 						transform-origin: bottom right;
-						transition: 0.5s, --color1 0s, --color2 0s, --color3 0s;
+						transition: 0.5s, --nestBtn-shadow-colour-1 0s, --nestBtn-shadow-colour-2 0s, --nestBtn-shadow-colour-3 0s;
 						animation: shadowRotate 3s infinite both;
 						animation-composition: add;
 						box-shadow: inset 0 0 0.5em 0 var(--shades-black);
 					
 						&:hover {
-							/* The undefined '--animationControls' prevents the box-shadow from showing initially. Fixing the error during runtime makes the box-shadow appear without resetting the animation. */
+							/* The undefined '--animationControls' prevents the box-shadow from showing initially. Fixing the error during runtime makes the box-shadow appear **without resetting the animation**. */
 							--animationControls: 0 0 transparent;
 							transform: scale(1.333);
 							background-color: var(--shades-white);
-							transition: 0.5s, --color1 2s, --color2 2s, --color3 2s;
+							transition: 0.5s, --nestBtn-shadow-colour-1 2s, --nestBtn-shadow-colour-2 2s, --nestBtn-shadow-colour-3 2s;
 							
 							/* Using variables so I can transition from transparent to their individual colours */
-							--color1: rgb(from var(--pri-colour-medium) r g b / var(--opacity-medium));
-							--color2: rgb(from var(--sec-colour-medium) r g b / var(--opacity-medium));
-							--color3: rgb(from color-mix(in srgb, var(--pri-colour-medium), var(--sec-colour-medium)) r g b / var(--opacity-medium));
+							--nestBtn-shadow-colour-1: rgb(from var(--pri-colour-medium) r g b / var(--opacity-medium));
+							--nestBtn-shadow-colour-2: rgb(from var(--sec-colour-medium) r g b / var(--opacity-medium));
+							--nestBtn-shadow-colour-3: rgb(from color-mix(in srgb, var(--pri-colour-medium), var(--sec-colour-medium)) r g b / var(--opacity-medium));
 						}
 					}
  
@@ -466,6 +446,7 @@ body {
 									background-position: center;
 									background-size: contain;
 									background-repeat: no-repeat;
+									/* I could've just editing the .svg files to make them gray, but this is the lazy approach */
 									filter: invert(0.4431);
 									opacity: var(--opacity-medium);
 									cursor: pointer;
@@ -484,11 +465,6 @@ body {
 						}
 
 						.editor {
-							/* 
-							 * height: calc(100% - (editorTab's total height)
-							 * height: calc(100% - (<editorTab's "padding-block"> + <height of buttons>)
-							 * height: calc(100% - ((2 * 0.75rem) + 2rem));
-							 */
 							flex: 1;
 						}
 					}
@@ -542,6 +518,7 @@ body {
 				> #mainSettings {
 					margin-right: var(--padding);
 					height: 100%;
+					/* A manually calculated minimum width based on it's children elements, but due to `contain` use, getting in dynamically isn't possible. */
 					min-width: calc(58.441558ch * 1.232);
 					transition: margin-right 2s;
 					display: flex;
@@ -1047,9 +1024,9 @@ body {
 								> svg {
 									contain: size;
 									
-									clipPath {
+									> clipPath {
 										scale: 0.012;
-									translate: -7cqw -11cqh;
+										translate: -7cqw -11cqh;
 									}
 								}
 								
@@ -1402,7 +1379,6 @@ body {
 					
 								&:hover {
 									color: var(--pri-colour-lightest);
-									-webkit-text-stroke: var(--shades-black) calc(1em / 40);
 								}
 							}
 						}
@@ -1570,20 +1546,10 @@ body {
 						gap: 6ch;
 						word-spacing: 0.7ch;
 						overflow: hidden;
-									
-						&:not(.viewed) { /* check if hover-animation */
-							animation: viewed linear, revealText linear backwards;
-							animation-timeline: view(), view();
-							animation-range-start: contain calc(min(50dvh, 800px) - 10lh), contain;
-							animation-range-end: contain, contain calc(min(50dvh, 800px) - 10lh);
-						}
-			
-						&.viewed {
-							animation: widenGap 3s ease-in-out infinite alternate backwards, unblur ease-out both;
-							animation-timeline: auto, view();
-							animation-range-start: normal, cover;
-							animation-range-end: normal, contain calc(min(50dvh, 800px));
-						}
+						animation: widenGap 3s ease-in-out infinite alternate backwards, unblur ease-out both;
+						animation-timeline: auto, view();
+						animation-range-start: normal, cover;
+						animation-range-end: normal, contain calc(min(50dvh, 800px));
 					}
 
 					> #strechingText {

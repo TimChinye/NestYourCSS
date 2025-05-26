@@ -1,4 +1,3 @@
-/* Not checked for performance */
 let lineNumbers = document.getElementById('lineNumbers');
 
 let lines = lineNumbers.nextElementSibling.textContent.split("\n");
@@ -20,8 +19,6 @@ lineNumbers.innerHTML = lines.fill().map((item, i) => `<div>${i + 1}</div>`).joi
 
 /* Set active line */
 
-let lastKnownCursorX = -1;
-const cursorX_update_threshold = 8; // px
 function updateActiveLine(cursorX, cursorY) {
   /* Vertical */
   
@@ -36,14 +33,10 @@ function updateActiveLine(cursorX, cursorY) {
   
   /* Horizontal */
 
-  if (Math.abs(cursorX - lastKnownCursorX) > cursorX_update_threshold) {
-      lastKnownCursorX = cursorX;
-
-      let horizontalPos = cursorX / document.body.clientWidth;
-      let padding = lineNumbers.nextElementSibling.offsetLeft / lineNumbers.parentElement.offsetWidth;
-      let horizontalRePos = ((1 - (padding * 2)) * horizontalPos) + padding;
-      lineNumbers.nextElementSibling.style.setProperty('--intensityPos', roundNumber(horizontalRePos * 100) + '%');
-  }
+  let horizontalPos = cursorX / document.body.clientWidth;
+  let padding = lineNumbers.nextElementSibling.offsetLeft / lineNumbers.parentElement.offsetWidth;
+  let horizontalRePos = ((1 - (padding * 2)) * horizontalPos) + padding;
+  lineNumbers.nextElementSibling.style.setProperty('--intensityPos', roundNumber(horizontalRePos * 100) + '%');
 }
 
 /* Animate Editor being built - First time */

@@ -52,7 +52,7 @@
     </style>
   </svg>
 
-  <script>const moveMainBackground = () => document.body.style.setProperty('--cursorHorizPosition', roundNumber((window.cursorX / document.body.clientWidth) * 100) + '%');</script>
+  <script>const moveMainBackground = (cursorX) => document.body.style.setProperty('--cursorHorizPosition', roundNumber((cursorX / document.body.clientWidth) * 100) + '%');</script>
 
   <div id="siteWrapper">
     <main>

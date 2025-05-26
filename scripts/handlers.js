@@ -9,9 +9,6 @@ document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 
 document.body.addEventListener('mousemove', (e) => {
   requestAnimationFrame(() => {
-    window.cursorX = e.clientX;
-    window.cursorY = e.clientY;
-    
     document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
     document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
 
@@ -27,12 +24,12 @@ document.body.addEventListener('mousemove', (e) => {
     
     let editorSection = document.getElementById('groupingStylesTogether');
     if (e.pageY > editorSection.offsetTop - editorSection.offsetHeight && e.pageY < editorSection.offsetTop + (editorSection.offsetHeight * 2)) {
-      updateActiveLine();
+      updateActiveLine(e.clientX, e.clientY);
     }
     
     let mainSection = document.getElementsByTagName('main')[0];
     if (e.pageY > 0 && e.pageY < mainSection.offsetTop + ((mainSection.offsetHeight * (1 / 0.96)) * 2)) {
-      moveMainBackground();
+      moveMainBackground(e.clientX);
     }
   });
 });

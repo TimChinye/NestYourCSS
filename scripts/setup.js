@@ -175,7 +175,7 @@ const setupEditors = () => {
       shadowWidthDiff = baseShadowWidth / 15;
     }
 
-      shadowEditors.forEach((shadowEditor, index) => {
+    shadowEditors.forEach((shadowEditor, index) => {
       const shadowEditorWrapper = document.createElement("div");
       shadowEditorWrapper.classList.add("shadowEditorWrapper", "editorWrapper");
       shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
@@ -209,7 +209,8 @@ const setupEditors = () => {
         shadowEditor.innerHTML = inputEditor.innerHTML;
       });
 
-      if (window.getComputedStyle(shadowEditors[0].parentElement.parentElement).opacity == 0) return observer.disconnect(), shadowEditors[0].parentElement.parentElement.parentElement.remove();
+      if (document.getElementsByTagName('main')[0].classList.contains('nesting') && parseInt(window.getComputedStyle(shadowEditors[0].parentElement.parentElement).opacity) == 0)
+        return observer.disconnect(), shadowEditors[0].closest('#shadowEditorsWrapper').remove();
     });
   });
 

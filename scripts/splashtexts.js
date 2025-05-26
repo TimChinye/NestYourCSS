@@ -20,7 +20,7 @@ const uppercaseACode = 'A'.charCodeAt(0);
 const lowercaseACode = 'a'.charCodeAt(0);
 const alphabetLength = 26;
 
-function _scrambleSingleText_OptimizedV1(textToScramble) { // Or _OptimizedV2
+function _scrambleSingleText(textToScramble) { // Or _OptimizedV2
     const length = textToScramble.length;
     if (length === 0) {
         return "";
@@ -51,7 +51,7 @@ function _scrambleSingleText_OptimizedV1(textToScramble) { // Or _OptimizedV2
 
 // --- Animation State Object ---
 let animationState = {
-    originalText: "Feeling lost in the stylesheets?",
+    originalText: "",
     newText: "",
     currentDisplaySring: "", // The string currently being built/animated
     currentIndex: 0,       // Current character index for building/deconstructing
@@ -103,7 +103,7 @@ function animationLoop(timestamp) {
                 let partToKeepStaticInThisStep = staticPart.substring(0, staticPart.length - scrambleLength);
                 let partToScramble = staticPart.substring(staticPart.length - scrambleLength);
 
-                animationState.currentDisplaySring = partToKeepStaticInThisStep + _scrambleSingleText_OptimizedV1(partToScramble);
+                animationState.currentDisplaySring = partToKeepStaticInThisStep + _scrambleSingleText(partToScramble);
                 splashTextElem.textContent = animationState.currentDisplaySring;
                 
                 animationState.currentIndex++;
@@ -130,7 +130,7 @@ function animationLoop(timestamp) {
                 let scrambleLength = Math.min(animationState.maxScrambleLength, remainingLengthForScramble);
                 let partToScramble = animationState.newText.substring(animationState.currentIndex, animationState.currentIndex + scrambleLength);
 
-                animationState.currentDisplaySring = staticPart + _scrambleSingleText_OptimizedV1(partToScramble);
+                animationState.currentDisplaySring = staticPart + _scrambleSingleText(partToScramble);
                 splashTextElem.textContent = animationState.currentDisplaySring;
 
                 animationState.currentIndex++;
@@ -199,9 +199,11 @@ function startSplashTextAnimation(originalText, newText) {
         currentDisplaySring: originalText, // Start displaying the original text
         currentIndex: 0,
         direction: -1, // Start by animating out
+
         maxScrambleLength: currentMaxScramble,
         lastTimestamp: 0,
         accumulatedTime: 0,
+
         onCompleteCallback: () => { // Cooldown after animation finishes
             setTimeout(() => {
               isUpdating = false;
@@ -219,18 +221,12 @@ function startSplashTextAnimation(originalText, newText) {
 function attemptSplashTextUpdate() {
   if (!isUpdating) { // Check global flag
     let currentSplashText = splashTextElem.textContent;
-    let newSplashText = splashTexts[Math.floor(Math.random() * splashTexts.length)];
-    
-    let attempts = 0; // Prevent infinite loop if splashTexts is small or all same
-    while (newSplashText === currentSplashText && attempts < splashTexts.length * 2) {
-        newSplashText = splashTexts[Math.floor(Math.random() * splashTexts.length)];
-        attempts++;
-    }
+    let tempSplashTexts = clone(splashTexts).toSpliced(splashTexts.findIndex((text) => text === currentSplashText), 1);
+    let newSplashText = tempSplashTexts[Math.floor(Math.random() * tempSplashTexts.length)];
     
     startSplashTextAnimation(currentSplashText, newSplashText);
   }
 };
 
 // --- Initial Animation Call ---
-splashTextElem.textContent = ""; // Start with empty
-startSplashTextAnimation("", splashTexts[Math.floor(Math.random() * splashTexts.length)]);
+setTimeout(() => startSplashTextAnimation("", splashTexts[Math.floor(Math.random() * splashTexts.length)]), 2000);

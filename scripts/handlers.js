@@ -8,17 +8,21 @@ document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 });
 
 document.body.addEventListener('mousemove', (e) => {
+  if (!splashTextElem) return;
+
+  let mainSection = document.getElementsByTagName('main')[0];
+  if (mainSection.classList.contains('nesting'))
+    return requestAnimationFrame(() => moveMainBackground(e.clientX));
+  
   requestAnimationFrame(() => {
     document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
     document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
-
-    const target = e.target;
     
-    if (splashTextElem && target === splashTextElem) {
+    if (e.target === splashTextElem) {
       attemptSplashTextUpdate();
     }
     
-    if (target === lineNumbers.parentElement) {
+    if (e.target === lineNumbers.parentElement) {
       onFirstView(e);
     }
     
@@ -27,8 +31,7 @@ document.body.addEventListener('mousemove', (e) => {
       updateActiveLine(e.clientX, e.clientY);
     }
     
-    let mainSection = document.getElementsByTagName('main')[0];
-    if (e.pageY > 0 && e.pageY < mainSection.offsetTop + ((mainSection.offsetHeight * (1 / 0.96)) * 2)) {
+    if (e.pageY > 0 && e.pageY < mainSection.offsetTop + ((mainSection.offsetHeight * (1 / 0.96)) * 2)) {  // 96vw
       moveMainBackground(e.clientX);
     }
   });

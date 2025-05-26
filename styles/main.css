@@ -4,6 +4,13 @@
 	}
 } */
 
+@starting-style {
+	#mainContent > #textSide > header :is(menu > button, hgroup > :is(h1, h3)),
+	#mainContent > #textSide > figure > :is(figcaption, figcaption + div),
+	#mainContent > #editorSide > #codeEditor .editorWrapper {
+		opacity: 0;
+	}
+}
 /* The actual main CSS file for this website */
 
 :root {
@@ -61,7 +68,7 @@
 	box-sizing: border-box;
 
 	&[hidden] {
-		display: none !important;
+		display: none;
 	}
 }
 
@@ -153,7 +160,7 @@ body {
 								font-size: 3em;
 								height: 2lh;
 								width: min(100%, 24ch);
-								overflow-y: auto;
+								transition: opacity 3s 3s;
 							}
 
 							> h1 {
@@ -161,7 +168,7 @@ body {
 								line-height: 125%;
 								font-weight: 900;
 								font-size: 6em;
-								transition: 0.25s;
+								transition: opacity 3s 1.5s;
 	
 								&:hover {
 									color: var(--shades-white);
@@ -218,7 +225,8 @@ body {
 
 								/* Initial state of icon fills and button background */
 								--button-bg: transparent;
-								transition: --button-bg var(--anim-duration-bg-out) var(--delay-icon-out-bg);
+								transition: opacity 3s 1s,
+									--button-bg var(--anim-duration-bg-out) var(--delay-icon-out-bg);
 
 								> a {
 									position: absolute;
@@ -318,6 +326,7 @@ body {
 							font-size: 1.25rem;
 							height: 2rem;
 							align-content: center;
+							transition: opacity 3s;
 						}
 	
 						> div {
@@ -328,7 +337,8 @@ body {
 							border: 0.125rem solid rgb(from var(--shades-darker) r g b / var(--opacity-low));
 							padding: 1rem;
 							gap: 1rem;
-							transition: 0.25s;
+							animation: slide-in-left 0.5s 2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+							transition: 0.25s, opacity 3s 2s;
 	
 							> picture {
 								--column-count: 0;
@@ -394,7 +404,6 @@ body {
 					--total-width: calc(var(--editor-width) + var(--gutter-width) + var(--editor-width));
 
 					> #nestBtn {
-						opacity: 1;
 						position: absolute;
 						aspect-ratio: 1 / 1;
 						bottom: 2rem;
@@ -410,17 +419,17 @@ body {
 						font-weight: bold;
 						background-image: linear-gradient(135deg, var(--sec-colour-lighter), var(--pri-colour-darker));
 						transform-origin: bottom right;
-						transition: 0.5s, --nestBtn-shadow-colour-1 0s, --nestBtn-shadow-colour-2 0s, --nestBtn-shadow-colour-3 0s;
-						animation: shadowRotate 3s infinite both;
+						transition: scale 0.5s 0.5s ease-in, --nestBtn-shadow-colour-1 0s, --nestBtn-shadow-colour-2 0s, --nestBtn-shadow-colour-3 0s;
+						animation: shadowRotate 3s infinite both, bounce-in-top 1.5s forwards;
 						animation-composition: add;
 						box-shadow: inset 0 0 0.5em 0 var(--shades-black);
 					
 						&:hover {
 							/* The undefined '--animationControls' prevents the box-shadow from showing initially. Fixing the error during runtime makes the box-shadow appear **without resetting the animation**. */
 							--animationControls: 0 0 transparent;
-							transform: scale(1.333);
+							scale: 1.333;
 							background-color: var(--shades-white);
-							transition: 0.5s, --nestBtn-shadow-colour-1 2s, --nestBtn-shadow-colour-2 2s, --nestBtn-shadow-colour-3 2s;
+							transition: scale 0.5s 0.5s ease-out, --nestBtn-shadow-colour-1 2s, --nestBtn-shadow-colour-2 2s, --nestBtn-shadow-colour-3 2s;
 							
 							/* Using variables so I can transition from transparent to their individual colours */
 							--nestBtn-shadow-colour-1: rgb(from var(--pri-colour-medium) r g b / var(--opacity-medium));
@@ -443,6 +452,7 @@ body {
 									position: absolute;
 									overflow: hidden;
 									height: 100%;
+									translate: 1px;
 								}
 
 								&, * {
@@ -544,7 +554,7 @@ body {
 					
 					> #editorSide > #codeEditor {
 						.editorWrapper {
-							transition: 1s;
+							transition: 1s 0.5s;
 							border-left: calc(1rem / 16) solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
 
 							&#inputEditorWrapper {
@@ -553,6 +563,7 @@ body {
 								border-radius: 0 1rem 1rem 0;
 								border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
 								background: rgb(from var(--shades-white) r g b / 3%);
+								transition: opacity 1s;
 
 								&, > .editorGroup, .editorTab, .editor {
 										max-width: 100%;
@@ -1254,12 +1265,13 @@ body {
 						flex-direction: column;
 						
 						> span {
-						height: 1lh;
-						overflow: hidden;
-						line-height: 100%;
-						text-shadow: 0 -1lh;
-						animation: swapText linear;
-						animation-timeline: view();
+							cursor: text;
+							height: 1lh;
+							overflow: hidden;
+							line-height: 100%;
+							text-shadow: 0 -1lh;
+							animation: swapText linear;
+							animation-timeline: view();
 						
 							&:nth-child(1) {
 							margin-left: 0.5ch;

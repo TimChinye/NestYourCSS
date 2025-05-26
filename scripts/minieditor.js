@@ -20,26 +20,30 @@ lineNumbers.innerHTML = lines.fill().map((item, i) => `<div>${i + 1}</div>`).joi
 
 /* Set active line */
 
-function updateActiveLine() {
+let lastKnownCursorX = -1;
+const cursorX_update_threshold = 8; // px
+function updateActiveLine(cursorX, cursorY) {
   /* Vertical */
   
   debounce(() => {
     const segmentHeight = lineNumbers.parentElement.parentElement.offsetHeight / lines.length;
     
-    const activeLine = Math.ceil(window.cursorY / segmentHeight);
+    const activeLine = Math.ceil(cursorY / segmentHeight);
     
     lineNumbers.nextElementSibling.style.setProperty('--activeLine', activeLine + '');
     lineNumbers.nextElementSibling.style.setProperty('--maxLines', lines.length + '');
   }, 250)();
   
   /* Horizontal */
-  
-  let horizontalPos = window.cursorX / document.body.clientWidth;
-  let padding = lineNumbers.nextElementSibling.offsetLeft / lineNumbers.parentElement.offsetWidth;
-  
-  let horizontalRePos = ((1 - (padding * 2)) * horizontalPos) + padding;
-  
-  lineNumbers.nextElementSibling.style.setProperty('--intensityPos', roundNumber(horizontalRePos * 100) + '%');
+
+  if (Math.abs(cursorX - lastKnownCursorX) > cursorX_update_threshold) {
+      lastKnownCursorX = cursorX;
+
+      let horizontalPos = cursorX / document.body.clientWidth;
+      let padding = lineNumbers.nextElementSibling.offsetLeft / lineNumbers.parentElement.offsetWidth;
+      let horizontalRePos = ((1 - (padding * 2)) * horizontalPos) + padding;
+      lineNumbers.nextElementSibling.style.setProperty('--intensityPos', roundNumber(horizontalRePos * 100) + '%');
+  }
 }
 
 /* Animate Editor being built - First time */

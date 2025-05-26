@@ -17,7 +17,7 @@ document.body.addEventListener('mousemove', (e) => {
 
     const target = e.target;
     
-    if (target === splashTextElem) {
+    if (splashTextElem && target === splashTextElem) {
       attemptSplashTextUpdate();
     }
     

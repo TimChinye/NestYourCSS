@@ -7,6 +7,7 @@
 - Store settings to localStorage
 - "Disable" history, settings, and share feedback
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
+- Add all the aria-* stuff
 - Browser support (currently the CSS only works for Chrome, a lot of modern/experimental features were used)
 - Improve performance
 - Optimise for lighthouse

@@ -1,3 +1,10 @@
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.querySelector(link.hash)?.scrollIntoView({ behaviour: 'smooth' });
+  });
+});
+
 document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 	['transitionrun', 'transitionstart', 'transitioncancel', 'transitionend'].forEach(event => btn.lastElementChild.addEventListener(event, repositionButtonBG));
 

@@ -1,6 +1,6 @@
 // --- Existing Global Variables (ensure these are defined in your script) ---
 let isUpdating = false; // Your global flag to prevent overlapping animations
-const splashTextElem = document.getElementById("splashText");
+var splashTextElem = document.getElementById("splashText");
 const splashTexts = [
   "Is fine-tuning your site's look too fiddly?",
   "Need to keep your rules in order?",

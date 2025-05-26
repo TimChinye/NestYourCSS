@@ -1,7 +1,7 @@
 document.querySelectorAll('a[href^="#"]').forEach((link) => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
-    document.querySelector(link.hash)?.scrollIntoView({ behaviour: 'smooth' });
+    document.querySelector(link.hash || '#siteWrapper')?.scrollIntoView({ behaviour: 'smooth' });
   });
 });
 
@@ -14,6 +14,7 @@ document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 	}
 });
 
+var splashTextElem;
 document.body.addEventListener('mousemove', (e) => {
   if (!splashTextElem) return;
 

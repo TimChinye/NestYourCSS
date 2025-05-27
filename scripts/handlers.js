@@ -18,29 +18,36 @@ var splashTextElem;
 document.body.addEventListener('mousemove', (e) => {
   if (!splashTextElem) return;
 
-  let mainSection = document.getElementsByTagName('main')[0];
-  if (mainSection.classList.contains('nesting'))
-    return requestAnimationFrame(() => moveMainBackground(e.clientX));
-  
   requestAnimationFrame(() => {
-    document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
-    document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
-    
-    if (e.target === splashTextElem) {
-      attemptSplashTextUpdate();
+    let mainSection = document.getElementsByTagName('main')[0];
+    if (mainSection.classList.contains('nesting')) {
+      document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
+      document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
+      document.body.style.setProperty('--cursorHorizPosition', roundNumber((e.clientX / document.body.clientWidth) * 100) + '%');
     }
-    
-    if (e.target === lineNumbers.parentElement) {
-      onFirstView(e);
-    }
-    
-    let editorSection = document.getElementById('groupingStylesTogether');
-    if (e.pageY > editorSection.offsetTop - editorSection.offsetHeight && e.pageY < editorSection.offsetTop + (editorSection.offsetHeight * 2)) {
-      updateActiveLine(e.clientX, e.clientY);
-    }
-    
-    if (e.pageY > 0 && e.pageY < mainSection.offsetTop + ((mainSection.offsetHeight * (1 / 0.96)) * 2)) {  // 96vw
-      moveMainBackground(e.clientX);
+    else {
+      let cssBadge = document.getElementById('nycssBadge');
+      if (cssBadge.classList.contains('hover-animation')) {
+          document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
+          document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
+      }
+      
+      if (e.target === splashTextElem) {
+        attemptSplashTextUpdate();
+      }
+      
+      if (e.target === lineNumbers.parentElement) {
+        onFirstView(e);
+      }
+      
+      let editorSection = document.getElementById('groupingStylesTogether');
+      if (document.scrollingElement.scrollTop > editorSection.offsetTop - editorSection.offsetHeight && editorSection.offsetTop + editorSection.offsetHeight > document.scrollingElement.scrollTop) {
+        updateActiveLine(e.clientX, e.clientY);
+      }
+      
+      if (document.scrollingElement.scrollTop < mainSection.offsetHeight) {
+        document.body.style.setProperty('--cursorHorizPosition', roundNumber((e.clientX / document.body.clientWidth) * 100) + '%');
+      }
     }
   });
 });

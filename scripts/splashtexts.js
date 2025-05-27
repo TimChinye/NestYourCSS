@@ -144,9 +144,7 @@ function animationLoop(timestamp) {
         }
 
         if (animationFinishedThisStep) {
-            splashTextElem.textContent = animationState.newText; // Ensure final text is correct
-            // splashTextElem.style.minWidth = ''; // Reset minWidth
-            // isUpdating = false; // Release global lock
+            splashTextElem.textContent = animationState.newText;
             
             if (animationState.onCompleteCallback) {
                 animationState.onCompleteCallback();
@@ -173,14 +171,10 @@ function animationLoop(timestamp) {
 
 // --- Function to Start/Trigger the Animation ---
 function startSplashTextAnimation(originalText, newText) {
-    if (isUpdating && animationState.animationFrameId) {
-        // If an animation is truly in progress via rAF, don't interrupt rudely,
-        // or decide on an interruption strategy (e.g., jump to end of current, then start new)
-        // For now, we'll just let the global isUpdating flag prevent a new one.
-        return;
-    }
+    if (isUpdating && animationState.animationFrameId) return;
     
-    isUpdating = true; // Set global lock
+    isUpdating = true;
+    splashTextElem.style.willChange = "contents";
 
     // Cancel any lingering animation frame from a previous, possibly aborted, run
     if (animationState.animationFrameId) {
@@ -205,8 +199,10 @@ function startSplashTextAnimation(originalText, newText) {
         accumulatedTime: 0,
 
         onCompleteCallback: () => { // Cooldown after animation finishes
+            splashTextElem.style.willChange = "auto";
+
             setTimeout(() => {
-              isUpdating = false;
+                isUpdating = false;
             }, 5000); // Original cooldown was 500ms after animation logic complete
         }
     };
@@ -223,7 +219,7 @@ function attemptSplashTextUpdate() {
     let currentSplashText = splashTextElem.textContent;
     let tempSplashTexts = clone(splashTexts).toSpliced(splashTexts.findIndex((text) => text === currentSplashText), 1);
     let newSplashText = tempSplashTexts[Math.floor(Math.random() * tempSplashTexts.length)];
-    
+
     startSplashTextAnimation(currentSplashText, newSplashText);
   }
 };

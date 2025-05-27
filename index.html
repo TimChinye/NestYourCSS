@@ -51,9 +51,7 @@
       }
     </style>
   </svg>
-
-  <script>const moveMainBackground = (cursorX) => document.body.style.setProperty('--cursorHorizPosition', roundNumber((cursorX / document.body.clientWidth) * 100) + '%');</script>
-
+  
   <div id="siteWrapper">
     <main>
     <!-- <main class="nesting"> -->
@@ -459,7 +457,7 @@
         </div>
       </section>
       <section id="mechanicsOfNesting">
-        <a id="backToStart" href="#" aria-label="Back to start of page"></a>
+        <a hidden id="backToStart" href="#" aria-label="Back to start of page"></a>
         <img id="nyssCursor" src="../assets/images/nycss-cursor.webp" aria-hidden="true">
         <p id="splittingText">Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that <b>reflects your HTML structure</b> document, making your CSS code more intuitive and easier to manage.</p>
         <hgroup id="nestingText">
@@ -469,7 +467,7 @@
         <!-- Mechanics of Nesting -->
         <p id="strechingText"><span>M</span><span>e</span><span>c</span><span>h</span><span>a</span><span>n</span><span>i</span><span>c</span><span>s</span>&nbsp;<span>o</span><span>f</span>&nbsp;<span>N</span><span>e</span><span>s</span><span>t</span><span>i</span><span>n</span><span>g</span></p>
         <button id="nycssLogoGroup" onclick="window.location.href='#'">
-          <img id="nycssLogo" hidden src="./assets/images/nycss-logo.webp" alt="Complete NYCSS Logo"/>
+          <img hidden id="nycssLogo" src="./assets/images/nycss-logo.webp" alt="Complete NYCSS Logo"/>
           <img id="nycssBadge" class="main-animation" src="./assets/images/nycss-badge.webp" alt="Badge from NYCSS Logo"/>
           <img id="nycssNest" src="./assets/images/nycss-nest.webp" alt="Nest from NYCSS Logo"/>
         </button>

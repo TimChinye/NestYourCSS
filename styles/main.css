@@ -161,6 +161,7 @@ body {
 								height: 2lh;
 								width: min(100%, 24ch);
 								transition: opacity 3s 3s;
+								transform: translateZ(0);
 							}
 
 							> h1 {
@@ -1199,7 +1200,7 @@ body {
 			flex-direction: column;
 			gap: min(50dvh, 800px);
 
-			> section, > a > section {
+			> section {
 				contain: size;
 				position: relative;
 				height: min(100dvh, 1600px);
@@ -1445,19 +1446,19 @@ body {
 						
 						b {
 							font-size: 1.25em;
-							line-height: inherit;
-							transition: 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+							/* line-height: inherit; */
+							transition: color 0.5s;
 					
 							&:hover {
-								line-height: inherit;
-								font-size: 1.5em;
+								/* line-height: inherit; */
+								color: var(--pri-colour-lightest);
 							}
 					
 							> span {
 								transition: 0.125s;
 					
 								&:hover {
-									color: var(--pri-colour-lightest);
+									color: white;
 								}
 							}
 						}
@@ -1605,7 +1606,7 @@ body {
 						padding: 0.0625em;
 						height: auto;
 						width: 1em;
-						translate: -50% -50%;
+						translate: calc(50vw - 50%) calc(50vh - 50%);
 						transition: translate .2s, opacity 1s 0.1s, scale 0.5s;
 						animation: rotate 12.5s linear infinite;
 					}
@@ -1782,6 +1783,10 @@ body {
 						left: 0;
 						height: 100%;
 						width: 100%;
+
+						&:has(~ button > .hover-animation) {
+							display: block;
+						}
 					}
 				}
 			}

@@ -190,13 +190,9 @@ const setupEditors = () => {
       previousShadowTranslation += shadowWidth + (2 * shadowWidthDiff);
       shadowEditorWrapper.style.translate = `-${convertPxToRch(previousShadowTranslation)}rch`;
 
-      // console.log([shadowWidth, baseShadowWidth, inputEditor.offsetWidth, document.getElementById('textSide').offsetWidth]);
-
       shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
       shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;
       shadowEditorWrapper.style.backgroundColor = `rgb(from white r g b / ${(2 - index)}%)`;
-
-      // shadowEditorWrapper.getElementsByClassName('editorTab')[0].style.width = getComputedStyle(shadowEditor).width;
     });
   }
 

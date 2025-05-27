@@ -84,7 +84,6 @@ html {
 body {	
     margin: 0;
     min-height: 100dvh;
-	--cursorHorizPosition: 50%;
 	background-color: var(--shades-black);
 	animation: lightenBackgroundColour linear;
 	animation-timeline: scroll(root);
@@ -116,7 +115,7 @@ body {
 			> #mainContent {
 				--background: url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
 				linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
-				linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) var(--cursorHorizPosition), transparent) 0 0 / 100dvw 100dvh,
+				linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) 50%, transparent) 0 0 / 100dvw 100dvh,
 				var(--shades-black);
 				contain: content;
 				display: flex;
@@ -127,6 +126,7 @@ body {
 				width: fit-content;
 				position: relative;
 				background: var(--background);
+				will-change: background;
 				border-radius: 3rem;
 				transform-origin: center;
 				animation: scaleDown linear both;
@@ -1293,6 +1293,11 @@ body {
 								animation-range-start: cover 0.5lh;
 								animation-range-end: contain calc(min(100dvh, 1600px) + 0.5lh);
 							}
+							
+							> p {
+								display: inline;
+								vertical-align: middle;
+							}
 						}
 					}
 				}
@@ -1590,7 +1595,6 @@ body {
 			
 						> #nyssCursor {
 							opacity: 1;
-							translate: calc(var(--cursor-x-pos) - 50%) calc(var(--cursor-y-pos) - 50%);
 						}
 					}
 
@@ -1606,6 +1610,7 @@ body {
 						padding: 0.0625em;
 						height: auto;
 						width: 1em;
+						will-change: transform, translate;
 						translate: calc(50vw - 50%) calc(50vh - 50%);
 						transition: translate .2s, opacity 1s 0.1s, scale 0.5s;
 						animation: rotate 12.5s linear infinite;

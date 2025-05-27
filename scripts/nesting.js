@@ -550,7 +550,6 @@ function flattenCSS(cssProvided, prefix = '') {
 
 function denestCSS(cssProvided) {
     let parsedCSS = [];
-    console.logNow(cssProvided);
 
     cssProvided.forEach(([selector, declarations]) => { // declarations parameter is not used in this selector parsing logic
         let selectorParts = [];
@@ -730,7 +729,6 @@ function denestCSS(cssProvided) {
     });
 
     // Return the parsed CSS
-    console.logNow(parsedCSS);
     return beautifyCSS(parsedCSS);
 }
 

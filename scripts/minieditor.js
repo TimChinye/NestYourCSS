@@ -38,11 +38,3 @@ function updateActiveLine(cursorX, cursorY) {
   let horizontalRePos = ((1 - (padding * 2)) * horizontalPos) + padding;
   lineNumbers.nextElementSibling.style.setProperty('--intensityPos', roundNumber(horizontalRePos * 100) + '%');
 }
-
-/* Animate Editor being built - First time */
-
-function onFirstView(e) {
-  if (e.animationName != 'viewed') return;
-  lineNumbers.parentElement.classList.add('viewed');
-  lineNumbers.parentElement.removeEventListener("animationstart", onFirstView);
-}

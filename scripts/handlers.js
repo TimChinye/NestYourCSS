@@ -14,30 +14,42 @@ document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 	}
 });
 
+// let rateHistory = [];
+// let mousemoveCount = 0;
+// const checkIntervalMs = 1000;
+
 var splashTextElem;
 document.body.addEventListener('mousemove', (e) => {
+  // mousemoveCount++;
   if (!splashTextElem) return;
 
   requestAnimationFrame(() => {
-    let mainSection = document.getElementsByTagName('main')[0];
+    const mainSection = document.getElementsByTagName('main')[0];
+    const mainSettings = document.getElementById('mainSettings');
+    const mainContent = document.getElementById('mainContent');
+    const horizValue = roundNumber((e.clientX / document.body.clientWidth) * 100) + '%';
+    const mainContentBackgroundString = `
+      url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
+      linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
+      linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) ${horizValue}, transparent) 0 0 / 100dvw 100dvh,
+      var(--shades-black)
+    `;
+
     if (mainSection.classList.contains('nesting')) {
-      document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
-      document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
-      document.body.style.setProperty('--cursorHorizPosition', roundNumber((e.clientX / document.body.clientWidth) * 100) + '%');
+      mainSettings.lastElementChild.style.setProperty('--cursor-x-pos', e.clientX + 'px');
+      mainSettings.lastElementChild.style.setProperty('--cursor-y-pos', e.clientY + 'px');
+
+      mainContent.style.background = mainContentBackgroundString;
     }
     else {
       let cssBadge = document.getElementById('nycssBadge');
       if (cssBadge.classList.contains('hover-animation')) {
-          document.body.style.setProperty('--cursor-x-pos', e.clientX + 'px');
-          document.body.style.setProperty('--cursor-y-pos', e.clientY + 'px');
+        let cursor = document.getElementById('nyssCursor');
+        cursor.style.translate = `calc(${e.clientX}px - 50%) calc(${e.clientY}px - 50%)`;
       }
       
       if (e.target === splashTextElem) {
         attemptSplashTextUpdate();
-      }
-      
-      if (e.target === lineNumbers.parentElement) {
-        onFirstView(e);
       }
       
       let editorSection = document.getElementById('groupingStylesTogether');
@@ -46,20 +58,25 @@ document.body.addEventListener('mousemove', (e) => {
       }
       
       if (document.scrollingElement.scrollTop < mainSection.offsetHeight) {
-        document.body.style.setProperty('--cursorHorizPosition', roundNumber((e.clientX / document.body.clientWidth) * 100) + '%');
+        mainContent.style.background = mainContentBackgroundString;
       }
     }
   });
 });
 
-window.addEventListener('scroll', (e) => {
-  requestAnimationFrame(() => {
-    window.smoothScrollX = window.scrollX || window.pageXOffset;
-    window.smoothScrollY = window.scrollY || window.pageYOffset;
+// setInterval(() => {
+//     const rate = mousemoveCount / (checkIntervalMs / 1000);
+//     rateHistory.push(rate);
+//     if (rateHistory.length > 10) rateHistory.splice(0, 1);
 
-    updateLogoState();
-  });
-});
+//     window.mouseMoveRate = `Mouse Move Event Firing Rate: ${rate.toFixed(1)} Hz`;
+//     if (rateHistory.length > 0) window.averageMouseMoveRate = rateHistory.reduce((sum, rate) => sum + rate, 0) / rateHistory.length;
+      
+//     mousemoveCount = 0;
+// }, checkIntervalMs);
+
+var updateLogoState;
+window.addEventListener('scroll', (e) => requestAnimationFrame(() => updateLogoState && updateLogoState()));
 
 function tabButtonHandler(e) {
   let tabButton = e.currentTarget;

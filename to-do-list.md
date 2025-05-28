@@ -18,7 +18,7 @@
 - Refine nesting logic, optimize it.
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
 - Make history, settings, and a custom "share feedback" and "report a bug".
-- Re-make #codeEditor but with grid (with cqh on grid-template-columns: widthUsingCqhAndVariables gap widthUsingCqhAndVariables, parent would have container-type: inline-size, as it has a fixed width anyways)
+- Re-make #codeEditor but with grid (with cqh on grid-template-columns: {widthUsingCqhAndVariables} {gap} {widthUsingCqhAndVariables};, parent would have container-type: inline-size, as it has a fixed width anyways)
 - History of all conversions to Nested CSS
 - Auto-save every minute? Or just "Nest" button (probably both, with a toggleable auto-save)
 - Button to use the previous selector instead (a.k.a. previous `diff`, but only for selectors) edit: not sure why this is only for selectors
@@ -52,7 +52,7 @@
 - Full revamp
 - Design the nesting editors, similar to Google Docs (centered editors, toolbar at the top)
 - Make the nesting settings area have a fixed width and center the editors within the nesting area
-- Implement locomotive scroll or another momentum scroll plugin (e.g., [locomotive-scroll](https://github.com/locomotivemtl/locomotive-scroll))
+- Implement locomotive scroll or another momentum scroll plugin (e.g; [locomotive-scroll](https://github.com/locomotivemtl/locomotive-scroll))
 - Provide information on how to manually nest your CSS
 - Add AceDiff
 - Add light/dark mode toggle

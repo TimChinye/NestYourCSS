@@ -477,7 +477,7 @@ document.querySelectorAll('[data-input="combo-dropdown"]').forEach(dropdownOptio
     dropdownOption.addEventListener('keydown', function(event) {
         // 'this' refers to the option element
         if (event.code === 'Space') {
-            event.preventDefault(); // Prevent default space action (e.g., scrolling)
+            event.preventDefault(); // Prevent default space action (e.g; scrolling)
             if (typeof comboHandler === 'function') {
                 comboHandler(this, true);
             }
@@ -512,7 +512,7 @@ document.querySelectorAll('[data-input="combo-text"]').forEach(textInput => {
           }
       }
       // Note: The original inline oninput also called numberHandler.
-      // If comboHandler needs to be called on input (e.g., for filtering options), add it here:
+      // If comboHandler needs to be called on input (e.g; for filtering options), add it here:
       // if (typeof comboHandler === 'function') {
       //     comboHandler(this, false); // or based on some logic
       // }

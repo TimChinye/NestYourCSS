@@ -165,7 +165,7 @@
   font-family: 'Jetbrains Mono';
   font-weight: 400;
   font-display: swap;
-  src: url("../assets/fonts/jetbrains-regular.otf") format("opentype");
+  src: url("../assets/fonts/jetbrains-regular-latin.otf") format("opentype");
 }
 
 /* PT Sans */

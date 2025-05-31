@@ -18,10 +18,9 @@ document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 // let mousemoveCount = 0;
 // const checkIntervalMs = 1000;
 
-var splashTextElem;
 document.body.addEventListener('mousemove', (e) => {
   // mousemoveCount++;
-  if (!splashTextElem) return;
+  if (typeof splashTextElem === 'undefined' || splashTextElem === null) return;
 
   requestAnimationFrame(() => {
     const mainSection = document.getElementsByTagName('main')[0];
@@ -75,8 +74,7 @@ document.body.addEventListener('mousemove', (e) => {
 //     mousemoveCount = 0;
 // }, checkIntervalMs);
 
-var updateLogoState;
-window.addEventListener('scroll', (e) => requestAnimationFrame(() => updateLogoState && updateLogoState()));
+window.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof splashTextElem !== 'undefined' && splashTextElem !== null) && updateLogoState()));
 
 function tabButtonHandler(e) {
   let tabButton = e.currentTarget;

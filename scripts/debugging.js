@@ -130,15 +130,13 @@ async function runNestingIterations(initialCss, iterations, sampleKey = "customI
 }
 
 /**
- * Processes a specific CSS sample from cssSamples by its key.
- * Runs a specified number of nesting iterations, displays the final output, and logs issues.
- * Now an async function.
+ * Processes a specific CSS sample from cssSamples by its name.
  *
- * @param {string} sampleKey The key of the sample in the cssSamples object.
+ * @param {string} sampleName The name of the sample in cssSamples.
  * @param {number} [iterations=5] The number of nesting iterations to perform.
- * @returns {object} An object containing the { name, finalCss, issues } for each sample key.
+ * @returns {Promise<void>}
  */
-async function processAndShowSpecificSample(sampleKey, iterations = 5) {
+async function processAndShowSampleByName(sampleKey, iterations = 5) {
     if (!cssSamples.hasOwnProperty(sampleKey)) {
         console.error(`Sample key "${sampleKey}" not found in cssSamples.`);
         outputEditor.getSession().setValue(`/* Sample key "${sampleKey}" not found. */`);
@@ -181,7 +179,6 @@ async function processAndShowSpecificSample(sampleKey, iterations = 5) {
 
 /**
  * Processes a specific CSS sample from cssSamples by its numerical index.
- * Now an async function.
  *
  * @param {number} sampleIndex The numerical index of the sample in cssSamples.
  * @param {number} [iterations=5] The number of nesting iterations to perform.
@@ -195,7 +192,7 @@ async function processAndShowSampleByIndex(sampleIndex, iterations = 5) {
         return;
     }
     const sampleKey = keys[sampleIndex];
-    await processAndShowSpecificSample(sampleKey, iterations);
+    await processAndShowSampleByName(sampleKey, iterations);
 }
 
 /**
@@ -316,15 +313,17 @@ async function processAllSamplesIteratively(iterations = 5) {
 }
 
 /*
- *
- * HOW TO USE:
- *
- * Make sure your cssSamples, inputEditor, outputEditor, and convertToNestedCSS are defined.
- *
- * To process a specific sample by its key (e.g; 'denestedShowcase') for 5 iterations:
- * processAndShowSpecificSample('denestedShowcase', 5);
- *
- * To process all samples, each for 5 iterations, and get a summary of potential issues:
- * let allProcessedResults = processAllSamplesIteratively(5);
- * 
- */
+*
+* HOW TO USE:
+*
+* Make sure your cssSamples, inputEditor, outputEditor, and convertToNestedCSS are defined.
+*
+* To process a specific sample by its key (e.g; 'denestedShowcase') for 5 iterations:
+* Debugger.processAndShowSampleByName('denestedShowcase', 5);
+*
+* To process all samples, each for 5 iterations, and get a summary of potential issues:
+* let allProcessedResults = Debugger.processAllSamplesIteratively(5);
+* 
+*/
+
+window.Debugger = { processAndShowSampleByName, processAndShowSampleByIndex, processAllSamplesIteratively };

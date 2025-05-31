@@ -414,6 +414,7 @@ function flattenCSS(cssProvided, prefix = '') {
             let [relativeSelector, declarations] = cssProvided[i];
 
             // If the relative selector starts with '@', append a semicolon to it
+
             if (relativeSelector.startsWith('@')) {
                 relativeSelector += ';';
 
@@ -423,13 +424,33 @@ function flattenCSS(cssProvided, prefix = '') {
                     let bracketDepth = 0;
                     let isInSingleQuotes = false;
                     let isInDoubleQuotes = false;
-    
+
                     // Loop through each character in the declarations
-                    for (let char of relativeSelector) {
+                    // Changed from for...of to a standard for loop to get index 'i'
+                    for (let i = 0; i < relativeSelector.length; i++) {
+                        let char = relativeSelector[i];
                         // Handle semicolons, colons, quotes, and escape characters
-                        let isInside = isInSingleQuotes || isInDoubleQuotes || bracketDepth != 0 || parenthesisDepth != 0;
-                        if (char === ':' && isInside) tempSelector += char + ' ';
-                        else {
+                        let isInside = isInSingleQuotes || isInDoubleQuotes || bracketDepth != 0 || parenthesisDepth != 0; // Is inside quotes/brackets
+
+                        let isPseudoSelectorContextColon = false;
+                        if (char === ':') {
+                            let nextChar = (i + 1 < relativeSelector.length) ? relativeSelector[i+1] : null;
+                            let prevCharWasColon = (i > 0 && relativeSelector[i-1] === ':');
+
+                            // Check if it's part of '::'
+                            if (nextChar === ':' || prevCharWasColon) {
+                                isPseudoSelectorContextColon = true;
+                            }
+                            // Check if it's like ':pseudo-class' (e.g., :hover, :nth-child)
+                            // i.e., colon followed by a non-whitespace character that isn't another colon
+                            else if (nextChar && nextChar.trim() !== '') {
+                                isPseudoSelectorContextColon = true;
+                            }
+                        }
+
+                        if (char === ':' && isInside && !isPseudoSelectorContextColon) {
+                            tempSelector += char + ' ';
+                        } else {
                             switch (char) {
                                 case '(':
                                     parenthesisDepth++;
@@ -457,6 +478,7 @@ function flattenCSS(cssProvided, prefix = '') {
     
                     relativeSelector = tempSelector;
                 }
+
             }
 
             relativeSelector = _formatSelectorString(relativeSelector);
@@ -539,8 +561,32 @@ function flattenCSS(cssProvided, prefix = '') {
 }
 
 function denestCSS(cssProvided) {
-    let parsedCSS = [];
     console.logNow(cssProvided);
+    let parsedCSS = [];
+
+    // Helper function to achieve the equivalent of: str.replace(/\s*&/g, '')
+    // It processes a string to remove ampersands and any preceding SASS-like whitespace.
+    function _processInternalAmpersands(str) {
+        // Quick optimization: if no '&' is present, return the original string.
+        if (str.indexOf('&') === -1) return str;
+    
+        let resultChars = []; // Accumulate characters of the new string in an array for performance.
+        for (let i = 0; i < str.length; i++) {
+            const char = str[i];
+            if (char === '&') {
+                while (resultChars.length > 0) {
+                    let lastAccumulatedChar = resultChars[resultChars.length - 1];
+                    if (lastAccumulatedChar === ' ' || lastAccumulatedChar === '\t' || lastAccumulatedChar === '\n' || lastAccumulatedChar === '\r') {
+                        resultChars.pop();
+                    } else {
+                        break; // Stop if a non-whitespace character is encountered
+                    }
+                }
+                // The ampersand itself is skipped (not added to resultChars).
+            } else resultChars.push(char); // Add current character to our list.
+        }
+        return resultChars.join(''); // Combine all collected characters into the final string.
+    }
 
     cssProvided.forEach(([selector, declarations]) => { // declarations parameter is not used in this selector parsing logic
         let selectorParts = [];
@@ -591,68 +637,54 @@ function denestCSS(cssProvided) {
             }
         }
 
-        // Helper function to achieve the equivalent of: str.replace(/\s*&/g, '')
-        // It processes a string to remove ampersands and any preceding SASS-like whitespace.
-        function _processInternalAmpersands(str) {
-            // Quick optimization: if no '&' is present, return the original string.
-            if (str.indexOf('&') === -1) return str;
-        
-            let resultChars = []; // Accumulate characters of the new string in an array for performance.
-            for (let i = 0; i < str.length; i++) {
-                const char = str[i];
-                if (char === '&') {
-                    while (resultChars.length > 0) {
-                        let lastAccumulatedChar = resultChars[resultChars.length - 1];
-                        if (lastAccumulatedChar === ' ' || lastAccumulatedChar === '\t' || lastAccumulatedChar === '\n' || lastAccumulatedChar === '\r') {
-                            resultChars.pop();
-                        } else {
-                            break; // Stop if a non-whitespace character is encountered
-                        }
+        const finalAtRules = [];
+        let currentSelectorAccumulator = "";
+    
+        for (const rawPart of selectorParts) {
+            if (rawPart.startsWith('@')) {
+                // This is an at-rule, collect it.
+                // We assume at-rules themselves don't need internal ampersand processing.
+                finalAtRules.push(rawPart);
+            } else {
+                // This is a selector part.
+                // Determine if it's meant for direct concatenation (starts with '&')
+                // or if it's a new sub-selector (potentially a descendant).
+                const isConcatenation = rawPart.startsWith('&');
+    
+                // Process the part for any internal ampersands (e.g., "foo & bar" -> "foobar",
+                // or "&:hover" -> ":hover" if _processInternalAmpersands behaves like replace(/\s*&/g, '')).
+                // Based on the _processInternalAmpersands code, it correctly handles leading ampersands
+                // by removing them and any preceding whitespace.
+                let processedPart = _processInternalAmpersands(rawPart);
+    
+                if (isConcatenation) {
+                    // The rawPart started with '&', so append its processed version.
+                    // _processInternalAmpersands will have removed the leading '&' (and any spaces before it).
+                    currentSelectorAccumulator += processedPart;
+                } else {
+                    // The rawPart did NOT start with '&'.
+                    // If there's an existing selector, and this part is not empty,
+                    // add a space for descendant selector.
+                    if (currentSelectorAccumulator !== "" && processedPart !== "") {
+                        currentSelectorAccumulator += ' ';
                     }
-                    // The ampersand itself is skipped (not added to resultChars).
-                } else resultChars.push(char); // Add current character to our list.
-            }
-            return resultChars.join(''); // Combine all collected characters into the final string.
-        }
-
-        // Post-process segments: handle SASS-like '&' concatenation.
-        // In flattened selectors like "element&:hover" or "element&::before",
-        // the '&' symbol refers to the parent part it's appended to.
-        // Removing '&' achieves the direct concatenation: "element:hover", "element::before".
-        if (selectorParts.some((part) => part.includes('&'))) {
-            let result = [];
-        
-            if (selectorParts.length > 0) {
-                // Process the first part:
-                let firstElement = _processInternalAmpersands(selectorParts[0]);
-                result.push(firstElement);
-        
-                // Process remaining parts
-                for (let i = 1; i < selectorParts.length; i++) {
-                    let currentPart = selectorParts[i];
-        
-                    if (currentPart.startsWith('&')) {
-                        // This part starts with '&', so it should be concatenated with the
-                        // previous part already processed and stored in 'result'.
-        
-                        // 1. Remove the leading '&' from currentPart to get the suffix.
-                        let suffixRaw = currentPart.substring(1); // .slice(1) also works
-        
-                        // 2. Process this suffix for any internal ampersands it might contain.
-                        let suffixProcessed = _processInternalAmpersands(suffixRaw);
-                        
-                        // Append the processed suffix to the last element in 'result'.
-                        result[result.length - 1] += suffixProcessed;
-                    } else {
-                        // This part does not start with '&'. It's a new, separate segment.
-                        // Process it for internal ampersands, similar to the firstElement.
-                        result.push(_processInternalAmpersands(currentPart));
-                    }
+                    currentSelectorAccumulator += processedPart;
                 }
             }
-            // Update selectorParts with the transformed array
-            selectorParts = result;
         }
+    
+        // Clean up the accumulated selector string:
+        // - Replace multiple spaces with a single space.
+        // - Trim leading/trailing whitespace.
+        currentSelectorAccumulator = currentSelectorAccumulator.replace(/\s\s+/g, ' ').trim();
+    
+        const finalResult = [...finalAtRules];
+        if (currentSelectorAccumulator) { // Only add the selector string if it's not empty
+            finalResult.push(currentSelectorAccumulator);
+        }
+        
+        // Update selectorParts with the transformed array.
+        selectorParts = finalResult;
 
         // Actually nest the CSS
         let currentLevel = parsedCSS;

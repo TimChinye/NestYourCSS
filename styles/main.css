@@ -414,7 +414,6 @@ body {
 						cursor: pointer;
 						border: none;
 						padding: 2em;
-						aspect-ratio: 1 / 1;
 						border-radius: 50%;
 						font-size: 0.75rem;
 						font-weight: bold;
@@ -1547,7 +1546,6 @@ body {
 										right: 0;
 										height: 100%;
 										width: calc(100% + 5ch);
-										background: linear-gradient(to right, transparent, var(--pri-colour-em-darker) calc(var(--intensityPos) - 20%), var(--pri-colour-m-darker) var(--intensityPos), var(--pri-colour-em-darker) calc(var(--intensityPos) + 20%), transparent);
 										background: linear-gradient(to right, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) calc(var(--intensityPos) - 20%), rgb(from var(--pri-colour-darker) r g b / var(--opacity-medium)) var(--intensityPos), rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) calc(var(--intensityPos) + 20%), transparent);
 										z-index: -1;
 										translate: 0 calc((clamp(1, var(--activeLine), var(--maxLines)) - 1) * 1lh);

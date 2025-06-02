@@ -78,7 +78,7 @@ window.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof spl
 
 function tabButtonHandler(e) {
   let tabButton = e.currentTarget;
-  let editor = (tabButton.closest('.editorWrapper')?.id.startsWith("input")) ? inputEditorElem : outputEditorElem;
+  let editor = (tabButton.closest('.editorWrapper')?.id.startsWith("input")) ? inputEditorInstance : outputEditorInstance;
 
   switch (tabButton.className) {
     case "tabCopyAll":
@@ -205,11 +205,11 @@ function selectHandler(inputElem, close) {
   
   switch (labelElem.id) {
     case "typefaces": {
-      outputEditorInstance.container.style.fontFamily = inputEditorInstance.container.style.fontFamily = labelElem.control.value + ', monospace';
+      outputEditorInstance.container.style.fontFamily = inputEditorElem.style.fontFamily = labelElem.control.value + ', monospace';
       break;
     }
     case "fontsizes": {
-      outputEditorInstance.container.style.fontSize = inputEditorInstance.container.style.fontSize = labelElem.control.value;
+      outputEditorInstance.container.style.fontSize = inputEditorElem.style.fontSize = labelElem.control.value;
       document.querySelectorAll('.ace_tooltip').forEach((elem) => elem.style.fontSize = `${parseFloat(outputEditorInstance.container.style.fontSize) * 0.8}rem`);
       break;
     }

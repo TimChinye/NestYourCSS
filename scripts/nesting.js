@@ -18,7 +18,7 @@ function nestCode() {
 document.getElementsByTagName('button')[0].addEventListener('click', nestCode);
 
 function convertToNestedCSS(cssProvided, htmlString) {
-	window.processMode ??= 2;
+	window.processMode ??= 1;
 
     cssProvided = minimizeCSS(cssProvided);
     if (window.processMode == 0) return cssProvided;
@@ -286,7 +286,7 @@ function splitCSS(cssProvided) {
     return parsedCSS;
 }
 
-function flattenCSS(cssProvided, prefix = '') {
+function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
     // Initialize the parsed CSS array
     let parsedCSS = [];
 
@@ -478,10 +478,61 @@ function flattenCSS(cssProvided, prefix = '') {
     
                     relativeSelector = tempSelector;
                 }
-
             }
 
             relativeSelector = _formatSelectorString(relativeSelector);
+
+            let isSelectorList = false;
+            if ((prefix != '' || Array.isArray(declarations)) && relativeSelector.includes(',') && relativeSelector.at(-1) != ';') {
+                let tempSelector = '';
+                let parenthesisDepth = 0;
+                let bracketDepth = 0;
+                let isInSingleQuotes = false;
+                let isInDoubleQuotes = false;
+
+                // Update this code take the part of lastRelativeSelector that's related to the closest relative, e.g; `body main article` - the real closest relative here is "article" 
+
+                // Loop through each character in the declarations
+                // Changed from for...of to a standard for loop to get index 'i'
+                for (let i = 0; i < relativeSelector.length; i++) {
+                    let char = relativeSelector[i];
+                    // Handle semicolons, colons, quotes, and escape characters
+                    let isInside = isInSingleQuotes || isInDoubleQuotes || bracketDepth != 0 || parenthesisDepth != 0; // Is inside quotes/brackets
+
+                    switch (char) {
+                        case '(':
+                            parenthesisDepth++;
+                            break;
+                        case ')':
+                            parenthesisDepth--;
+                            break;
+                        case '[':
+                            bracketDepth++;
+                            break;
+                        case ']':
+                            bracketDepth--;
+                            break;
+                        case '"':
+                            isInDoubleQuotes ^= 1;
+                            break;
+                        case "'":
+                            isInSingleQuotes ^= 1;
+                            break;
+                    }
+
+                    tempSelector += char;
+
+                    if (!isInside) {
+                        if (char === ',' && !isSelectorList) isSelectorList = true;
+
+                        if (isSelectorList && tempSelector.slice(-3) == ', &')
+                            tempSelector = tempSelector.slice(0, -1) + lastRelativeSelector;
+                    }
+                }
+
+                let simpleSelectorList = `:is(${relativeSelector.startsWith('&') ? lastRelativeSelector + tempSelector.slice(1) : tempSelector})`;
+                relativeSelector = isSelectorList ? simpleSelectorList : tempSelector;
+            }
 
             // If the declarations are an array, there are nested rules within the current rule
             if (Array.isArray(declarations)) {
@@ -493,7 +544,7 @@ function flattenCSS(cssProvided, prefix = '') {
                 }
 
                 // Recursively call the function to denest the nested rules, and concatenate the result to the parsed CSS
-                parsedCSS = parsedCSS.concat(flattenCSS(declarations.filter(Array.isArray).map(([nestedSelector, nestedDeclarations]) => [nestedSelector, nestedDeclarations]), absoluteSelector));
+                parsedCSS = parsedCSS.concat(flattenCSS(declarations.filter(Array.isArray).map(([nestedSelector, nestedDeclarations]) => [nestedSelector, nestedDeclarations]), absoluteSelector, relativeSelector));
             } else {
                 // If the declarations are not an array, add them to the parsed CSS
 
@@ -561,7 +612,6 @@ function flattenCSS(cssProvided, prefix = '') {
 }
 
 function denestCSS(cssProvided) {
-    console.logNow(cssProvided);
     let parsedCSS = [];
 
     // Helper function to achieve the equivalent of: str.replace(/\s*&/g, '')
@@ -752,7 +802,6 @@ function denestCSS(cssProvided) {
     });
 
     // Return the parsed CSS
-    console.logNow(parsedCSS);
     return beautifyCSS(parsedCSS);
 }
 
@@ -874,6 +923,20 @@ function renestCSS(cssProvided, withHtml) {
         cssProvided.forEach(([selector, declarations]) => {
             // Split the selector into parts
             let selectorParts = selector.split(' ');
+
+            let isInside = [];
+            for (let i = 0; i < selectorParts.length; i++) {
+                if (selectorParts[i].includes(':is(') || selectorParts[i].includes(')')) {
+                    if (selectorParts[i].includes(':is(')) isInside.push(i);
+                    
+                    if (selectorParts[i].includes(')')) {
+                        if (isInside.length == 1) {
+                            selectorParts.splice(isInside[0], 1 + (i - isInside[0]), selectorParts.slice(isInside[0], i + 1).join(' '));
+                        }
+                        else if (isInside.length > 1) isInside.pop();
+                    }
+                }
+            }
 
             if (selector.includes('@')) {
                 let newSelectorParts = [];
@@ -1007,7 +1070,7 @@ function renestCSS(cssProvided, withHtml) {
                 }
 
                 // Third part: Final flatMap operation (from original code, added trim() for safety)
-                selectorParts = selectorParts.flatMap((part) => ((part.trim().startsWith('@')) ? part : part.split(' ').map((pseudoPart) => pseudoPart.split(',').join(', '))));
+                selectorParts = selectorParts.flatMap((part) => ((part.trim().startsWith('@') || part.trim().startsWith(':is(')) ? part : part.split(' ').map((pseudoPart) => pseudoPart.split(',').join(', '))));
             } else {
                 // Handle pseudo selectors
                 let openBracketCount = 0;
@@ -1147,7 +1210,7 @@ function renestCSS(cssProvided, withHtml) {
                         arr[i + 1] += ' ' + item;
                         return false;
                     } else return true;
-                }).reverse().map((part) => part.split(',').join(', '));
+                }).reverse().map((part) => part.at(-1) == ' ' ? part.split(',').join(', ') : part);
 
                 const combinators = ["+", ">", /*"||",*/ "~"];
                 let nestedSelectorDepth = 0;

@@ -10,7 +10,6 @@
   
   <link href="./styles/keyframes.css" rel="stylesheet">
   <link href="./styles/editor.css" rel="stylesheet">
-  <link href="./styles/fonts.css" rel="stylesheet">
   <link href="./styles/main.css" rel="stylesheet">
 </head>
 <body>
@@ -55,6 +54,13 @@
     // sample = cssSamples[0]; // Specific one 
     // sample = cssSamples.slice(0, 2).join(''); // Range
     // sample = cssSamples.join(''); // All
+    sample = `
+main > article form :is(label, input) {
+    font-weight: bold;
+    font-size: 0.625em;
+    margin-bottom: 0.25rem;
+}
+`;
 
     window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
     window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');

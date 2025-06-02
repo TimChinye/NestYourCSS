@@ -49,7 +49,7 @@ async function getEditorAnnotations(editorSession, cssToTest, sampleKeyForLog = 
  * @param {string} sampleKey A name/key for logging purposes, identifying the sample.
  * @returns {Promise<object>} A promise resolving to an object containing { name: string, finalCss: string, issues: object }
  */
-async function runNestingIterations(initialCss, iterations, sampleKey = "customInput") {
+async function runNestingIterations(initialCss, iterations, sampleKey = "customInput", mute = false) {
     let currentCss = initialCss;
     const initialCssWasEmpty = initialCss.trim() === '';
     let issues = {
@@ -62,17 +62,17 @@ async function runNestingIterations(initialCss, iterations, sampleKey = "customI
     };
     const editorSession = inputEditor.getSession();
 
-    console.log(`[${sampleKey}] Starting ${iterations} nesting iterations.`);
+    if (!mute) console.log(`[${sampleKey}] Starting ${iterations} nesting iterations.`);
 
     for (let i = 0; i < iterations; i++) {
-        console.log(`[${sampleKey}] Iteration ${i + 1} of ${iterations}.`);
+        if (!mute) console.log(`[${sampleKey}] Iteration ${i + 1} of ${iterations}.`);
         
         const cssBeforeThisIterationNesting = currentCss; // CSS input for convertToNestedCSS this iteration
 
         const annotations = await getEditorAnnotations(editorSession, currentCss, `${sampleKey}-iter${i+1}-input`);
         if (annotations.length > 0) {
-            console.error(`[${sampleKey}] Errors found in CSS *before* nesting on iteration ${i + 1}:`, annotations);
-            console.warn(`[${sampleKey}] Current CSS content at error point (iteration ${i + 1}):\n`, currentCss.substring(0, 500) + (currentCss.length > 500 ? "..." : ""));
+            if (!mute) console.error(`[${sampleKey}] Errors found in CSS *before* nesting on iteration ${i + 1}:`, annotations);
+            if (!mute) console.warn(`[${sampleKey}] Current CSS content at error point (iteration ${i + 1}):\n`, currentCss.substring(0, 500) + (currentCss.length > 500 ? "..." : ""));
             issues.inputErrorEncountered = true;
         }
 
@@ -80,36 +80,36 @@ async function runNestingIterations(initialCss, iterations, sampleKey = "customI
         try {
             nestedCss = convertToNestedCSS(currentCss);
         } catch (e) {
-            console.error(`[${sampleKey}] convertToNestedCSS threw an exception on iteration ${i + 1}:`, e);
+            if (!mute) console.error(`[${sampleKey}] convertToNestedCSS threw an exception on iteration ${i + 1}:`, e);
             issues.converterThrewError = true;
             nestedCss = null; 
         }
 
         if (nestedCss === null || typeof nestedCss === 'undefined') {
-            console.error(`[${sampleKey}] convertToNestedCSS returned null or undefined on iteration ${i + 1}.`);
+            if (!mute) console.error(`[${sampleKey}] convertToNestedCSS returned null or undefined on iteration ${i + 1}.`);
             issues.converterThrewError = true;
             // currentCss remains what it was from cssBeforeThisIterationNesting
             // No need to update currentCss
         } else {
             // Converter succeeded, check if it changed the CSS
             if (i > 0 && nestedCss !== cssBeforeThisIterationNesting) {
-                console.warn(`[${sampleKey}] convertToNestedCSS produced change on iteration ${i + 1}.`);
+                if (!mute) console.warn(`[${sampleKey}] convertToNestedCSS produced change on iteration ${i + 1}.`);
                 issues.changeFromLastIteration = true;
             }
 
             if (nestedCss.trim() === '' && !initialCssWasEmpty && currentCss.trim() !== '') {
-                 console.warn(`[${sampleKey}] convertToNestedCSS returned an empty string on iteration ${i + 1} from non-empty input.`);
+                 if (!mute) console.warn(`[${sampleKey}] convertToNestedCSS returned an empty string on iteration ${i + 1} from non-empty input.`);
                  issues.outputBecameEmpty = true;
             }
             currentCss = nestedCss; // Update currentCss with the result
         }
 
-        console.log(`[${sampleKey}] CSS after nesting iteration ${i + 1} (first 200 chars):\n`, currentCss.substring(0, 200) + (currentCss.length > 200 ? "..." : ""));
+        if (!mute) console.log(`[${sampleKey}] CSS after nesting iteration ${i + 1} (first 200 chars):\n`, currentCss.substring(0, 200) + (currentCss.length > 200 ? "..." : ""));
     }
 
     // Check after all iterations
     if (iterations > 0 && currentCss === initialCss) {
-        console.warn(`[${sampleKey}] Final CSS is identical to initial CSS after ${iterations} iterations.`);
+        if (!mute) console.warn(`[${sampleKey}] Final CSS is identical to initial CSS after ${iterations} iterations.`);
         issues.noChangeFromInitial = true;
     }
 
@@ -121,11 +121,11 @@ async function runNestingIterations(initialCss, iterations, sampleKey = "customI
 
     const finalAnnotations = await getEditorAnnotations(editorSession, currentCss, `${sampleKey}-final-output`);
     if (finalAnnotations.length > 0) {
-        console.error(`[${sampleKey}] Errors found in the *final* output CSS after ${iterations} iterations:`, finalAnnotations);
+        if (!mute) console.error(`[${sampleKey}] Errors found in the *final* output CSS after ${iterations} iterations:`, finalAnnotations);
         issues.finalOutputHasSyntaxErrors = true;
     }
 
-    console.log(`[${sampleKey}] Finished ${iterations} nesting iterations. Issue flags:`, issues);
+    if (!mute) console.log(`[${sampleKey}] Finished ${iterations} nesting iterations. Issue flags:`, issues);
     return { name: sampleKey, finalCss: currentCss, issues };
 }
 
@@ -136,29 +136,29 @@ async function runNestingIterations(initialCss, iterations, sampleKey = "customI
  * @param {number} [iterations=5] The number of nesting iterations to perform.
  * @returns {Promise<void>}
  */
-async function processAndShowSampleByName(sampleKey, iterations = 5) {
+async function processAndShowSampleByName(sampleKey, iterations = 5, mute = false) {
     if (!cssSamples.hasOwnProperty(sampleKey)) {
-        console.error(`Sample key "${sampleKey}" not found in cssSamples.`);
+        if (!mute) console.error(`Sample key "${sampleKey}" not found in cssSamples.`);
         outputEditor.getSession().setValue(`/* Sample key "${sampleKey}" not found. */`);
         return;
     }
 
-    console.log(`\n--- Processing specific sample: ${sampleKey} for ${iterations} iterations ---`);
+    if (!mute) console.log(`\n--- Processing specific sample: ${sampleKey} for ${iterations} iterations ---`);
     const initialCss = cssSamples[sampleKey];
 
     if (typeof initialCss !== 'string') {
-        console.error(`[${sampleKey}] The sample CSS is not a string. Skipping.`);
+        if (!mute) console.error(`[${sampleKey}] The sample CSS is not a string. Skipping.`);
         outputEditor.getSession().setValue(`/* [${sampleKey}] Sample CSS is not valid (not a string). */`);
         return;
     }
     
     let result;
     if (initialCss.trim() === '' && iterations > 0) {
-        console.log(`[${sampleKey}] Initial CSS is empty. Running to check for converter issues with empty string.`);
-        result = await runNestingIterations(initialCss, iterations, sampleKey);
-        console.log(`[${sampleKey}] Issues for empty input:`, result.issues);
+        if (!mute) console.log(`[${sampleKey}] Initial CSS is empty. Running to check for converter issues with empty string.`);
+        result = await runNestingIterations(initialCss, iterations, sampleKey, mute);
+        if (!mute) console.log(`[${sampleKey}] Issues for empty input:`, result.issues);
     } else {
-        result = await runNestingIterations(initialCss, iterations, sampleKey);
+        result = await runNestingIterations(initialCss, iterations, sampleKey, mute);
     }
     
     const { name, finalCss, issues } = result;
@@ -168,10 +168,11 @@ async function processAndShowSampleByName(sampleKey, iterations = 5) {
     let issuesFound = Object.values(issues).some(flag => flag === true);
 
     if (issuesFound) {
-        console.warn(`[${sampleKey}] Potential issues detected for this sample. Review logs and flags:`, issues);
+        if (!mute) console.warn(`[${sampleKey}] Potential issues detected for this sample. Review logs and flags:`, issues);
     } else {
-        console.log(`[${sampleKey}] No immediate issues flagged for this sample.`);
+        if (!mute) console.log(`[${sampleKey}] No immediate issues flagged for this sample.`);
     }
+    
     console.log(`--- Final output for ${sampleKey} (after ${iterations} iterations) shown in output editor ---`);
 
     return result;
@@ -184,111 +185,119 @@ async function processAndShowSampleByName(sampleKey, iterations = 5) {
  * @param {number} [iterations=5] The number of nesting iterations to perform.
  * @returns {Promise<void>}
  */
-async function processAndShowSampleByIndex(sampleIndex, iterations = 5) {
+async function processAndShowSampleByIndex(sampleIndex, iterations = 5, mute = false) {
     const keys = Object.keys(cssSamples);
     if (sampleIndex < 0 || sampleIndex >= keys.length) {
-        console.error(`Sample index ${sampleIndex} is out of bounds. Valid range: 0 to ${keys.length - 1}.`);
+        if (!mute) console.error(`Sample index ${sampleIndex} is out of bounds. Valid range: 0 to ${keys.length - 1}.`);
         outputEditor.getSession().setValue(`/* Sample index ${sampleIndex} is out of bounds. */`);
         return;
     }
     const sampleKey = keys[sampleIndex];
-    await processAndShowSampleByName(sampleKey, iterations);
+    await processAndShowSampleByName(sampleKey, iterations, mute);
 }
 
 /**
- * Processes all CSS samples in the cssSamples object.
- * Now an async function.
+ * Processes all CSS samples in the cssSamples object sequentially.
+ * Each sample (including all its iterations) completes before the next sample begins.
  *
  * @param {number} [iterations=5] The number of nesting iterations to perform for each sample.
  * @returns {Promise<Array<object>>} An array of objects containing the { name, finalCss, issues } for each sample key.
  */
-async function processAllSamplesIteratively(iterations = 5) {
-    console.log(`\n=== Processing ALL samples, ${iterations} iterations each ===`);
+async function processAllSamplesIteratively(iterations = 5, mute = false) {
+    if (!mute) console.log(`\n=== Processing ALL samples, ${iterations} iterations each ===`);
     const allResults = {};
     let lastProcessedKey = null;
     const samplesToReview = [];
 
-    for (const sampleKey in cssSamples) {
-        if (cssSamples.hasOwnProperty(sampleKey)) {
-            console.log(`\n--- Batch processing: ${sampleKey} ---`);
-            const initialCss = cssSamples[sampleKey];
-            let result;
+    const sampleKeys = Object.keys(cssSamples); // Get keys to iterate in a defined order.
 
-            if (typeof initialCss !== 'string') {
-                console.error(`[${sampleKey}] The sample CSS is not a string. Skipping.`);
-                result = { 
-                    name: sampleKey,
-                    finalCss: `/* [${sampleKey}] Sample CSS is not valid (not a string). */`,
-                    issues: { invalidInputType: true }
-                };
-                samplesToReview.push({
+    // This for...of loop iterates over the sampleKeys.
+    // The `await` keyword before `runNestingIterations` is crucial:
+    // It ensures that the processing for one `sampleKey` (i.e., the entire
+    // `runNestingIterations` function call, including all its internal iterations)
+    // completes fully before the loop proceeds to the next `sampleKey`.
+    // This achieves the desired sequential execution: sample by sample.
+    for (const sampleKey of sampleKeys) {
+        if (!mute) console.log(`\n--- Batch processing: ${sampleKey} ---`);
+        const initialCss = cssSamples[sampleKey];
+        let result;
+
+        if (typeof initialCss !== 'string') {
+            if (!mute) console.error(`[${sampleKey}] The sample CSS is not a string. Skipping.`);
+            result = { 
+                name: sampleKey,
+                finalCss: `/* [${sampleKey}] Sample CSS is not valid (not a string). */`,
+                issues: { invalidInputType: true }
+            };
+            samplesToReview.push({
+                key: sampleKey,
+                reason: "Invalid input type (not a string)",
+                details: result.issues
+            });
+        } else if (initialCss.trim() === '' && iterations > 0) {
+             if (!mute) console.log(`[${sampleKey}] Initial CSS is empty. Running to check for converter issues with empty string.`);
+             // `await` ensures this call completes before next sampleKey processing starts.
+             result = await runNestingIterations(initialCss, iterations, sampleKey, mute);
+             if (result.issues.converterThrewError || result.issues.finalOutputHasSyntaxErrors || result.issues.changeFromLastIteration) {
+                 samplesToReview.push({
                     key: sampleKey,
-                    reason: "Invalid input type (not a string)",
+                    reason: "Empty input processing led to issues (converter error, syntax error, or no change).",
                     details: result.issues
                 });
-            } else if (initialCss.trim() === '' && iterations > 0) {
-                 console.log(`[${sampleKey}] Initial CSS is empty. Running to check for converter issues with empty string.`);
-                 result = await runNestingIterations(initialCss, iterations, sampleKey);
-                 if (result.issues.converterThrewError || result.issues.finalOutputHasSyntaxErrors || result.issues.changeFromLastIteration) {
-                     samplesToReview.push({
-                        key: sampleKey,
-                        reason: "Empty input processing led to issues (converter error, syntax error, or no change).",
-                        details: result.issues
-                    });
-                 }
-            } else {
-                result = await runNestingIterations(initialCss, iterations, sampleKey);
-            }
-            
-            allResults[sampleKey] = result;
-            lastProcessedKey = sampleKey;
-
-            if (result && result.issues && !result.issues.invalidInputType) {
-                let hasSignificantIssue = false;
-                let reviewReasons = [];
-                if (result.issues.inputErrorEncountered) { reviewReasons.push("Input errors during processing"); hasSignificantIssue = true; }
-                if (result.issues.converterThrewError) { reviewReasons.push("Nesting function failed/threw error"); hasSignificantIssue = true; }
-                if (result.issues.outputBecameEmpty) { reviewReasons.push("Output became empty"); hasSignificantIssue = true; }
-                if (result.issues.changeFromLastIteration) { reviewReasons.push("Converter produced change in an iteration"); hasSignificantIssue = true; } // New reason
-                if (result.issues.noChangeFromInitial && iterations > 0 && !(initialCss.trim() === '' && result.finalCss.trim() === '')) { 
-                    reviewReasons.push("No change from initial CSS (overall)"); 
-                    hasSignificantIssue = true; 
-                }
-                if (result.issues.finalOutputHasSyntaxErrors) { reviewReasons.push("Final output has syntax errors"); hasSignificantIssue = true; }
-                
-                if (hasSignificantIssue && !samplesToReview.find(s => s.key === sampleKey)) { 
-                    samplesToReview.push({
-                        key: sampleKey,
-                        reason: reviewReasons.join('; '),
-                        details: result.issues
-                    });
-                }
-            }
-            console.log(`--- Finished batch processing for ${result.name}. Final CSS length: ${result.finalCss ? result.finalCss.length : 'N/A'} ---`);
+             }
+        } else {
+            // `await` ensures this call completes before next sampleKey processing starts.
+            result = await runNestingIterations(initialCss, iterations, sampleKey, mute);
         }
+        
+        allResults[sampleKey] = result;
+        lastProcessedKey = sampleKey;
+
+        if (result && result.issues && !result.issues.invalidInputType) {
+            let hasSignificantIssue = false;
+            let reviewReasons = [];
+            if (result.issues.inputErrorEncountered) { reviewReasons.push("Input errors during processing"); hasSignificantIssue = true; }
+            if (result.issues.converterThrewError) { reviewReasons.push("Nesting function failed/threw error"); hasSignificantIssue = true; }
+            if (result.issues.outputBecameEmpty) { reviewReasons.push("Output became empty"); hasSignificantIssue = true; }
+            if (result.issues.changeFromLastIteration) { reviewReasons.push("Converter produced change in an iteration"); hasSignificantIssue = true; } 
+            if (result.issues.noChangeFromInitial && iterations > 0 && !(initialCss.trim() === '' && result.finalCss.trim() === '')) { 
+                reviewReasons.push("No change from initial CSS (overall)"); 
+                hasSignificantIssue = true; 
+            }
+            if (result.issues.finalOutputHasSyntaxErrors) { reviewReasons.push("Final output has syntax errors"); hasSignificantIssue = true; }
+            
+            if (hasSignificantIssue && !samplesToReview.find(s => s.key === sampleKey)) { 
+                samplesToReview.push({
+                    key: sampleKey,
+                    reason: reviewReasons.join('; '),
+                    details: result.issues
+                });
+            }
+        }
+        if (!mute) console.log(`--- Finished batch processing for ${result.name}. Final CSS length: ${result.finalCss ? result.finalCss.length : 'N/A'} ---`);
     }
 
-    console.log("\n=== All samples processed. Iteration results stored. ===");
+    if (!mute) console.log("\n=== All samples processed. Iteration results stored. ===");
     
     if (samplesToReview.length > 0) {
-        console.warn("\n🚩 === Samples potentially needing review: ===");
+        if (!mute) console.warn("\n🚩 === Samples potentially needing review: ===");
         samplesToReview.forEach(sample => {
-            console.warn(`- ${sample.key}: ${sample.reason}`);
-            console.log("  Issue details:", sample.details);
+            if (!mute) console.warn(`- ${sample.key}: ${sample.reason}`);
+            if (!mute) console.log("  Issue details:", sample.details);
         });
     } else {
-        console.log("\n✅ === No samples flagged for immediate review based on issue criteria. ===");
+        if (!mute) console.log("\n✅ === No samples flagged for immediate review based on issue criteria. ===");
     }
     
-    console.log("\n--- Summary of final outputs (see detailed logs for full content/issues): ---");
-    for (const key in allResults) {
+    if (!mute) console.log("\n--- Summary of final outputs (see detailed logs for full content/issues): ---");
+    for (const key in allResults) { // Iterating over the collected results object is fine with for...in
         const res = allResults[key];
         if (res && typeof res.finalCss === 'string') {
-             console.log(`[${key} - Final Summary]: CSS length: ${res.finalCss.length}, Issues: ${JSON.stringify(res.issues || {})}, First 100 chars: "${res.finalCss.substring(0,100)}${res.finalCss.length > 100 ? '...' : ''}"`);
+             if (!mute) console.log(`[${key} - Final Summary]: CSS length: ${res.finalCss.length}, Issues: ${JSON.stringify(res.issues || {})}, First 100 chars: "${res.finalCss.substring(0,100)}${res.finalCss.length > 100 ? '...' : ''}"`);
         } else if (res && res.issues) {
-             console.log(`[${key} - Final Summary]: No valid finalCss. Issues: ${JSON.stringify(res.issues)}`);
+             if (!mute) console.log(`[${key} - Final Summary]: No valid finalCss. Issues: ${JSON.stringify(res.issues)}`);
         } else {
-             console.log(`[${key} - Final Summary]: Processing error or undefined result.`);
+             if (!mute) console.log(`[${key} - Final Summary]: Processing error or undefined result.`);
         }
     }
     
@@ -299,7 +308,7 @@ async function processAllSamplesIteratively(iterations = 5) {
             prefix = `/* POTENTIAL ISSUES DETECTED for ${lastProcessedKey} (last processed). Check console. */\n`;
         }
         outputEditor.getSession().setValue(prefix + (lastOutput || `/* [${lastProcessedKey}] Final output is empty/undefined. (Last processed in batch) */`));
-        console.log(`Output editor updated with the result of the last processed sample: ${lastProcessedKey}`);
+        if (!mute) console.log(`Output editor updated with the result of the last processed sample: ${lastProcessedKey}`);
     } else if (Object.keys(cssSamples).length > 0) {
         outputEditor.getSession().setValue("/* All samples processed. Check console for details. The last processed sample might have had issues or was empty. */");
     } else {
@@ -325,5 +334,13 @@ async function processAllSamplesIteratively(iterations = 5) {
 * let allProcessedResults = Debugger.processAllSamplesIteratively(5);
 * 
 */
+
+// Assuming cssSamples, inputEditor, outputEditor, convertToNestedCSS are defined elsewhere.
+// Example:
+// const cssSamples = { /* ... your samples ... */ };
+// const inputEditor = ace.edit("inputEditorDiv"); // or however it's initialized
+// const outputEditor = ace.edit("outputEditorDiv"); // or however it's initialized
+// function convertToNestedCSS(css) { /* ... your converter logic ... */ return css; }
+
 
 window.Debugger = { processAndShowSampleByName, processAndShowSampleByIndex, processAllSamplesIteratively };

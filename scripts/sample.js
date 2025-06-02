@@ -20703,5 +20703,586 @@ html {
     background-image: url('data:image/svg+xml;utf8,<svg><style>.a{fill:red;}</style></svg>');
     content: "String with { curly braces }";
 }
+`,
+/* Comprehensive At-Rules and Nesting */
+'atRulesGalore': `
+@charset "UTF-8";
+
+@namespace svg "http://www.w3.org/2000/svg";
+@namespace xul "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+@import url("theme.css") layer(theme.base);
+@import url("typography.css") layer(theme.typography) screen and (min-width: 768px);
+@import url("grid-specific.css") layer(layout.grid) supports(display: grid);
+
+@font-face {
+  font-family: "MyCustomFont";
+  src: url("myfont.woff2") format("woff2"),
+       url("myfont.woff") format("woff");
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@keyframes slide-in-fade {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  75% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animated-element {
+  animation: slide-in-fade 1s ease-out forwards;
+}
+
+body {
+  font-family: "MyCustomFont", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+
+    @supports ( (display: grid) or (display: -ms-grid) ) {
+      display: grid;
+      grid-template-columns: minmax(200px, 1fr) 3fr;
+
+      nav {
+        grid-column: 1 / 2;
+        & > ul { /* Direct child nesting with & */
+          padding-left: 0;
+          li:last-of-type & { /* Test & not at start of selector, if standard allows, this becomes nav > ul li:last-of-type nav > ul */
+            /* Standard CSS nesting implies & means the parent selector. So this would be:
+               nav > ul li:last-of-type nav > ul {}
+               Let's rephrase to be clearly standard CSS nesting: */
+          }
+        }
+        /* Nesting with & for a more specific selector */
+        &.main-navigation {
+          border-right: 1px solid #ccc;
+        }
+      }
+      main {
+        grid-column: 2 / 3;
+      }
+    }
+
+    @supports not ( (display: grid) or (display: -ms-grid) ) {
+      nav, main {
+        float: left;
+        width: 25%;
+      }
+      main {
+        width: 75%;
+      }
+    }
+  }
+
+  @media print {
+    color: black !important;
+    background: white;
+
+    a[href^="http"]::after {
+      content: " (" attr(href) ")";
+    }
+  }
+}
+
+@page :left {
+  margin-left: 4cm;
+  margin-right: 3cm;
+}
+
+@page :right {
+  margin-left: 3cm;
+  margin-right: 4cm;
+  @top-right {
+    content: "Chapter " counter(chapter);
+    font-size: 9pt;
+  }
+}
+
+@page:first {
+  margin-top: 10cm;
+  @top-left {
+    content: normal;
+  }
+}
+
+/* Nested media query outside a rule */
+@media (min-width: 1024px) {
+  .feature-box {
+    padding: 20px;
+    border: 1px solid green;
+    /* Further nested media query */
+    @media (prefers-color-scheme: dark) {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+      border-color: lightgreen;
+    }
+  }
+}
+`,
+/* Advanced Pseudo-classes/elements and Nesting */
+'advancedPseudoAndNesting': `
+nav {
+  ul {
+    list-style: none;
+
+    li {
+      /* :has() with nested selector and direct child */
+      &:has(> a.active-link) {
+        font-weight: bold;
+        box-shadow: inset 3px 0 0 0 var(--accent-color, blue);
+      }
+
+      /* Nesting with & for adjacent sibling */
+      & + & {
+        border-top: 1px dotted #eee;
+      }
+
+      /* :is() for multiple pseudo-classes on the parent */
+      &:is(:hover, :focus-within) {
+        background-color: #f9f9f9;
+      }
+    }
+
+    /* :where() to lower specificity */
+    :where(li.optional-item, li.extra-item):not(:first-child) {
+      opacity: 0.8;
+    }
+  }
+
+  a {
+    /* Nesting pseudo-elements & classes */
+    &::before {
+      content: "» ";
+      opacity: 0.5;
+    }
+    &:focus-visible {
+      outline: 2px dashed hotpink;
+    }
+    /* Chaining & with attribute selector */
+    &[target="_blank"]::after {
+        content: " ↗";
+        font-size: smaller;
+    }
+  }
+}
+
+article {
+  /* :target highlights the element if its ID matches the URL fragment */
+  section:target {
+    background-color: #ffffe0; /* Light yellow */
+    border-left: 5px solid gold;
+  }
+
+  /* Any element in the article that is focused or contains a focused element */
+  &:focus-within {
+    box-shadow: 0 0 10px rgba(0, 128, 0, 0.5);
+  }
+
+  /* Complex :nth-child selector */
+  figure:nth-child(2n+3) {
+    float: right;
+    margin: 0 0 1em 1em;
+  }
+
+  /* :nth-last-of-type on a specific element */
+  blockquote:nth-last-of-type(1) {
+    border-color: silver;
+  }
+}
+
+form {
+  fieldset {
+    /* Styling ::marker for legend (if browser supports/useful for testing parsing) */
+    legend::marker { /* Not standard for legend, but tests parsing */
+      content: "* ";
+    }
+  }
+  input[type="file"] {
+    &::file-selector-button {
+      background-color: #e0e0e0;
+      border: 1px solid #ccc;
+      padding: 0.5em 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      &:hover {
+        background-color: #d0d0d0;
+      }
+    }
+  }
+
+  /* :placeholder-shown combined with :not */
+  input:not(:placeholder-shown) + label.floater {
+    transform: translateY(-100%) scale(0.8);
+  }
+}
+
+dialog {
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+}
+
+.highlighted-text::selection {
+  background-color: yellow;
+  color: black;
+}
+
+/* & not at the start of a nested selector part */
+.parent-class {
+    color: blue;
+    .child-class {
+        .parent-class & { /* This would be: .parent-class .child-class.parent-class */
+                           /* Standard CSS nesting: .parent-class .child-class */
+            /* For standard CSS, this will resolve to .parent-class .parent-class .child-class,
+               or if the parser is very smart about & usage context: .parent-class.child-class (if .child-class is also on .parent-class)
+               Let's use a more common & case */
+        }
+        font-weight: bold; /* .parent-class .child-class */
+    }
+    /* Sibling using & */
+    & ~ .sibling-of-parent {
+        border-top: 1px solid red;
+    }
+}
+
+/* Selector list with nesting */
+.item, .product {
+    padding: 10px;
+    &:hover {
+        box-shadow: 0 0 5px #ccc;
+    }
+    .name {
+        font-weight: bold;
+    }
+}
+`,
+/* CSS Custom Properties, Functions, and !important */
+'customPropsAndFunctions': `
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --base-font-size: 16px;
+  --spacing-md: 1.5rem;
+  --border-style: 1px solid #ccc !important; /* !important in variable */
+  --calculated-width: calc(100% - (2 * var(--spacing-md)));
+}
+
+/* Fallback for custom properties */
+.element {
+  color: var(--undefined-var, black);
+  padding: var(--spacing-sm, 0.75rem);
+}
+
+body {
+  font-size: var(--base-font-size);
+  background-color: var(--primary-color-light, color-mix(in srgb, var(--primary-color) 20%, white));
+}
+
+.panel {
+  --panel-padding: clamp(10px, 2vw, 20px); /* clamp() */
+  padding: var(--panel-padding);
+  border: var(--border-style); /* Uses !important from var */
+  width: var(--calculated-width);
+
+  .panel-header {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: calc(var(--panel-padding) / 2);
+    font-size: max(1.2em, 18px); /* max() */
+
+    h2 {
+      margin: 0 !important; /* !important directly on property */
+    }
+  }
+
+  .panel-body {
+    margin-top: var(--spacing-md);
+    min-height: min(300px, 50vh); /* min() */
+
+    p {
+      margin-bottom: 0.5rem;
+      /* Using attr() - limited use for non-content properties */
+      /* data-color-attr: "red"; */
+      /* color: attr(data-color-attr color, var(--primary-color)); */ /* Test attr() parsing */
+    }
+
+    /* Attribute selectors with different operators */
+    a[href*="example.com"] { /* Contains */
+      font-weight: bold;
+    }
+    img[alt~="icon"] { /* Contains word */
+      border: 2px solid var(--secondary-color);
+    }
+    input[type|="text"] { /* Starts with "text" or "text-" */
+      border-color: blue;
+    }
+    [class^="icon-"] { /* Starts with */
+        opacity: 0.8;
+    }
+    [class$="-btn"] { /* Ends with */
+        padding: 10px;
+    }
+  }
+}
+
+/* Overriding custom properties in a different scope */
+.special-panel {
+  --secondary-color: #e74c3c; /* Override */
+  --border-style: 3px dashed var(--secondary-color) !important; /* Override with !important */
+
+  .panel-header {
+    font-style: italic;
+  }
+}
+`,
+/* @layer, @container, @property */
+'layeringContainerProperty': `
+@property --brand-hue {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 200deg;
+}
+
+@layer framework, theme, components, utilities;
+
+@import url("normalize.css") layer(framework.normalize);
+
+@layer framework {
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; }
+
+  @layer reset { /* Nested layer */
+    button, input { font-family: inherit; }
+  }
+}
+
+@layer theme {
+  :root {
+    --text-color: hsl(var(--brand-hue), 10%, 20%);
+    --bg-color: hsl(var(--brand-hue), 20%, 95%);
+  }
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: --brand-hue 0.5s;
+  }
+  body:hover { /* Just to demonstrate transition */
+    --brand-hue: 50deg;
+  }
+}
+
+@layer components {
+  .widget {
+    container-type: size; /* For container queries based on size */
+    container-name: widget-box;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+    header {
+      font-weight: bold;
+    }
+  }
+
+  /* Style query for container */
+  @container widget-box style( --highlight: true ) {
+    .widget {
+      background-color: lightyellow;
+      border-left: 5px solid gold;
+    }
+  }
+}
+
+@container widget-box (min-width: 400px) and (max-height: 200px) {
+  .widget header {
+    color: green;
+  }
+  .widget .content {
+    display: flex;
+  }
+}
+
+/* Unlayered styles have higher precedence than layered ones by default */
+.widget {
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+@layer utilities {
+  .is-hidden {
+    display: none !important;
+  }
+}
+`,
+/* @scope and @starting-style (Newer Features) */
+'scopeAndStartingStyle': `
+/* @scope basic example */
+.card {
+  border: 1px solid grey;
+  @scope { /* Scopes to .card and its descendants */
+    :scope { /* Styles the .card itself */
+      padding: 1em;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    footer { /* .card footer */
+      font-size: 0.9em;
+      color: #555;
+    }
+  }
+}
+
+/* @scope with boundaries */
+.article-content {
+  @scope (.heading) to (.related-links) {
+    p {
+      line-height: 1.7;
+    }
+    a:not([target="_blank"]) {
+      text-decoration: underline;
+    }
+    :scope { /* Refers to .heading in this context */
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+/* @scope with :scope and other selectors */
+.sidebar {
+  @scope (&.sticky) { /* .sidebar.sticky */
+    position: sticky;
+    top: 20px;
+  }
+  @scope (& > .widget) { /* .sidebar > .widget */
+    margin-bottom: 1.5rem;
+    :scope:last-child { /* .sidebar > .widget:last-child */
+      margin-bottom: 0;
+    }
+  }
+}
+
+/* @starting-style for animations */
+.menu-item {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+@starting-style {
+  .menu-item.appearing {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+dialog[open] {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out, display 0.5s allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+}
+dialog { /* Styles for when not open or when "closing" if display transition is used */
+  opacity: 0;
+  transform: translateY(100px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out, display 0.5s allow-discrete;
+}
+`,
+/* Edge Cases and Whitespace Variations */
+'edgeCaseMadness': `
+/* Empty rule set */
+.no-styles {}
+
+/* Rule with only comments */
+.only-comments {
+  /* This rule does nothing but hold a comment. */
+  /* Another comment. */
+}
+
+/* Multiple selectors with inconsistent spacing and an empty rule block */
+div.foo   ,
+section#bar
+,aside .baz {
+    /* comment for the block */
+}
+
+/* Deeply nested empty rules */
+.level-1 {
+  color: /* color for level 1 */ navy;
+  .level-2-empty {
+    /* comment in level 2 */
+    .level-3-really-empty {
+
+    }
+  }
+  /* Sibling to .level-2-empty */
+  .level-2-with-prop {
+    padding: 5px;
+  }
+}
+
+/* At-rule with no rules inside */
+@media screen and (max-width: 480px) {
+  /* Intentionally empty media query */
+}
+
+/* At-rule with a rule that only contains comments */
+@supports (gap: 1em) {
+  .gap-supported {
+    /* This feature is supported! */
+  }
+}
+
+/* Properties with unusual but valid whitespace */
+.spaced-out-props {
+  margin : 10px   20px ;
+  font-family  :   "Times New Roman"  ,  serif  ;
+  background :
+    url( 'image.png' )
+    no-repeat
+    center   /   cover
+    ;
+}
+
+/* Rule with !important and comments */
+.important-rule {
+  display: block   !important   ; /* comment after !important */
+  /* comment before next prop */
+  visibility: visible;
+}
+
+/* Nested structure with a mix of empty and non-empty rules */
+.grandparent {
+    width: 100%;
+    .parent-one {
+        /* No styles directly */
+        .child-one-a {}
+        .child-one-b {
+            color: red;
+        }
+    }
+    .parent-two {} /* Empty parent */
+}
+
+/* Comments interspersed in a selector list */
+/* Not valid CSS if inside the selector token itself, but between tokens is fine */
+h1, /* H1 elements */
+h2, /* H2 elements */
+.title /* Title class */ {
+  font-weight: bold;
+}
 `
 };

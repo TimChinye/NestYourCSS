@@ -2,16 +2,16 @@ let sample = cssSamples[window.cssSample] ?? cssSamples["unnestedShowcase"];
 
 const provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
 
-window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
-window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
+inputEditorInstance = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
+outputEditorInstance = initializeEditor("outputEditor", '/* Your output CSS will appear here */');
 
 // Auto Nest
 let codeChanged = false;
 let isProcessing = false;
 
-window.inputEditor.getSession().on('change', () => (window.processAuto ?? true) && (codeChanged = true));
+inputEditorInstance.getSession().on('change', () => (window.processAuto ?? true) && (codeChanged = true));
 
-window.inputEditor.getSession().on('changeAnnotation', () => {
+inputEditorInstance.getSession().on('changeAnnotation', () => {
   if ((window.processAuto ?? true) && !isProcessing) {
     isProcessing = true;
 
@@ -45,8 +45,8 @@ function initializeEditor(editorId, value) {
   return editor;
 }
 
-let inputEditor = window.inputEditor.container;
-let outputEditor = inputEditor.parentElement.lastElementChild;
+let inputEditorElem = inputEditorInstance.container;
+let outputEditorElem = inputEditorElem.parentElement.lastElementChild;
 
 const shadowCount = 3;
 
@@ -84,7 +84,7 @@ function createEditorTab(editor, isInputEditor, isShadowEditor) {
       // Set up an event listener for file selection
       fileInput.addEventListener("change", (event) => {
         if (file = event.target.files[0]) {
-          fileReader.onload = (e) => window.inputEditor.setValue(e.target.result);
+          fileReader.onload = (e) => inputEditorInstance.setValue(e.target.result);
           fileReader.readAsText(file);
         };
       });
@@ -128,8 +128,8 @@ function wrapEditorWithGroup(editor, editorTab) {
 }
 
 // Wrap both input and output editors
-[inputEditor, outputEditor].forEach((editor) => {
-  const editorTab = createEditorTab(editor, editor === inputEditor, false);
+[inputEditorElem, outputEditorElem].forEach((editor) => {
+  const editorTab = createEditorTab(editor, editor === inputEditorElem, false);
   wrapEditorWithGroup(editor, editorTab);
   updateCoordinateDisplay(ace.edit(editor));
 });
@@ -137,18 +137,18 @@ function wrapEditorWithGroup(editor, editorTab) {
 // Shadow editor creation
 const shadowWrapperElement = document.createElement("div");
 shadowWrapperElement.id = "shadowEditorsWrapper";
-inputEditor.parentElement.after(shadowWrapperElement);
+inputEditorElem.parentElement.after(shadowWrapperElement);
 
 const shadowEditors = Array.from({ length: shadowCount }, (_, i) => {
   const shadowEditorGroup = document.createElement("div");
   shadowEditorGroup.classList.add('editorGroup');
 
-  const shadowEditorTab = createEditorTab(inputEditor, true, true);
+  const shadowEditorTab = createEditorTab(inputEditorElem, true, true);
   shadowEditorGroup.appendChild(shadowEditorTab);
 
   const shadowEditor = document.createElement("div");
-  shadowEditor.className = `${inputEditor.className} shadowEditor`;
-  shadowEditor.innerHTML = inputEditor.innerHTML;
+  shadowEditor.className = `${inputEditorElem.className} shadowEditor`;
+  shadowEditor.innerHTML = inputEditorElem.innerHTML;
   shadowEditorGroup.appendChild(shadowEditor);
 
   shadowWrapperElement.appendChild(shadowEditorGroup);
@@ -160,17 +160,17 @@ function styleShadowEditors() {
   const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
   const convertPxToRch = (px) => (px * (16 / remInPixels)) / (16 * 0.65);
   
-  const shadowHeightDiff = inputEditor.offsetHeight / 10;
+  const shadowHeightDiff = inputEditorElem.offsetHeight / 10;
   const baseShadowOpacity = 0.5;
   const baseShadowBlur = 2;
   const maxWidth = parseFloat(document.getElementById('textSide').offsetWidth) + (remInPixels / 0.35); /* I don't know why remInPixels * "0.35" works, but it does */
-  let baseShadowWidth = inputEditor.offsetWidth / 3;
+  let baseShadowWidth = inputEditorElem.offsetWidth / 3;
   let shadowWidthDiff = baseShadowWidth / 15;
   let previousShadowTranslation = 0;
 
   // if (((2 * baseShadowWidth) + (shadowWidthDiff / 7.5)) > maxWidth + 50) { /* The first part simplifies to 32/15 */
   if (((32 / 15) * baseShadowWidth) > maxWidth) {
-    baseShadowWidth = maxWidth * (5/12); /* 5/12 because the shadow widths are split into: 3/6 4/5 5/6 of inputEditor, the biggest/base one is 5/6, and maxWidth is 2x of the inputEditor, therefore 5/12 */
+    baseShadowWidth = maxWidth * (5/12); /* 5/12 because the shadow widths are split into: 3/6 4/5 5/6 of inputEditorElem, the biggest/base one is 5/6, and maxWidth is 2x of the inputEditorElem, therefore 5/12 */
     shadowWidthDiff = baseShadowWidth / 15;
   }
 
@@ -180,7 +180,7 @@ function styleShadowEditors() {
     shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
     shadowEditorWrapper.appendChild(shadowEditor.parentElement);
 
-    let scaleValue = ((inputEditor.offsetHeight * 0.8) - (shadowHeightDiff * (index + 1))) / inputEditor.offsetHeight;
+    let scaleValue = ((inputEditorElem.offsetHeight * 0.8) - (shadowHeightDiff * (index + 1))) / inputEditorElem.offsetHeight;
     shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
 
     let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (index + 1));
@@ -201,7 +201,7 @@ styleShadowEditors();
 let observer = new MutationObserver(() => {
   requestAnimationFrame(() => {
     shadowEditors.forEach((shadowEditor) => {
-      shadowEditor.innerHTML = inputEditor.innerHTML;
+      shadowEditor.innerHTML = inputEditorElem.innerHTML;
     });
 
     if (document.getElementsByTagName('main')[0].classList.contains('nesting') && parseInt(window.getComputedStyle(shadowEditors[0].parentElement.parentElement).opacity) == 0)
@@ -209,7 +209,7 @@ let observer = new MutationObserver(() => {
   });
 });
 
-observer.observe(inputEditor, {
+observer.observe(inputEditorElem, {
   childList: true,
   subtree: true,
   characterData: true

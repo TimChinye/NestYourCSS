@@ -78,7 +78,7 @@ window.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof spl
 
 function tabButtonHandler(e) {
   let tabButton = e.currentTarget;
-  let editor = (tabButton.closest('.editorWrapper')?.id.startsWith("input")) ? inputEditor : outputEditor;
+  let editor = (tabButton.closest('.editorWrapper')?.id.startsWith("input")) ? inputEditorElem : outputEditorElem;
 
   switch (tabButton.className) {
     case "tabCopyAll":
@@ -163,7 +163,7 @@ function setupDragAndDrop(editor) {
 
       if (file && (file.type === "text/css" || file.name.endsWith('.css'))) { // css file
           const reader = new FileReader();
-          reader.onload = (event) => window.inputEditor.setValue(event.target.result);
+          reader.onload = (event) => inputEditorInstance.setValue(event.target.result);
           reader.readAsText(file);
       }
       else if (e.dataTransfer.getData('text/plain'));
@@ -205,18 +205,18 @@ function selectHandler(inputElem, close) {
   
   switch (labelElem.id) {
     case "typefaces": {
-      outputEditor.container.style.fontFamily = inputEditor.container.style.fontFamily = labelElem.control.value + ', monospace';
+      outputEditorInstance.container.style.fontFamily = inputEditorInstance.container.style.fontFamily = labelElem.control.value + ', monospace';
       break;
     }
     case "fontsizes": {
-      outputEditor.container.style.fontSize = inputEditor.container.style.fontSize = labelElem.control.value;
-      document.querySelectorAll('.ace_tooltip').forEach((elem) => elem.style.fontSize = `${parseFloat(outputEditor.container.style.fontSize) * 0.8}rem`);
+      outputEditorInstance.container.style.fontSize = inputEditorInstance.container.style.fontSize = labelElem.control.value;
+      document.querySelectorAll('.ace_tooltip').forEach((elem) => elem.style.fontSize = `${parseFloat(outputEditorInstance.container.style.fontSize) * 0.8}rem`);
       break;
     }
     case "samples": {
       window.cssSample = inputElem.value;
 
-      window.inputEditor.setValue(cssSamples[window.cssSample]);
+      inputEditorInstance.setValue(cssSamples[window.cssSample]);
       nestCode();
       break;
     }
@@ -296,8 +296,8 @@ function numberHandler(inputElem, event) {
   // if (event.type != "mouseup") return;
   switch (labelElem.id) {
     case "indentationSize": {
-      inputEditor.getSession().setTabSize(+displayElem.textContent);
-      outputEditor.getSession().setTabSize(+displayElem.textContent);
+      inputEditorInstance.getSession().setTabSize(+displayElem.textContent);
+      outputEditorInstance.getSession().setTabSize(+displayElem.textContent);
 
       if (window.editorIndentChar?.startsWith(' ')) {
         window.editorIndentChar = ' '.repeat(+displayElem.textContent);
@@ -312,10 +312,10 @@ function checkboxHandler(inputElem) {
   let labelElem = inputElem.closest('label[id]');
   switch (labelElem.id) {
     case "indentationType": {
-      inputEditor.getSession().setUseSoftTabs(!inputElem.checked);
-      outputEditor.getSession().setUseSoftTabs(!inputElem.checked);
+      inputEditorInstance.getSession().setUseSoftTabs(!inputElem.checked);
+      outputEditorInstance.getSession().setUseSoftTabs(!inputElem.checked);
 
-      window.editorIndentChar = (!inputElem.checked) ? ' '.repeat(inputEditor.getSession().getTabSize()) : '\t';
+      window.editorIndentChar = (!inputElem.checked) ? ' '.repeat(inputEditorInstance.getSession().getTabSize()) : '\t';
       nestCode();
       break;
     }
@@ -338,8 +338,8 @@ function radioHandler(inputElem) {
     case "coordinates": {
       window.coordDisplayMode = radioIndex;
       
-      updateCoordinateDisplay(inputEditor);
-      updateCoordinateDisplay(outputEditor);
+      updateCoordinateDisplay(inputEditorInstance);
+      updateCoordinateDisplay(outputEditorInstance);
       break;
     }
     case "mode": {
@@ -372,7 +372,7 @@ function comboHandler(inputElem, close) {
           return response.text();
       })
       .then(cssContent => {
-          inputEditor.setValue(cssContent);
+          inputEditorInstance.setValue(cssContent);
                 
           let menuElem = inputElem.parentElement.nextElementSibling;
           const existingOption = Array.from(menuElem.children).find(option => option.textContent === inputElem.textContent);

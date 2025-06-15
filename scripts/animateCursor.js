@@ -5,7 +5,7 @@ const cursorPosition = { x: 0, y: 0 };
 const smoothing = 0.05;
 
 function animateCursor() {
-    if (!window.cursorX || !window.cursorY) return;
+    if (!window.cursorX || !window.cursorY) return requestAnimationFrame(animateCursor);
     
     let dx = window.cursorX - cursorPosition.x;
     let dy = window.cursorY - cursorPosition.y;

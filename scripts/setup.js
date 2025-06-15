@@ -198,18 +198,18 @@ function styleShadowEditors() {
 styleShadowEditors();
 
 // Observer to update shadow editors
-let observer = new MutationObserver(() => {
+let mutationObserver = new MutationObserver(() => {
   requestAnimationFrame(() => {
     shadowEditors.forEach((shadowEditor) => {
       shadowEditor.innerHTML = inputEditorElem.innerHTML;
     });
 
     if (document.getElementsByTagName('main')[0].classList.contains('nesting') && parseInt(window.getComputedStyle(shadowEditors[0].parentElement.parentElement).opacity) == 0)
-      return observer.disconnect(), shadowEditors[0].closest('#shadowEditorsWrapper').remove();
+      return mutationObserver.disconnect(), shadowEditors[0].closest('#shadowEditorsWrapper').remove();
   });
 });
 
-observer.observe(inputEditorElem, {
+mutationObserver.observe(inputEditorElem, {
   childList: true,
   subtree: true,
   characterData: true

@@ -11,7 +11,9 @@ function updateLogoState() {
   const { pageYOffset, document: { documentElement: { scrollTop, scrollHeight, clientHeight } } } = window;
 
   // Check if user is at the bottom
-  if ((((pageYOffset || scrollTop) + clientHeight) / scrollHeight) >= 0.9995) {
+  if (((pageYOffset || scrollTop) / scrollHeight) < 0.01) {
+    cssBadge.className = '';
+  } else if ((((pageYOffset || scrollTop) + clientHeight) / scrollHeight) >= 0.9995) {
     cssBadge.className = 'hover-animation';
     if (!hovered) hovered ^= 1;
   } else if (cssBadge.className != 'main-animation') {

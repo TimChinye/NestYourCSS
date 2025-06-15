@@ -14,13 +14,10 @@ document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 	}
 });
 
-// let rateHistory = [];
-// let mousemoveCount = 0;
-// const checkIntervalMs = 1000;
-
 document.body.addEventListener('mousemove', (e) => {
-  // mousemoveCount++;
   if (typeof splashTextElem === 'undefined' || splashTextElem === null) return;
+  window.cursorX = e.clientX;
+  window.cursorY = e.clientY;
 
   requestAnimationFrame(() => {
     const mainSection = document.getElementsByTagName('main')[0];
@@ -41,12 +38,6 @@ document.body.addEventListener('mousemove', (e) => {
       mainContent.style.background = mainContentBackgroundString;
     }
     else {
-      let cssBadge = document.getElementById('nycssBadge');
-      if (cssBadge.classList.contains('hover-animation')) {
-        let cursor = document.getElementById('nyssCursor');
-        cursor.style.translate = `calc(${e.clientX}px - 50%) calc(${e.clientY}px - 50%)`;
-      }
-      
       if (e.target === splashTextElem) {
         attemptSplashTextUpdate();
       }
@@ -63,16 +54,20 @@ document.body.addEventListener('mousemove', (e) => {
   });
 });
 
-// setInterval(() => {
-//     const rate = mousemoveCount / (checkIntervalMs / 1000);
-//     rateHistory.push(rate);
-//     if (rateHistory.length > 10) rateHistory.splice(0, 1);
+document.addEventListener('visibilitychange', () => document.body.classList.toggle('hidden', document.hidden));
 
-//     window.mouseMoveRate = `Mouse Move Event Firing Rate: ${rate.toFixed(1)} Hz`;
-//     if (rateHistory.length > 0) window.averageMouseMoveRate = rateHistory.reduce((sum, rate) => sum + rate, 0) / rateHistory.length;
-      
-//     mousemoveCount = 0;
-// }, checkIntervalMs);
+const elements = [
+  '#nestBtn',
+  '#mainSettings > menu button > figure.inner-cursor',
+  '#repeatingText span.repeat',
+  '#changingText s',
+  '#groupedText',
+  '#nyssCursor',
+  '#splittingText',
+  '#nycssBadge'
+];
+const intersectionObserver = new IntersectionObserver((entries) => entries.forEach(entry => entry.target.classList.toggle('hidden', !entry.isIntersecting)), { threshold: 0.01 });
+elements.flatMap(s => [...document.querySelectorAll(s)]).filter(Boolean).forEach(el => intersectionObserver.observe(el));
 
 window.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof splashTextElem !== 'undefined' && splashTextElem !== null) && updateLogoState()));
 

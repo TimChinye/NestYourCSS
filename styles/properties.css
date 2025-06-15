@@ -18,18 +18,18 @@
 
 @property --nestBtn-shadow-colour-1 {
   syntax: '<color>';
-  inherits: false;
+  inherits: true;
   initial-value: transparent;
 }
 
 @property --nestBtn-shadow-colour-2 {
   syntax: '<color>';
-  inherits: false;
+  inherits: true;
   initial-value: transparent;
 }
 
 @property --nestBtn-shadow-colour-3 {
   syntax: '<color>';
-  inherits: false;
+  inherits: true;
   initial-value: transparent;
 }

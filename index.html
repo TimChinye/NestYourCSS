@@ -406,7 +406,13 @@
           </figure>
         </article>
         <article id="editorSide">
-          <button id="nestBtn" onclick="nestCode();">Nest!</button>
+          <button id="nestBtn">
+            <span class="orb1"></span>
+            <span class="orb2"></span>
+            <span class="orb3"></span>
+          
+            <div onclick="nestCode();">Nest!</div>
+          </button>
           <div id="codeEditor">
             <div class="editor" id="inputEditor"></div>
             <div id="editorGap"></div>
@@ -416,22 +422,22 @@
       </section>
     </main>
     <article>
-      <section id="reducingBoilerplateCode">
+      <section id="reducingBoilerplateCode" class="optimize">
         <a href="#reducingBoilerplateCode">BUT WHY THOUGH?</a>
-        <p id="repeatingText">With nesting, you can <b>avoid repeating <span class="repeat">common styles</span></b> in multiple <span class="repeat">selectors</span>. This helps reduce the size of your code and makes any future modifications <span class="repeat">easier</span>.</p>
+        <p id="repeatingText">With nesting, you can <b>avoid repeating <span class="repeat" data-text="common styles">common styles</span></b> in multiple <span class="repeat" data-text="selectors">selectors</span>. This helps reduce the size of your code and makes any future modifications <span class="repeat" data-text="easier">easier</span>.</p>
         <h1 id="parallaxText"><span><p>Reducing</p></span><span><p>Boilerplate</p></span><span><p>Code</p></span></h1>
       </section>
-      <section id="easierMaintenance">
+      <section id="easierMaintenance" class="optimize">
         <p id="mergingText"><span>Easier</span><span>Maintenance</span></p>
         <p id="changingText">By using CSS nesting, any style <s>chnages</s> <b>changes</b> can be implemented <s>better</s> <b>more efficiently</b>. It promotes readability, maintainability, <s>and</s> <b>&</b> modularity in your stylesheets.</p>
       </section>
-      <section id="improvedCodeReadability">
+      <section id="improvedCodeReadability" class="optimize">
         <p id="backgroundText"><span>Improved</span><span>Code</span><span>Readability</span></p>
         <!-- other developers --> <!-- easier to maintain -->
         <p id="visibleText">Nesting makes your code easier to read and understand for both yourself and <u><b><span>o</span><span>t</span><span>h</span><span>e</span><span>r</span><span> </span><span>d</span><span>e</span><span>v</span><span>e</span><span>l</span><span>o</span><span>p</span><span>e</span><span>r</span><span>s</span></b></u>. It allows you to write cleaner, easier-to-read nested selectors, making code much <u><b><span>e</span><span>a</span><span>s</span><span>i</span><span>e</span><span>r</span><span> </span><span>t</span><span>o</span><span> </span><span>m</span><span>a</span><span>i</span><span>n</span><span>t</span><span>a</span><span>i</span><span>n</span></b></u> and increase development productivity.</p>
       </section>
-      <section id="groupingStylesTogether">
-        <div id="groupedTextWrapper"><p id="groupedText"><span>Grouping</span><span>Styles</span><span>Together</span></p><p id="groupedText"><span>Grouping</span><span>Styles</span><span>Together</span></p></div>
+      <section id="groupingStylesTogether" class="optimize">
+        <p id="groupedText" data-text="Grouping&#x0A;Styles&#x0A;Together">Grouping<br>Styles<br>Together</p>
         <div id="miniEditor">
           <div id="lineNumbers">
           </div>
@@ -459,19 +465,19 @@
         </div>
       </section>
       <section id="mechanicsOfNesting">
-        <a hidden id="backToStart" href="#" aria-label="Back to start of page"></a>
-        <img id="nyssCursor" src="../assets/images/nycss-cursor.webp" aria-hidden="true">
-        <p id="splittingText">Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that <b>reflects your HTML structure</b> document, making your CSS code more intuitive and easier to manage.</p>
-        <hgroup id="nestingText">
+        <a id="backToStart" class="optimize" hidden href="#" aria-label="Back to start of page"></a>
+        <img id="nyssCursor" class="optimize" src="../assets/images/nycss-cursor.webp" aria-hidden="true">
+        <p id="splittingText" data-text="Nesting in CSS allows you to define styles for child elements within the context of their parent element’s style rule. This creates a hierarchy that reflects your HTML structure document, making your CSS code more intuitive and easier to manage.">Nesting in CSS allows you to define styles for child elements within the context of their parent element’s style rule. This creates a hierarchy that reflects your HTML structure document, making your CSS code more intuitive and easier to manage.</p>
+        <hgroup id="nestingText" class="optimize-">
           <h1><a href="#">Nest Your CSS</a></h1>
           <p><a href="#">Click anywhere to...</a></p>
         </hgroup>
         <!-- Mechanics of Nesting -->
-        <p id="strechingText"><span>M</span><span>e</span><span>c</span><span>h</span><span>a</span><span>n</span><span>i</span><span>c</span><span>s</span>&nbsp;<span>o</span><span>f</span>&nbsp;<span>N</span><span>e</span><span>s</span><span>t</span><span>i</span><span>n</span><span>g</span></p>
+        <p id="strechingText" class="optimize"><span>M</span><span>e</span><span>c</span><span>h</span><span>a</span><span>n</span><span>i</span><span>c</span><span>s</span>&nbsp;<span>o</span><span>f</span>&nbsp;<span>N</span><span>e</span><span>s</span><span>t</span><span>i</span><span>n</span><span>g</span></p>
         <button id="nycssLogoGroup" onclick="window.location.href='#'">
-          <img hidden id="nycssLogo" src="./assets/images/nycss-logo.webp" alt="Complete NYCSS Logo"/>
-          <img id="nycssBadge" class="main-animation" src="./assets/images/nycss-badge.webp" alt="Badge from NYCSS Logo"/>
-          <img id="nycssNest" src="./assets/images/nycss-nest.webp" alt="Nest from NYCSS Logo"/>
+          <img id="nycssLogo" class="optimize" hidden src="./assets/images/nycss-logo.webp" alt="Complete NYCSS Logo"/>
+          <img id="nycssBadge" class="optimize main-animation" src="./assets/images/nycss-badge.webp" alt="Badge from NYCSS Logo"/>
+          <img id="nycssNest" class="optimize" src="./assets/images/nycss-nest.webp" alt="Nest from NYCSS Logo"/>
         </button>
       </section>
     </article>
@@ -486,6 +492,7 @@
   <script src="./scripts/minieditor.js" type="text/javascript"></script>
   <script src="./scripts/splashtexts.js" type="text/javascript"></script>
   <script src="./scripts/fallingbadge.js" type="text/javascript"></script>
+  <script src="./scripts/animateCursor.js" type="text/javascript"></script>
 
   <script src="./lib/mode-css.js"></script>
   <script src="./lib/ace-linters.min.js"></script>

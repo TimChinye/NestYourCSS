@@ -126,7 +126,6 @@ body {
 				width: fit-content;
 				position: relative;
 				background: var(--background);
-				will-change: background;
 				border-radius: 3rem;
 				transform-origin: center;
 				animation: scaleDown linear both;
@@ -404,37 +403,77 @@ body {
 					--editor-width: 5;
 					--total-width: calc(var(--editor-width) + var(--gutter-width) + var(--editor-width));
 
-					> #nestBtn {
+					#nestBtn {
+						/* Container styles - positioning and animation */
 						position: absolute;
-						aspect-ratio: 1 / 1;
 						bottom: 2rem;
 						right: 2rem;
 						z-index: 10;
-						
-						cursor: pointer;
+						background: none;
 						border: none;
-						padding: 2em;
 						border-radius: 50%;
-						font-size: 0.75rem;
-						font-weight: bold;
-						background-image: linear-gradient(135deg, var(--sec-colour-lighter), var(--pri-colour-darker));
-						transform-origin: bottom right;
-						transition: scale 0.5s 0.5s ease-in, --nestBtn-shadow-colour-1 0s, --nestBtn-shadow-colour-2 0s, --nestBtn-shadow-colour-3 0s;
-						animation: shadowRotate 3s infinite both, bounce-in-top 1.5s forwards;
-						animation-composition: add;
-						box-shadow: inset 0 0 0.5em 0 var(--shades-black);
+						padding: 0;
+						animation: bounce-in-top 1.5s 0.5s both;
 					
-						&:hover {
-							/* The undefined '--animationControls' prevents the box-shadow from showing initially. Fixing the error during runtime makes the box-shadow appear **without resetting the animation**. */
-							--animationControls: 0 0 transparent;
-							scale: 1.333;
-							background-color: var(--shades-white);
-							transition: scale 0.5s 0.5s ease-out, --nestBtn-shadow-colour-1 2s, --nestBtn-shadow-colour-2 2s, --nestBtn-shadow-colour-3 2s;
+						> div {
+							/* Main button face styles */
+							border-radius: inherit;
+							cursor: pointer;
+							padding: 2em;
+							aspect-ratio: 1 / 1;
+							font-size: 0.75rem;
+							font-weight: bold;
+							text-align: center;
+							align-content: center;
+							transform-origin: bottom right;
+							transition: scale 0.5s;
 							
-							/* Using variables so I can transition from transparent to their individual colours */
-							--nestBtn-shadow-colour-1: rgb(from var(--pri-colour-medium) r g b / var(--opacity-medium));
-							--nestBtn-shadow-colour-2: rgb(from var(--sec-colour-medium) r g b / var(--opacity-medium));
-							--nestBtn-shadow-colour-3: rgb(from color-mix(in srgb, var(--pri-colour-medium), var(--sec-colour-medium)) r g b / var(--opacity-medium));
+							/* Visuals */
+							background-image: linear-gradient(135deg, var(--sec-colour-lighter), var(--pri-colour-darker));
+							box-shadow: inset 0 0 1em 0 var(--shades-black);
+					
+							&:hover {
+								scale: 1.333;
+								background-color: var(--shades-white);
+							}
+						}
+						
+						> span {
+							/* Animated background layers */
+							position: absolute;
+							inset: 1em;
+							opacity: 0;
+							z-index: -1;
+							border-radius: inherit;
+							transition: inset 0.5s, opacity 2s, background-color 2s;
+							animation: shadowRotate 3s infinite both;
+							
+							/* Show spans on hover of the main div */
+							:is(#nestBtn:has(> div:hover) > &) {
+								inset: 0.5em;
+								opacity: 1;
+							}
+					
+							/* Individual layer colors and animation delays */
+							&:nth-of-type(1) {
+								background-color: rgb(from var(--pri-colour-medium) r g b / var(--opacity-medium));
+								animation-delay: 0s;
+							}
+							
+							&:nth-of-type(2) {
+								background-color: rgb(from var(--sec-colour-medium) r g b / var(--opacity-medium));
+								animation-delay: -1s;
+							}
+							
+							&:nth-of-type(3) {
+								background-color: rgb(from color-mix(in srgb, var(--pri-colour-medium), var(--sec-colour-medium)) r g b / var(--opacity-medium));
+								animation-delay: -2s;
+							}
+						}
+					
+						/* Pause animations when hidden or main content is not hovered */
+						:is(:is(:is(body.hidden, #siteWrapper > main:not(:hover)) &), &.hidden) > span {
+							animation-play-state: paused;
 						}
 					}
  
@@ -1109,24 +1148,25 @@ body {
 								}
 								
 								&.inner-cursor::after {
+                                    pointer-events: none;
+                                    border-radius: inherit;
+                                    position: fixed;
+                                    content: "";
+                                    top: 0;
+                                    left: 0;
+                                    z-index: -999;
+                                    translate: calc(var(--cursor-x-pos) - 50%) calc(var(--cursor-y-pos) - 50%);
 									height: 75cqh;
 									width: 75cqw;
 									filter: blur(1rem);
 									background-color: white;
-									animation: colour-rotate 3s infinite alternate-reverse;
+									animation: blink 3s infinite alternate-reverse;
 								}
+
+                                :is(:is(body.hidden, #siteWrapper > main.nesting:not(:hover)) &, &.hidden).inner-cursor::after {
+                                    animation-play-state: paused;
+                                }
 							}
-						}
-					
-						.inner-cursor::after {
-							pointer-events: none;
-							border-radius: inherit;
-							position: fixed;
-							content: "";
-							top: 0;
-							left: 0;
-							z-index: -999;
-							translate: calc(var(--cursor-x-pos) - 50%) calc(var(--cursor-y-pos) - 50%);
 						}
 					}
 				}
@@ -1203,7 +1243,7 @@ body {
 				contain: size;
 				position: relative;
 				height: min(100dvh, 1600px);
-
+				
 				&#reducingBoilerplateCode {
 					> a {
 						margin: 0;
@@ -1243,10 +1283,24 @@ body {
 						width: 52ch;
 						
 						.repeat {
-							animation: repeatText 2s linear infinite;
+							pointer-events: none;
+							mask-image: linear-gradient(#0000, #000F 75%);
 							position: relative;
-							z-index: -1;
-							padding-top: 3.8lh;
+							padding: 3lh 0 0.04lh;
+
+							&::before {
+								content: attr(data-text) "\A" attr(data-text) "\A" attr(data-text) "\A" attr(data-text);
+								inset: 0;
+								z-index: -1;
+								position: absolute;
+								color: #FFFFFF80;
+								animation: repeatText 2s linear infinite;
+								animation-composition: add;
+							}
+
+							:is(:is(body.hidden, #siteWrapper > article:not(:hover)) &, &.hidden)::before {
+								animation-play-state: paused;
+							}
 						}
 					}
 
@@ -1362,7 +1416,7 @@ body {
 							color: var(--red-colour-medium); /* oklch(0.75 0.13 15) */
 							position: relative;
 							display: inline-flex;
-							overflow: hidden;
+							clip-path: inset(0);
 							
 							&:nth-child(1) { --animation-delay: -1s }
 							&:nth-child(3) { --animation-delay: 0s }
@@ -1384,6 +1438,10 @@ body {
 								font-weight: bold;
 								color: oklch(from var(--red-colour-medium) l c calc(h + 135)); /* oklch(0.75 0.13 150) */
 							}
+                                
+                            :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &, &.hidden)::before {
+                                animation-play-state: paused;
+                            }
 						}
 					}
 				}
@@ -1472,35 +1530,47 @@ body {
 				&#groupingStylesTogether {
 					align-content: center;
 
-					> #groupedTextWrapper {
-						width: fit-content;
+					> #groupedText {
 						position: absolute;
 						bottom: 25dvh;
 						left: 10vw;
-						z-index: 2;
+						color: var(--shades-white);
+						margin: 0;
+						letter-spacing: 0.25rem;
+						font-family: "Orelo Semi Expanded", sans-serif;
+						font-size: 2em;
+						padding: 1.5em 2em;
+						display: inline-block;
+						text-align: left;
+						border: 0.125em dashed rgb(from var(--shades-white) r g b / var(--opacity-low));
+						background: rgb(from var(--pri-colour-darkest) r g b / var(--opacity-high));
+
+						&::before,
+						&::after {
+							border: inherit;
+							padding: inherit;
+							background: inherit;
+							pointer-events: none;
+							position: absolute;
+							content: attr(data-text);
+							inset: -0.25rem;
+							animation: 10s linear both infinite 5s;
+						}
 						
-						> #groupedText {
-							color: var(--shades-white);
-							margin: 0;
-							text-transform: capitalize;
-							letter-spacing: 0.15em;
-							font-family: "Orelo Semi Expanded", sans-serif;
-							font-size: 2em;
-							padding: 1.5em 2em;
-							display: flex;
-							flex-direction: column;
-							position: relative;
+						&::before {
+							z-index: -1;
+							animation-name: changeCard, changeCardBefore;
+						}
+						
+						&::after {
 							z-index: 1;
-							border: 0.125em dashed rgb(from var(--shades-white) r g b / var(--opacity-low));
-							background: rgb(from var(--pri-colour-darkest) r g b / var(--opacity-high));
-							
-							& + #groupedText {
-								top: 0;
-								left: 0;
-								position: absolute;
-								z-index: -1;
-								animation: lightenBackgroundColour linear backwards, changeCard 10s linear infinite 5s;
-								animation-timeline: scroll(root), auto;
+							animation-name: changeCard, changeCardAfter;
+						}
+
+						:is(body.hidden &) {
+							&::before,
+							&::after {
+								animation-play-state: paused;
 							}
 						}
 					}
@@ -1593,6 +1663,7 @@ body {
 			
 						> #nyssCursor {
 							opacity: 1;
+                            animation: rotate 12.5s linear infinite;
 						}
 					}
 
@@ -1608,10 +1679,14 @@ body {
 						padding: 0.0625em;
 						height: auto;
 						width: 1em;
-						will-change: transform, translate;
 						translate: calc(50vw - 50%) calc(50vh - 50%);
-						transition: translate .2s, opacity 1s 0.1s, scale 0.5s;
-						animation: rotate 12.5s linear infinite;
+						transition: opacity 1s 0.1s, scale 0.5s;
+
+						:is(:has(.hover-animation):has(> &):hover &) { will-change: transform; }
+
+						:is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+							animation-play-state: paused;
+						}
 					}
 
 					> #splittingText {
@@ -1621,18 +1696,46 @@ body {
 						color: var(--shades-white);
 						font-family: 'Poppins', 'Calibri', sans-serif;
 						font-weight: 300;
-						font-size: 1.75em;
-						width: 64ch;
+						font-size: 1.75rem;
+						height: 4lh;
+						width: 60ch;
 						text-align: justify;
-						text-align-last: justify;
+						text-align-last: left;
 						column-count: 2;
 						gap: 6ch;
-						word-spacing: 0.7ch;
-						overflow: hidden;
-						animation: widenGap 3s ease-in-out infinite alternate backwards, unblur ease-out both;
-						animation-timeline: auto, view();
-						animation-range-start: normal, cover;
-						animation-range-end: normal, contain calc(min(50dvh, 800px));
+						word-spacing: 0.3ch;
+						color: transparent;
+						animation: unblur ease-out both;
+						animation-timeline: view();
+						animation-range: cover contain calc(min(50dvh, 800px));
+						
+						&::before,
+						&::after {
+							color: white;
+							content: attr(data-text);
+							position: absolute;
+							inset: 0;
+							column-count: inherit;
+							gap: inherit;
+							animation: widenGap 3s ease-in-out infinite alternate backwards;
+						}
+						
+						&::before {
+							clip-path: inset(0 50% 0 0);
+							transform-origin: left;
+						}
+						
+						&::after {
+							clip-path: inset(0 0 0 50%);
+							transform-origin: right;
+						}
+
+                        :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+							&::before,
+							&::after {
+								animation-play-state: paused;
+							}
+						}
 					}
 
 					> #strechingText {
@@ -1745,6 +1848,16 @@ body {
 							}
 					
 							#nycssBadge {
+								/* Badge Scroll Positions */
+								--main-x: 80vw;
+								--main-y: calc(max(-600dvh, -9600px) - 150%);
+								--reducingBoilerplateCode-y: calc(max(-600dvh, -9600px) + 0%);
+								--easierMaintenance-y: calc(max(-450dvh, -7200px) + 50%);
+								--improvedCodeReadability-y: calc(max(-300dvh, -4800px) - 50%);
+								--groupingStylesTogether-y: calc(max(-150dvh, -2400px) + 66%);
+								--mechanicsOfNesting-y: 50%;
+
+								/* backface-visibility: hidden; */
 								pointer-events: none;
 								filter: drop-shadow(0 var(--shadow-distance) 0 var(--shadow-color)) drop-shadow(0 calc(-1 * var(--shadow-distance)) 0 var(--shadow-color));
 								--shadow-color: #1474B833; /* Taken directly from the CSS Logo */
@@ -1760,12 +1873,20 @@ body {
 									animation: fall linear, idle 2.5s infinite alternate;
 									animation-timeline: scroll(root), auto; /* convert to view() if possible */
 									animation-composition: add;
+
+                                    :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+                                        animation-play-state: paused;
+                                    }
 								}
 					
 								&.hover-animation {
 									animation: hover 2s infinite alternate;
 									--shadow-color: #1474B833; /* Taken directly from the CSS Logo */
 									--shadow-distance: 1.5em;
+
+                                    :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+                                        animation-play-state: paused;
+                                    }
 								}
 							}
 					
@@ -1792,6 +1913,10 @@ body {
 						}
 					}
 				}
+			}
+
+			.optimize {
+				content-visibility: auto;
 			}
 		}
 	}
@@ -1927,7 +2052,7 @@ body {
 			}
 		
 			&#groupingStylesTogether {
-				> #groupedTextWrapper {
+				> #groupedText {
 					bottom: 10%;
 				}
 			}

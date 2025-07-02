@@ -74,8 +74,9 @@
 
 html {
 	background-color: var(--shades-black);
-	scroll-behavior: smooth;
-	
+	/* scroll-behavior: smooth; */
+
+    overflow: hidden; 
 	::-webkit-scrollbar {
 		width: 0;
 	}
@@ -83,20 +84,21 @@ html {
 
 body {	
     margin: 0;
-    min-height: 100dvh;
+	height: 100dvh;
 	background-color: var(--shades-black);
-	animation: lightenBackgroundColour linear;
-	animation-timeline: scroll(root);
 
 	:has(.nesting) {
-		background-color: var(--shades-black);
 		transition: background-color ease-in 2s;
 	}
 
 	> #siteWrapper {
 		margin: 0 auto;
 		width: clamp(0px, 100%, 3200px);
+		height: 100dvh;
 		contain: paint;
+		overflow: hidden auto;
+		animation: lightenBackgroundColour linear;
+		animation-timeline: scroll(self);
 
 		> main {
 			--padding: 2rem;
@@ -1234,7 +1236,6 @@ body {
 
 		> article {
 			font-size: 1rem;
-			height: 100%;
 			display: flex;
 			flex-direction: column;
 			gap: min(50dvh, 800px);
@@ -1866,12 +1867,12 @@ body {
 					
 								&.main-animation {
 									animation: fall linear;
-									animation-timeline: scroll(root);
+									animation-timeline: scroll(nearest);
 								}
 					
 								&.idle-animation {
 									animation: fall linear, idle 2.5s infinite alternate;
-									animation-timeline: scroll(root), auto; /* convert to view() if possible */
+									animation-timeline: scroll(nearest), auto; /* convert to view() if possible */
 									animation-composition: add;
 
                                     :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {

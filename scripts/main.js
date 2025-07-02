@@ -9,6 +9,13 @@ const debounce = (func, wait) => {
 	};
 }
 
+/**
+ * This function will round a number to a certain decimal point.
+ * 
+ * @param {number} num The number being rounded.
+ * @param {number} dp The number of decimal points being rounded to.
+ * @returns {number}
+ */
 const roundNumber = (num, dp = 2) => {
 	let multiplier = Math.pow(10, dp);
 	return Math.floor(num * multiplier) / multiplier;
@@ -16,7 +23,7 @@ const roundNumber = (num, dp = 2) => {
 
 const clone = (obj) => JSON.parse(JSON.stringify(obj));
 
-// JSON.stringify but also avoids circular references
+/** JSON.stringify but also avoids circular references */
 function safeStringify(obj) {
     const seen = new WeakSet();
     return JSON.stringify(obj, (key, value) => {

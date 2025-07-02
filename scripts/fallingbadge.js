@@ -8,12 +8,12 @@ updateLogoState();
 function updateLogoState() {
   if (scrollTimer) clearTimeout(scrollTimer);
 
-  const { pageYOffset, document: { documentElement: { scrollTop, scrollHeight, clientHeight } } } = window;
+  const { scrollTop, scrollHeight, clientHeight } = scrollWrapper;
 
   // Check if user is at the bottom
-  if (((pageYOffset || scrollTop) / scrollHeight) < 0.01) {
+  if ((scrollTop / scrollHeight) < 0.01) {
     cssBadge.className = '';
-  } else if ((((pageYOffset || scrollTop) + clientHeight) / scrollHeight) >= 0.9995) {
+  } else if (((scrollTop + clientHeight) / scrollHeight) >= 0.9995) {
     cssBadge.className = 'hover-animation';
     if (!hovered) hovered ^= 1;
   } else if (cssBadge.className != 'main-animation') {

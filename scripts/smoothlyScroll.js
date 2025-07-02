@@ -1,5 +1,5 @@
 const lenis = new Lenis({
-    wrapper: document.querySelector('#siteWrapper'),
+    wrapper: scrollWrapper,
     autoResize: true 
 })
 
@@ -17,22 +17,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         const targetSelector = this.getAttribute('href');
         let targetElement;
 
-        if (targetSelector == '#') targetElement = document.getElementById('siteWrapper').firstElementChild;
+        if (targetSelector == '#') targetElement = scrollWrapper.firstElementChild;
         else targetElement = document.getElementById(targetSelector.slice(1));
         
-        if (lenis) {
-          // console.log("a", targetElement, targetSelector);
-          
-          lenis.scrollTo(targetElement, {
-            duration: 1.5,
-            lock: true
-          });
-        } else {
-          // console.log("b", targetElement, targetSelector);
-          scrollWrapper.scrollTo({
-            top: targetElement.offsetTop,
-            behavior: 'smooth'
-          });
-        }
+        if (lenis) lenis.scrollTo(targetElement, {
+          duration: 1.5,
+          lock: true
+        });
+        else scrollWrapper.scrollTo({
+          top: targetElement.offsetTop,
+          behavior: 'smooth'
+        });
     });
 });

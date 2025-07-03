@@ -100,6 +100,10 @@ body {
 		animation: lightenBackgroundColour linear;
 		animation-timeline: scroll(self);
 
+		&:has(> .nesting) {
+			overflow: hidden;
+		}
+
 		> main {
 			--padding: 2rem;
 			display: flex;
@@ -607,7 +611,7 @@ body {
 								transition: opacity 1s;
 
 								&, > .editorGroup, .editorTab, .editor {
-										max-width: 100%;
+									max-width: 100%;
 								}
 							}
 
@@ -627,10 +631,11 @@ body {
 
 				& + article,
 				& + article section {
+					top: -100dvh;
 					height: 0;
 					gap: 0;
 					opacity: 0;
-					transition: gap 1s 1s, height 1s 1s, opacity 1s 0s;
+					transition: gap 1s 1s, height 1s 1s, opacity 1s 0s, top 1s 0s;
 					pointer-events: none; 
 				}
 
@@ -1235,6 +1240,8 @@ body {
 		}
 
 		> article {
+			position: relative;
+			top: 0;
 			font-size: 1rem;
 			display: flex;
 			flex-direction: column;

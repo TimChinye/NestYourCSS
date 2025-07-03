@@ -33,3 +33,9 @@
   inherits: true;
   initial-value: transparent;
 }
+
+@property --nestBtn-shadow-direction {
+	syntax: "<number>";
+	inherits: true;
+	initial-value: 0;
+}

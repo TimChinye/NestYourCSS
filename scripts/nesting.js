@@ -1,5 +1,8 @@
-function nestCode() {
-	(mainEl = document.querySelector('main')).classList.contains('nesting') || mainEl.classList.add('nesting', 'fade-out'), setTimeout(() => mainEl.classList.remove('fade-out'), 1000);
+function nestCode(onClick = false) {
+    if (!inputEditorInstance) return;
+
+    mainElement.classList.toggle('nesting', !(onClick && isNesting));
+    if (onClick && !isNesting) return;
 
     let tableBodyElem = document.getElementById('errors').tBodies[0];
 	const annotations = inputEditorInstance.getSession().getAnnotations().filter((a) => a.type == 'error');

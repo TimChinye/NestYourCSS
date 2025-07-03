@@ -2,11 +2,11 @@ let currentLenis;
 
 const mainSettings = scrollWrapper.querySelector('#mainSettings');
 const mainElement = scrollWrapper.firstElementChild;
-var isNesting = mainElement.classList.contains('nesting');
+window.isNesting = mainElement.classList.contains('nesting');
 
 
 const updateLenisTarget = () => {
-  const target = isNesting ? mainSettings : scrollWrapper;
+  const target = window.isNesting ? mainSettings : scrollWrapper;
 
   if (currentLenis) currentLenis.destroy();
 
@@ -19,8 +19,8 @@ const updateLenisTarget = () => {
 const observer = new MutationObserver(() => {
   const isCurrentlyNesting = mainElement.classList.contains('nesting');
 
-  if (isCurrentlyNesting !== isNesting) {
-    isNesting = isCurrentlyNesting;
+  if (isCurrentlyNesting !== window.isNesting) {
+    window.isNesting = isCurrentlyNesting;
 
     updateLenisTarget();
   }

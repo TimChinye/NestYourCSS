@@ -123,7 +123,6 @@ body {
 				linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
 				linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) 50%, transparent) 0 0 / 100dvw 100dvh,
 				var(--shades-black);
-				contain: content;
 				display: flex;
 				justify-content: space-between;
 				min-width: 100%;
@@ -411,6 +410,7 @@ body {
 
 					#nestBtn {
 						/* Container styles - positioning and animation */
+						font-size: 0.75rem;
 						position: absolute;
 						bottom: 2rem;
 						right: 2rem;
@@ -419,6 +419,7 @@ body {
 						border: none;
 						border-radius: 50%;
 						padding: 0;
+						--nestBtn-shadow-direction: 1;
 						animation: bounce-in-top 1.5s 0.5s both;
 					
 						> div {
@@ -427,7 +428,6 @@ body {
 							cursor: pointer;
 							padding: 2em;
 							aspect-ratio: 1 / 1;
-							font-size: 0.75rem;
 							font-weight: bold;
 							text-align: center;
 							align-content: center;
@@ -442,6 +442,10 @@ body {
 								scale: 1.333;
 								background-color: var(--shades-white);
 							}
+
+							&::before {
+								content: 'Nest!';
+							}
 						}
 						
 						> span {
@@ -453,6 +457,7 @@ body {
 							border-radius: inherit;
 							transition: inset 0.5s, opacity 2s, background-color 2s;
 							animation: shadowRotate 3s infinite both;
+							/* --nestBtn-shadow-direction: -1; */
 							
 							/* Show spans on hover of the main div */
 							:is(#nestBtn:has(> div:hover) > &) {
@@ -1187,7 +1192,6 @@ body {
 						opacity: 0;
 						padding: 0;
 						transition: width 1s, opacity 1s, padding 1s;
-						contain: size;
 					}
 					
 					> #editorSide {
@@ -1196,8 +1200,21 @@ body {
 						padding: var(--padding);
 
 						> #nestBtn {
-							opacity: 0;
-							transition: opacity 1s, pointer-events 0s 1s;
+							opacity: 0.75;
+							font-size: calc((2rem/3));
+							translate: 0 100%;
+							bottom: 100cqh;
+							right: 0;
+							--nestBtn-shadow-direction: -1;
+							transition: opacity 1s, font-size 1s, translate 1s, bottom 1s, right 1s, --nestBtn-shadow-direction 1s;
+
+							> div {
+								transform-origin: top right;
+
+								&::before {
+									content: 'Home';
+								}
+							}
 						}
  
 						> #codeEditor {
@@ -1937,6 +1954,11 @@ body {
 			border-radius: 1rem;
 		}
 
+		> #mainSettings,
+		> #mainContent :is(#textSide, #shadowEditorsWrapper) {
+			display: none;
+		}
+
 		&:not(.nesting) > #mainContent {
 			justify-content: center;
 
@@ -1948,29 +1970,7 @@ body {
 			}}
 		}
 
-		&.nesting > #mainSettings, > #mainContent :is(#textSide, #shadowEditorsWrapper) {
-			display: none;
-		}
-
-		&.nesting.fade-out {
-			> #mainContent > #editorSide {
-				width: 100%;
-				padding: 0;
-
-				> #codeEditor {
-					width: 100%;
-					animation: fadeOut 1s cubic-bezier(1, 0, 0.5, 1);
-	
-					> :not(:first-child) { display: none; }
-
-					.editor {
-						inset: -0.25rch 0;
-					}
-				}
-			}
-		}
-
-		&.nesting:not(.fade-out) {
+		&.nesting {
 			> #mainContent {
 				min-width: 100%;
 				transition: unset;
@@ -1985,7 +1985,7 @@ body {
 					> #codeEditor {
 						height: 100%;
 						width: 100%;
-						animation: fadeOut 1s cubic-bezier(1, 0, 0.5, 1) 1s reverse;
+						animation: none;
 						flex-direction: column;
 	
 						#editorGap {

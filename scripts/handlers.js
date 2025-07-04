@@ -19,7 +19,7 @@ const scrollWrapper = document.getElementById('siteWrapper');
 const editorSection = document.getElementById('groupingStylesTogether');
 
 document.body.addEventListener('mousemove', (e) => {
-  if (typeof splashTextElem === 'undefined' || splashTextElem === null) return;
+  if (typeof splashTextElem === 'undefined' || splashTextElem === null || !mainSection) return;
   
   window.cursorX = e.clientX;
   window.cursorY = e.clientY;

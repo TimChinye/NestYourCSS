@@ -46,8 +46,6 @@ document.body.addEventListener('mousemove', (e) => {
 
       const isEditorInView = isEditorTopScrolledPassed && isEditorBottomNotScrolledPassed;
       if (isEditorInView) updateActiveLine(e.clientX, e.clientY);
-
-      console.log(scrollTop, editorTop, editorHeight, isEditorTopScrolledPassed, isEditorBottomNotScrolledPassed, isEditorInView);
     }
   });
 });

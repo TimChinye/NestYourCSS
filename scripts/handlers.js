@@ -1,4 +1,5 @@
-document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
+const mainContent = document.getElementById('mainContent');
+mainContent.querySelectorAll('menu > button').forEach((btn) => {
 	['transitionrun', 'transitionstart', 'transitioncancel', 'transitionend'].forEach(event => btn.lastElementChild.addEventListener(event, repositionButtonBG));
 
 	function repositionButtonBG(e) {
@@ -7,42 +8,46 @@ document.querySelectorAll('#mainContent menu > button').forEach((btn) => {
 	}
 });
 
+const mainContentBackgroundString = (horizValue) => `
+url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
+linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
+linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) ${horizValue}, transparent) 0 0 / 100dvw 100dvh,
+var(--shades-black)
+`;
+
+const scrollWrapper = document.getElementById('siteWrapper');
+const editorSection = document.getElementById('groupingStylesTogether');
+
 document.body.addEventListener('mousemove', (e) => {
   if (typeof splashTextElem === 'undefined' || splashTextElem === null) return;
+  
   window.cursorX = e.clientX;
   window.cursorY = e.clientY;
-
+  
   requestAnimationFrame(() => {
-    const mainSection = document.getElementsByTagName('main')[0];
-    const mainSettings = document.getElementById('mainSettings');
-    const mainContent = document.getElementById('mainContent');
     const horizValue = roundNumber((e.clientX / document.body.clientWidth) * 100) + '%';
-    const mainContentBackgroundString = `
-      url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
-      linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
-      linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) ${horizValue}, transparent) 0 0 / 100dvw 100dvh,
-      var(--shades-black)
-    `;
+    if (window.isNesting || scrollWrapper.scrollTop < mainSection.offsetHeight)
+      mainContent.style.background = mainContentBackgroundString(horizValue);
 
-    if (mainSection.classList.contains('nesting')) {
-      mainSettings.lastElementChild.style.setProperty('--cursor-x-pos', e.clientX + 'px');
-      mainSettings.lastElementChild.style.setProperty('--cursor-y-pos', e.clientY + 'px');
-
-      mainContent.style.background = mainContentBackgroundString;
+    if (window.isNesting) {
+      const nestedMenuButtons = mainSettings.lastElementChild;
+      nestedMenuButtons.style.setProperty('--cursor-x-pos', e.clientX + 'px');
+      nestedMenuButtons.style.setProperty('--cursor-y-pos', e.clientY + 'px');
     }
     else {
-      if (e.target === splashTextElem) {
-        attemptSplashTextUpdate();
-      }
+      if (e.target === splashTextElem) attemptSplashTextUpdate();
       
-      let editorSection = document.getElementById('groupingStylesTogether');
-      if (document.scrollingElement.scrollTop > editorSection.offsetTop - editorSection.offsetHeight && editorSection.offsetTop + editorSection.offsetHeight > document.scrollingElement.scrollTop) {
-        updateActiveLine(e.clientX, e.clientY);
-      }
+      const scrollTop = scrollWrapper.scrollTop;
+      const editorTop = editorSection.offsetTop;
+      const editorHeight = editorSection.offsetHeight;
       
-      if (document.scrollingElement.scrollTop < mainSection.offsetHeight) {
-        mainContent.style.background = mainContentBackgroundString;
-      }
+      const isEditorTopScrolledPassed = scrollTop > (editorTop - editorHeight);
+      const isEditorBottomNotScrolledPassed = (editorTop + editorHeight) > scrollTop;
+
+      const isEditorInView = isEditorTopScrolledPassed && isEditorBottomNotScrolledPassed;
+      if (isEditorInView) updateActiveLine(e.clientX, e.clientY);
+
+      console.log(scrollTop, editorTop, editorHeight, isEditorTopScrolledPassed, isEditorBottomNotScrolledPassed, isEditorInView);
     }
   });
 });
@@ -62,7 +67,6 @@ const elements = [
 const intersectionObserver = new IntersectionObserver((entries) => entries.forEach(entry => entry.target.classList.toggle('hidden', !entry.isIntersecting)), { threshold: 0.01 });
 elements.flatMap(s => [...document.querySelectorAll(s)]).filter(Boolean).forEach(el => intersectionObserver.observe(el));
 
-const scrollWrapper = document.getElementById('siteWrapper');
 scrollWrapper.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof splashTextElem !== 'undefined' && splashTextElem !== null) && updateLogoState()));
 
 function tabButtonHandler(e) {

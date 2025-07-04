@@ -1,7 +1,6 @@
 let currentLenis;
 
 const mainSettings = scrollWrapper.querySelector('#mainSettings');
-const mainElement = scrollWrapper.firstElementChild;
 window.isNesting = mainElement.classList.contains('nesting');
 
 

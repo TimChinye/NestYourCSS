@@ -197,20 +197,71 @@ function styleShadowEditors() {
 
 styleShadowEditors();
 
-// Observer to update shadow editors
-let mutationObserver = new MutationObserver(() => {
+// A flag to track the paused/resumed state of the content observer.
+let isContentObserverPaused = false;
+
+// We need a stable reference to the main element and the wrapper for our checks.
+const mainElement = document.getElementsByTagName('main')[0];
+const shadowEditorsWrapper = shadowEditors[0].closest('#shadowEditorsWrapper');
+
+// --- Observer 1: Updates shadow editors (your original observer, but modified) ---
+const contentObserver = new MutationObserver(() => {
+  // If the observer is "paused", do nothing.
+  if (isContentObserverPaused) return;
+
   requestAnimationFrame(() => {
+    // 1. Copy content to shadow editors (this logic is unchanged).
     shadowEditors.forEach((shadowEditor) => {
       shadowEditor.innerHTML = inputEditorElem.innerHTML;
     });
 
-    if (document.getElementsByTagName('main')[0].classList.contains('nesting') && parseInt(window.getComputedStyle(shadowEditors[0].parentElement.parentElement).opacity) == 0)
-      return mutationObserver.disconnect(), shadowEditors[0].closest('#shadowEditorsWrapper').remove();
+    // 2. Check if we need to "pause" the observer.
+    // This happens when the element is hidden.
+    const isHidden = mainElement.classList.contains('nesting') && parseInt(window.getComputedStyle(shadowEditorsWrapper.parentElement.parentElement).opacity) == 0;
+
+    if (isHidden) {
+      // "Pause" the observer by disconnecting it and updating our flag.
+      // We no longer remove any elements.
+      console.log('Content observer paused.');
+      contentObserver.disconnect();
+      isContentObserverPaused = true;
+    }
   });
 });
 
-mutationObserver.observe(inputEditorElem, {
+// --- Observer 2: Resumes the content observer when visibility is restored ---
+const visibilityObserver = new MutationObserver(() => {
+  // Only proceed if the content observer is currently paused.
+  if (!isContentObserverPaused) return;
+
+  // Check if the element has become visible again.
+  const isVisible = !mainElement.classList.contains('nesting') || parseInt(window.getComputedStyle(shadowEditorsWrapper.parentElement.parentElement).opacity) > 0;
+
+  if (isVisible) {
+    // "Resume" the observer by calling .observe() again with the original settings.
+    console.log('Content observer resumed.');
+    contentObserver.observe(inputEditorElem, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
+    isContentObserverPaused = false;
+  }
+});
+
+
+// --- Initial Start of Observers ---
+
+// 1. Start the content observer.
+contentObserver.observe(inputEditorElem, {
   childList: true,
   subtree: true,
   characterData: true
+});
+
+// 2. Start the visibility observer to watch for class changes on the <main> element.
+// This is what will trigger our "resume" check.
+visibilityObserver.observe(mainElement, {
+  attributes: true, // We specifically care about attribute changes (like the 'class' attribute).
+  attributeFilter: ['class'] // Optional: More efficient, only fire for class changes.
 });

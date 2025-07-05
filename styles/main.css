@@ -94,6 +94,7 @@ body {
 		contain: paint;
 		overflow: hidden auto;
 		animation: lightenBackgroundColour linear;
+		animation-duration: 1ms;
 		animation-timeline: scroll(self);
 
 		&:has(> .nesting) {
@@ -663,6 +664,7 @@ body {
 				border-radius: 3rem;
 				transform-origin: center;
 				animation: scaleDown linear both;
+				animation-duration: 1ms;
 				animation-timeline: view();
 				animation-range-start: contain 100%;
 				animation-range-end: cover 100%;
@@ -1348,6 +1350,7 @@ body {
 							line-height: 100%;
 							text-shadow: 0 -1lh;
 							animation: swapText linear;
+							animation-duration: 1ms;
 							animation-timeline: view();
 						
 							&:nth-child(1) {
@@ -1403,6 +1406,7 @@ body {
 							&:first-child {
 								text-shadow: 0 0lh;
 								animation: showText linear forwards;
+								animation-duration: 1ms;
 								animation-timeline: view();
 								animation-range-start: cover calc(min(50dvh, 800px) + 0.15lh);
 								animation-range-end: cover calc(min(100dvh, 1600px) - 2lh);
@@ -1411,6 +1415,7 @@ body {
 							&:last-child {
 								text-shadow: 0 -2lh;
 								animation: showText linear forwards;
+								animation-duration: 1ms;
 								animation-timeline: view();
 								animation-range-start: cover calc(min(50dvh, 800px) - 1lh);
 								animation-range-end: cover calc(min(100dvh, 1600px) - 3.15lh);
@@ -1429,6 +1434,7 @@ body {
 						width: 56ch;
 						text-align: right;
 						animation: slideDown linear both;
+						animation-duration: 1ms;
 						animation-timeline: view();
 						animation-range-start: cover;
 						animation-range-end: contain 5lh;
@@ -1491,6 +1497,7 @@ body {
 							width: 100%;
 							color: rgb(from var(--shades-white) r g b / var(--opacity-low));
 							animation: slideIn ease-out forwards;
+							animation-duration: 1ms;
 							animation-timeline: view();
 							animation-range-start: cover -0.5lh;
 							animation-range-end: cover calc(2lh + 2.5lh);
@@ -1525,6 +1532,7 @@ body {
 						line-height: 1.5em;
 						width: 50ch;
 						animation: boostUp linear forwards, slideUp linear forwards;
+						animation-duration: 1ms;
 						animation-timeline: view(), view();
 						animation-range-start: cover, contain 3lh;
 						animation-range-end: contain 3lh, cover;
@@ -1654,6 +1662,7 @@ body {
 						
 						&:not(.viewed) {
 							animation: viewed linear;
+							animation-duration: 1ms;
 							animation-timeline: view();
 							animation-range-start: contain;
 							animation-range-end: cover calc(0% + 5lh);
@@ -1663,6 +1672,7 @@ body {
 							div :is(> div, span) {
 								--charIndex: -4;
 								animation: slideInLines linear forwards;
+								animation-duration: 1ms;
 								animation-timeline: view();
 								animation-range-start: cover 0%;
 								animation-range-end: cover 5lh;
@@ -1729,6 +1739,7 @@ body {
 						word-spacing: 0.3ch;
 						color: transparent;
 						animation: unblur ease-out both;
+						animation-duration: 1ms;
 						animation-timeline: view();
 						animation-range: cover contain calc(min(50dvh, 800px));
 						
@@ -1766,11 +1777,13 @@ body {
 						top: calc(4em / 3);
 						left: calc(8em / 3);
 						color: var(--shades-white);
+						line-height: 200%;
 						font-family: 'Orelo Semi Condensed';
 						font-weight: 600;
 						font-size: 3em;
 						scale: 1;
 						animation: moveDown linear both;
+						animation-duration: 1ms;
 						animation-timeline: view();
 						animation-range-start: cover -2lh;
 						animation-range-end: cover 2lh;
@@ -1804,6 +1817,7 @@ body {
 							font-weight: 900;
 							font-family: 'Poppins', 'Calibri', sans-serif;
 							animation: moveDown linear both;
+							animation-duration: 1ms;
 							animation-timeline: view();
 							animation-range-start: cover -2lh;
 							animation-range-end: cover 2lh;
@@ -1827,6 +1841,7 @@ body {
 							font-family: 'Orelo Expanded';
 							color: rgb(from var(--shades-white) r g b / var(--opacity-medium));
 							animation: fadeUp linear both;
+							animation-duration: 1ms;
 							animation-timeline: view();
 							animation-range-start: cover;
 							animation-range-end: cover calc(1lh + 1.98em);
@@ -1889,11 +1904,13 @@ body {
 					
 								&.main-animation {
 									animation: fall linear;
+									animation-duration: 1ms;
 									animation-timeline: scroll(nearest);
 								}
 					
 								&.idle-animation {
 									animation: fall linear, idle 2.5s infinite alternate;
+									animation-duration: 1ms;
 									animation-timeline: scroll(nearest), auto; /* convert to view() if possible */
 									animation-composition: add;
 

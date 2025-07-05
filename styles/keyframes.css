@@ -138,8 +138,6 @@
 	to { translate: 0; }
 }
 
-@keyframes viewed {}
-
 @keyframes rotate {
 	from { rotate: 0deg; }
 	to { rotate: 360deg; }
@@ -173,6 +171,12 @@
 @keyframes moveLeft {
 	from { translate: calc(var(--align-left) + var(--code-editor-width) - var(--single-editor-width)); }
 	to { translate: calc(0% + 0px); }
+}
+
+@keyframes moveRight {
+	from { translate: calc((var(--editor-canvas-inner-width) / 2) - (var(--combined-editor-width) / 2)); }
+	to { translate: calc(0% + 0px); }
+	/* to { translate: calc(var(--editor-canvas-inner-width) - var(--code-editor-width)); } */
 }
 
 @keyframes shadowRotate {

@@ -158,13 +158,13 @@ const shadowEditors = Array.from({ length: shadowCount }, (_, i) => {
 // Resize and reposition shadow editors
 function styleShadowEditors() {
   const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
-  const convertPxToRch = (px) => (px * (16 / remInPixels)) / (16 * 0.65);
+  const convertPxToRem = (px) => px / remInPixels;
   
   const shadowHeightDiff = inputEditorElem.offsetHeight / 10;
   const baseShadowOpacity = 0.5;
   const baseShadowBlur = 2;
-  const maxWidth = inputEditorElem.offsetWidth * 2; /* I don't know why remInPixels * "0.35" works, but it does */
-  let baseShadowWidth = inputEditorElem.offsetWidth / 3;
+  const maxWidth = inputEditorElem.offsetWidth * 2;
+  let baseShadowWidth = inputEditorElem.offsetWidth / 4;
   let shadowWidthDiff = baseShadowWidth / 15;
   let previousShadowTranslation = 0;
 
@@ -185,10 +185,10 @@ function styleShadowEditors() {
     shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
 
     let shadowWidth = baseShadowWidth - ((shadowWidthDiff * 2.5) * (index + 1));
-    shadowEditorWrapper.style.width = `${convertPxToRch(shadowWidth)}rch`;
+    shadowEditorWrapper.style.width = `${convertPxToRem(shadowWidth)}rem`;
     
     previousShadowTranslation += shadowWidth + (2 * shadowWidthDiff);
-    shadowEditorWrapper.style.translate = `-${convertPxToRch(previousShadowTranslation)}rch`;
+    shadowEditorWrapper.style.translate = `-${convertPxToRem(previousShadowTranslation)}rem`;
 
     shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
     shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;

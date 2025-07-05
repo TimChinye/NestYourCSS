@@ -2,7 +2,11 @@ function nestCode(onClick = false) {
     if (!inputEditorInstance) return;
 
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));
-    if (onClick && window.isNesting) return;
+
+    if (onClick) {
+        if (window.isNesting) return;
+        scrollWrapper.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     let tableBodyElem = document.getElementById('errors').tBodies[0];
 	const annotations = inputEditorInstance.getSession().getAnnotations().filter((a) => a.type == 'error');

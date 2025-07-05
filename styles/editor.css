@@ -14,7 +14,7 @@
   --code-parenthesis-colour: rgb(from var(--shades-lightest) r g b / var(--opacity-medium));
   
   border-radius: 0 0 1rem 1rem;
-  border: 0.25rch solid var(--window-text-colour);
+  border: 0.125rem solid var(--window-text-colour);
   background-color: var(--background-colour);
   color: var(--code-text-colour);
   

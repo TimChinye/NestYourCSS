@@ -16,6 +16,7 @@ var(--shades-black)
 `;
 
 const scrollWrapper = document.getElementById('siteWrapper');
+const mainSection = scrollWrapper.firstElementChild;
 const editorSection = document.getElementById('groupingStylesTogether');
 
 document.body.addEventListener('mousemove', (e) => {

@@ -163,10 +163,11 @@ function styleShadowEditors() {
   const shadowHeightDiff = inputEditorElem.offsetHeight / 10;
   const baseShadowOpacity = 0.5;
   const baseShadowBlur = 2;
-  const maxWidth = parseFloat(document.getElementById('textSide').offsetWidth) + (remInPixels / 0.35); /* I don't know why remInPixels * "0.35" works, but it does */
+  const maxWidth = inputEditorElem.offsetWidth * 2; /* I don't know why remInPixels * "0.35" works, but it does */
   let baseShadowWidth = inputEditorElem.offsetWidth / 3;
   let shadowWidthDiff = baseShadowWidth / 15;
   let previousShadowTranslation = 0;
+
 
   // if (((2 * baseShadowWidth) + (shadowWidthDiff / 7.5)) > maxWidth + 50) { /* The first part simplifies to 32/15 */
   if (((32 / 15) * baseShadowWidth) > maxWidth) {
@@ -222,7 +223,6 @@ const contentObserver = new MutationObserver(() => {
     if (isHidden) {
       // "Pause" the observer by disconnecting it and updating our flag.
       // We no longer remove any elements.
-      console.log('Content observer paused.');
       contentObserver.disconnect();
       isContentObserverPaused = true;
     }
@@ -239,7 +239,6 @@ const visibilityObserver = new MutationObserver(() => {
 
   if (isVisible) {
     // "Resume" the observer by calling .observe() again with the original settings.
-    console.log('Content observer resumed.');
     contentObserver.observe(inputEditorElem, {
       childList: true,
       subtree: true,

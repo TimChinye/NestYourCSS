@@ -1,5 +1,4 @@
 const cursor = document.getElementById('nyssCursor');
-const mainSection = document.getElementsByTagName('main')[0];
 
 const cursorPosition = { x: 0, y: 0 };
 const smoothing = 0.05;

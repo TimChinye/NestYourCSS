@@ -935,7 +935,6 @@ body {
 				}
 
 				> #editorSide {
-					display: flex;
 					flex: 1;
 					max-width: 100%;
 
@@ -1030,6 +1029,7 @@ body {
 						width: auto;
 						height: 100%;
 						display: flex;
+						justify-content: center;
 						width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
 
 						.editorWrapper {
@@ -1219,7 +1219,6 @@ body {
  
 						> #codeEditor {
 							margin-left: auto;
-							justify-content: center;
 							width: calc(100vw - (5 * var(--padding)) - (58.441558ch * 1.232));
 							max-width: 100%;
 							max-height: 100%;

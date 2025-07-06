@@ -70,16 +70,16 @@
                   <input type="checkbox">
                   <output>Unnested Showcase</output>
                   
-                  <menu hidden>
-                    <option data-input="dropdown" tabindex="0" value="unnestedShowcase">Unnested Showcase</option>
-                    <option data-input="dropdown" tabindex="0" value="nestedShowcase">Nested Showcase</option>
-                    <option data-input="dropdown" tabindex="0" value="complexSelectorGroups">Complex selector group</option>
-                    <option data-input="dropdown" tabindex="0" value="escapedCharacters">Escaped characters</option>
-                    <option data-input="dropdown" tabindex="0" value="unnestedNavbar">Unnested navbar</option>
-                    <option data-input="dropdown" tabindex="0" value="aphellaLoginPage">Aphella Login</option>
-                    <option data-input="dropdown" tabindex="0" value="aphellaDashboard">Aphella Dashboard</option>
-                    <option data-input="dropdown" tabindex="0" value="amazonHomepage">Amazon Homepage</option>
-                  </menu>
+                  <ul hidden>
+                    <li data-input="dropdown" tabindex="0" value="unnestedShowcase">Unnested Showcase</li>
+                    <li data-input="dropdown" tabindex="0" value="nestedShowcase">Nested Showcase</li>
+                    <li data-input="dropdown" tabindex="0" value="complexSelectorGroups">Complex selector group</li>
+                    <li data-input="dropdown" tabindex="0" value="escapedCharacters">Escaped characters</li>
+                    <li data-input="dropdown" tabindex="0" value="unnestedNavbar">Unnested navbar</li>
+                    <li data-input="dropdown" tabindex="0" value="aphellaLoginPage">Aphella Login</li>
+                    <li data-input="dropdown" tabindex="0" value="aphellaDashboard">Aphella Dashboard</li>
+                    <li data-input="dropdown" tabindex="0" value="amazonHomepage">Amazon Homepage</li>
+                  </ul>
                   
                   <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))();</script>
                 </label>
@@ -95,12 +95,11 @@
                   <input type="checkbox" tabindex="-1">
                   <output tabindex="0"><div role="textbox" contenteditable="true" data-input="combo-text" placeholder="https://corsproxy.io/?https://.../styles.css"></div></output>
       
-                  <menu hidden>
-                    <!-- <option disabled>-----</option> -->
-                    <option data-input="combo-dropdown" tabindex="0">/styles/main.css</option>
-                    <option data-input="combo-dropdown" tabindex="0">/styles/keyframes.css</option>
-                    <option data-input="combo-dropdown" tabindex="0">/styles/editor.css</option>
-                  </menu>
+                  <ul hidden>
+                    <li data-input="combo-dropdown" tabindex="0">/styles/main.css</li>
+                    <li data-input="combo-dropdown" tabindex="0">/styles/keyframes.css</li>
+                    <li data-input="combo-dropdown" tabindex="0">/styles/editor.css</li>
+                  </ul>
                 
                   <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.firstElementChild.checked = false)))();</script>
                 </label>
@@ -118,13 +117,13 @@
                   <input type="checkbox">
                   <output>Fira Code</output>
 
-                  <menu hidden>
-                    <option data-input="dropdown" tabindex="0">DejaVu Mono</option>
-                    <option data-input="dropdown" tabindex="0">Fira Code</option>
-                    <option data-input="dropdown" tabindex="0">iA Writer Mono</option>
-                    <option data-input="dropdown" tabindex="0">Jetbrains Mono</option>
-                    <option data-input="dropdown" tabindex="0">PT Sans</option>
-                  </menu>
+                  <ul hidden>
+                    <li data-input="dropdown" tabindex="0">DejaVu Mono</li>
+                    <li data-input="dropdown" tabindex="0">Fira Code</li>
+                    <li data-input="dropdown" tabindex="0">iA Writer Mono</li>
+                    <li data-input="dropdown" tabindex="0">Jetbrains Mono</li>
+                    <li data-input="dropdown" tabindex="0">PT Sans</li>
+                  </ul>
               
                   <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))();</script>
                 </label>
@@ -132,17 +131,17 @@
                   <input type="checkbox">
                   <output>1.25rem</output>
 
-                  <menu hidden>
-                    <option data-input="dropdown" tabindex="0">0.5rem</option>
-                    <option data-input="dropdown" tabindex="0">0.75rem</option>
-                    <option data-input="dropdown" tabindex="0">1rem</option>
-                    <option data-input="dropdown" tabindex="0">1.25rem</option>
-                    <option data-input="dropdown" tabindex="0">1.5rem</option>
-                    <option data-input="dropdown" tabindex="0">1.75rem</option>
-                    <option data-input="dropdown" tabindex="0">2rem</option>
-                    <option data-input="dropdown" tabindex="0">2.25rem</option>
-                    <option data-input="dropdown" tabindex="0">2.5rem</option>
-                  </menu>
+                  <ul hidden>
+                    <li data-input="dropdown" tabindex="0">0.5rem</li>
+                    <li data-input="dropdown" tabindex="0">0.75rem</li>
+                    <li data-input="dropdown" tabindex="0">1rem</li>
+                    <li data-input="dropdown" tabindex="0">1.25rem</li>
+                    <li data-input="dropdown" tabindex="0">1.5rem</li>
+                    <li data-input="dropdown" tabindex="0">1.75rem</li>
+                    <li data-input="dropdown" tabindex="0">2rem</li>
+                    <li data-input="dropdown" tabindex="0">2.25rem</li>
+                    <li data-input="dropdown" tabindex="0">2.5rem</li>
+                  </ul>
                 
                   <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))();</script>
                 </label>
@@ -429,7 +428,7 @@
       </section>
       <section id="easierMaintenance">
         <p id="mergingText" class="optimize"><span>Easier</span><span>Maintenance</span></p>
-        <p id="changingText" class="optimize">By using CSS nesting, any style <s>chnages</s> <b>changes</b> can be implemented <s>better</s> <b>more efficiently</b>. It promotes readability, maintainability, <s>and</s> <b>&</b> modularity in your stylesheets.</p>
+        <p id="changingText">By using CSS nesting, any style <s>chnages</s> <b>changes</b> can be implemented <s>better</s> <b>more efficiently</b>. It promotes readability, maintainability, <s>and</s> <b>&</b> modularity in your stylesheets.</p>
       </section>
       <section id="improvedCodeReadability" class="optimize">
         <p id="backgroundText"><span>Improved</span><span>Code</span><span>Readability</span></p>

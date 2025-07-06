@@ -55,7 +55,7 @@ document.addEventListener('visibilitychange', () => document.body.classList.togg
 
 const elements = [
   '#nestBtn',
-  '#mainSettings > menu button > figure.inner-cursor',
+  '#mainSettings > menu > button > figure.inner-cursor',
   '#repeatingText span.repeat',
   '#changingText s',
   '#groupedText',
@@ -366,11 +366,11 @@ function comboHandler(inputElem, close) {
       .then(cssContent => {
           inputEditorInstance.setValue(cssContent);
                 
-          let menuElem = inputElem.parentElement.nextElementSibling;
-          const existingOption = Array.from(menuElem.children).find(option => option.textContent === inputElem.textContent);
-          if (!existingOption) {
-            if (menuElem.children.length >= 5) menuElem.lastElementChild.remove();
-            menuElem.insertAdjacentHTML('afterbegin', `<option onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">${inputElem.textContent}</option>`);
+          let ulElem = inputElem.parentElement.nextElementSibling;
+          const existingLi = Array.from(ulElem.children).find(li => li.textContent === inputElem.textContent);
+          if (!existingLi) {
+            if (ulElem.children.length >= 5) ulElem.lastElementChild.remove();
+            ulElem.insertAdjacentHTML('afterbegin', `<li onclick="comboHandler(this)" onkeydown="(event.code === 'Space') && comboHandler(this, true)" tabindex="0">${inputElem.textContent}</li>`);
           }
       })
       .catch(error => {

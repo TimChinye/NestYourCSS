@@ -1282,7 +1282,7 @@ body {
 			gap: min(50dvh, 800px);
 
 			> section {
-				contain: size;
+				contain: size paint;
 				position: relative;
 				height: min(100dvh, 1600px);
 				

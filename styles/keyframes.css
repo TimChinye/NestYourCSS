@@ -155,7 +155,7 @@
 
 @keyframes widenGap {
 	to { scale: 1 1; }
-	to { scale: 0.85 1; }
+	to { scale: 0.85 1; opacity: 0.99; }
 }
 
 @keyframes moveDown {

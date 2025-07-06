@@ -1055,7 +1055,8 @@ body {
 							--editor-canvas-inner-width: calc(var(--editor-canvas-width) - var(--horizontal-padding));
 						}
 
-						.editorWrapper {
+						/* .editorWrapper { */
+						.editorWrapper:not(.shadowEditorWrapper) {
 							width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
 							
 							&#inputEditorWrapper {
@@ -1282,7 +1283,7 @@ body {
 			gap: min(50dvh, 800px);
 
 			> section {
-				contain: size paint;
+				contain: size;
 				position: relative;
 				height: min(100dvh, 1600px);
 				
@@ -1698,6 +1699,7 @@ body {
 				}
 			
 				&#mechanicsOfNesting {
+					contain: size paint;
 					display: flex;
 
 					&:has(.hover-animation) {

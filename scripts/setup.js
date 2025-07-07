@@ -9,10 +9,10 @@ outputEditorInstance = initializeEditor("outputEditor", '/* Your output CSS will
 let codeChanged = false;
 let isProcessing = false;
 
-inputEditorInstance.getSession().on('change', () => (window.processAuto ?? true) && (codeChanged = true));
+inputEditorInstance.getSession().on('change', () => ((typeof window.appIsInitializing !== 'undefined' && !window.appIsInitializing) && (window.processAuto ?? true)) && (codeChanged = true));
 
 inputEditorInstance.getSession().on('changeAnnotation', () => {
-  if ((window.processAuto ?? true) && !isProcessing) {
+  if ((!window.appIsInitializing) && (window.processAuto ?? true) && !isProcessing) {
     isProcessing = true;
 
     setTimeout(() => {

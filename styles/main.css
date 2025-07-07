@@ -63,6 +63,15 @@
     --opacity-low: 0.25;
     --opacity-medium: 0.50;
     --opacity-high: 0.75;
+	
+	/* I need to update the code accordingly at some point: */
+	--vh: 1vh;
+	--dvh: var(--vh);
+	--dvh: 1dvh;
+	--svh: var(--vh);
+	--svh: 1svh;
+	--lvh: var(--vh);
+	--lvh: 1lvh;
 }
 
 /* Match any & all hex codes */
@@ -1056,7 +1065,6 @@ body {
 							--editor-canvas-inner-width: calc(var(--editor-canvas-width) - var(--horizontal-padding));
 						}
 
-						/* .editorWrapper { */
 						.editorWrapper:not(.shadowEditorWrapper) {
 							width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
 							
@@ -1342,7 +1350,7 @@ body {
 								animation-composition: add;
 							}
 
-							:is(:is(body.hidden, #siteWrapper > article:not(:hover)) &, &.hidden)::before {
+							:is(:is(body.hidden, #siteWrapper:not(:hover)) &, &.hidden)::before {
 								animation-play-state: paused;
 							}
 						}
@@ -1501,7 +1509,7 @@ body {
 								color: oklch(from var(--red-colour-medium) l c calc(h + 135)); /* oklch(0.75 0.13 150) */
 							}
                                 
-                            :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &, &.hidden)::before {
+                            :is(:is(body.hidden, #siteWrapper:not(:hover)) &, &.hidden)::before {
                                 animation-play-state: paused;
                             }
 						}
@@ -1557,7 +1565,7 @@ body {
 
 					> #visibleText {
 						position: absolute;
-						z-index: 0;
+						z-index: 1;
 						right: 7.5vw; 
 						bottom: 8em;
 						color: var(--shades-white);
@@ -1700,7 +1708,7 @@ body {
 				}
 			
 				&#mechanicsOfNesting {
-					contain: size paint;
+					contain: size layout;
 					display: flex;
 
 					&:has(.hover-animation) {
@@ -1736,7 +1744,7 @@ body {
 
 						:is(:has(.hover-animation):has(> &):hover &) { will-change: transform; }
 
-						:is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+						:is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
 							animation-play-state: paused;
 						}
 					}
@@ -1784,7 +1792,7 @@ body {
 							transform-origin: right;
 						}
 
-                        :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+                        :is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
 							&::before,
 							&::after {
 								animation-play-state: paused;
@@ -1939,7 +1947,7 @@ body {
 									animation-timeline: scroll(nearest), auto; /* convert to view() if possible */
 									animation-composition: add;
 
-                                    :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+                                    :is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
                                         animation-play-state: paused;
                                     }
 								}
@@ -1949,7 +1957,7 @@ body {
 									--shadow-color: #1474B833; /* Taken directly from the CSS Logo */
 									--shadow-distance: 1.5em;
 
-                                    :is(:is(body.hidden, #siteWrapper > article:not(:hover)) &), &.hidden {
+                                    :is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
                                         animation-play-state: paused;
                                     }
 								}

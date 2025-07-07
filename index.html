@@ -62,14 +62,11 @@
           <h2>Input</h2>
           <ul>
             <li>
-              <!-- The "<label>" (and all similar occurences later) used here is for semantics. -->
               <label>Samples</label>
               <div>
-                <!-- The "<label>" used here (and all similar occurences later) is required for it's functionality with inputs. -->
                 <label id="samples" class="dropdown">
                   <input type="checkbox">
                   <output>Unnested Showcase</output>
-                  
                   <ul hidden>
                     <li data-input="dropdown" tabindex="0" value="unnestedShowcase">Unnested Showcase</li>
                     <li data-input="dropdown" tabindex="0" value="nestedShowcase">Nested Showcase</li>
@@ -80,8 +77,6 @@
                     <li data-input="dropdown" tabindex="0" value="aphellaDashboard">Aphella Dashboard</li>
                     <li data-input="dropdown" tabindex="0" value="amazonHomepage">Amazon Homepage</li>
                   </ul>
-                  
-                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))();</script>
                 </label>
               </div>
             </li>
@@ -93,15 +88,15 @@
               <div>
                 <label id="externalCss" class="combobox" onclick="event.preventDefault(); this.control.checked ^= 1">
                   <input type="checkbox" tabindex="-1">
-                  <output tabindex="0"><div role="textbox" contenteditable="true" data-input="combo-text" placeholder="https://corsproxy.io/?https://.../styles.css"></div></output>
-      
+                  <output tabindex="0">
+                    <div role="textbox" contenteditable="true" data-input="combo-text" placeholder="https://corsproxy.io/?https://.../styles.css"></div>
+                  </output>
                   <ul hidden>
+                    <!-- Pre-populated/recent items will be managed by JS -->
                     <li data-input="combo-dropdown" tabindex="0">/styles/main.css</li>
                     <li data-input="combo-dropdown" tabindex="0">/styles/keyframes.css</li>
                     <li data-input="combo-dropdown" tabindex="0">/styles/editor.css</li>
                   </ul>
-                
-                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.firstElementChild.checked = false)))();</script>
                 </label>
               </div>
             </li>
@@ -116,7 +111,6 @@
                 <label id="typefaces" class="dropdown">
                   <input type="checkbox">
                   <output>Fira Code</output>
-
                   <ul hidden>
                     <li data-input="dropdown" tabindex="0">DejaVu Mono</li>
                     <li data-input="dropdown" tabindex="0">Fira Code</li>
@@ -124,13 +118,10 @@
                     <li data-input="dropdown" tabindex="0">Jetbrains Mono</li>
                     <li data-input="dropdown" tabindex="0">PT Sans</li>
                   </ul>
-              
-                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))();</script>
                 </label>
                 <label id="fontsizes" class="dropdown">
                   <input type="checkbox">
                   <output>1.25rem</output>
-
                   <ul hidden>
                     <li data-input="dropdown" tabindex="0">0.5rem</li>
                     <li data-input="dropdown" tabindex="0">0.75rem</li>
@@ -142,8 +133,6 @@
                     <li data-input="dropdown" tabindex="0">2.25rem</li>
                     <li data-input="dropdown" tabindex="0">2.5rem</li>
                   </ul>
-                
-                  <script>((labelElem = document.currentScript.parentElement) => document.addEventListener('click', (e) => !labelElem.contains(e.target) && (labelElem.control.checked = false)))();</script>
                 </label>
               </div>
             </li>
@@ -170,7 +159,7 @@
             <li>
               <label>Coordinates</label>
               <div>
-                <label id="coordinates" class="radio-group" for="">
+                <label id="coordinates" class="radio-group">
                   <label>Both<input type="radio" name="coordinates" data-input="radio"></label>
                   <label>Line<input type="radio" name="coordinates" data-input="radio"></label>
                   <label>Col<input type="radio" name="coordinates" data-input="radio"></label>
@@ -186,10 +175,10 @@
             <li>
               <label>Mode</label>
               <div>
-                <label id="mode" class="radio-group" for="">
-                  <label>Minify<input type="radio" name="mode" data-input="radio" onclick="if (!(window.processAuto ?? true) && (Array.from(this.parentElement.parentElement.children).indexOf(this.parentElement) == window.processMode)) nestCode();"></label>
-                  <label>Nest<input type="radio" name="mode" data-input="radio" onclick="if (!(window.processAuto ?? true) && (Array.from(this.parentElement.parentElement.children).indexOf(this.parentElement) == window.processMode)) nestCode();" checked></label>
-                  <label>Unnest<input type="radio" name="mode" data-input="radio" onclick="if (!(window.processAuto ?? true) && (Array.from(this.parentElement.parentElement.children).indexOf(this.parentElement) == window.processMode)) nestCode();"></label>
+                <label id="mode" class="radio-group">
+                  <label>Minify<input type="radio" name="mode" data-input="radio"></label>
+                  <label>Nest<input type="radio" name="mode" data-input="radio" checked></label>
+                  <label>Unnest<input type="radio" name="mode" data-input="radio"></label>
                 </label>
               </div>
             </li>
@@ -493,6 +482,7 @@
   <script src="./scripts/fallingbadge.js" type="text/javascript"></script>
   <script src="./scripts/animateCursor.js" type="text/javascript"></script>
   <script src="./scripts/smoothlyScroll.js" type="text/javascript" defer></script>
+  <script src="./scripts/nestingSettings.js" type="text/javascript"></script>
 
   <script src="./lib/lenis.min.js"></script>
   <script src="./lib/ace-mode-css.js"></script>

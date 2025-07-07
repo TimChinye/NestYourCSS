@@ -4,7 +4,6 @@
 - Show a different number of ads dependent on @container
 
 ## To-do now, before [release]:
-- Store settings to localStorage
 - "Disable" history, settings, and share feedback
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
 - Add all the aria-* stuff

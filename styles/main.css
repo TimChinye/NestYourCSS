@@ -897,44 +897,26 @@ body {
 							transition: 0.25s, opacity 3s 1s;
 	
 							> picture {
-								--column-count: 0;
-								--width: calc((100cqw / var(--column-count)) - ((2rem + (1rem * (var(--column-count) - 1))) / var(--column-count)));
-								position: relative;
-								border: none;
-								/* max-height: 100%;
-								min-height: calc(var(--width) * 0.820895522);
-								max-width: var(--width);
-								min-width: var(--width);
-								width: var(--width); */
-								overflow-x: auto;
-								display: none;
 
-								background: red;
-
-								&.leaderboard { width: 728px; height: 90px; }
-								&.large-rectangle { width: 336px; height: 280px; }
-								&.medium-rectangle { width: 300px; height: 250px; }
-								&.mobile-banner { width: 300px; height: 50px; }
-								&.wide-skyscraper { width: 160px; height: 600px; }
-								&.dbl-mobile-leaderboard { width: 320px; height: 100px; }
-								&.half-page { width: 300px; height: 600px; }
-
-								> ins {
-									display: inline-block;
-									/* height: 100%; */
-									max-height: inherit;
-									min-height: inherit;
-									width: inherit;
+								> * {
+									transition: inherit;
+									cursor: pointer;
+									width: 250px;
+									height: 250px;
+									object-fit: contain;
 
 									&.adsbygoogle[data-ad-status="unfilled"] {
-										display: none !important;
+										display: none;
+
+										& + img {
+											display: block;
+										}
+									}
+
+									& + img {
+										display: none;
 									}
 								}
-							}
-
-							> * {
-								transition: inherit;
-								cursor: pointer;
 							}
 	
 							&:hover {

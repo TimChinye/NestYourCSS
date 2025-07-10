@@ -174,7 +174,7 @@
 }
 
 @keyframes moveRight {
-	from { translate: calc((var(--editor-canvas-inner-width) / 2) - (var(--combined-editor-width) / 2)); }
+	from { translate: calc((var(--code-editor-width) - var(--screen-width)) + var(--horizontal-padding) + (58.441558ch * 1.232) + var(--horizontal-padding)); }
 	to { translate: calc(0% + 0px); }
 	/* to { translate: calc(var(--editor-canvas-inner-width) - var(--code-editor-width)); } */
 }

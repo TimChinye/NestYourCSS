@@ -50,11 +50,15 @@ let outputEditorElem = inputEditorElem.parentElement.lastElementChild;
 
 const shadowCount = 3;
 
-function createButton(idSuffix, className, isShadowEditor) {
+function createButton(idSuffix, className, isShadowEditor, accessibleLabel) {
   const button = document.createElement("button");
   button.id = idSuffix;
   button.classList.add(className);
-  if (!isShadowEditor) button.addEventListener("click", tabButtonHandler);
+  if (isShadowEditor) button.setAttribute('aria-hidden', 'true');
+  else {
+    button.setAttribute('aria-label', accessibleLabel);
+    button.addEventListener("click", tabButtonHandler);
+  }
   return button;
 }
 
@@ -72,7 +76,7 @@ function createEditorTab(editor, isInputEditor, isShadowEditor) {
   tabButtons.classList.add('tabButtons');
 
   // Add buttons to the tab
-  tabButtons.appendChild(createButton(`${editorName}TabCopyAll`, 'tabCopyAll', isShadowEditor));
+  tabButtons.appendChild(createButton(`${editorName}TabCopyAll`, 'tabCopyAll', isShadowEditor, 'Copy all input code'));
 
   if (isInputEditor) {
     if (!isShadowEditor) {
@@ -95,12 +99,12 @@ function createEditorTab(editor, isInputEditor, isShadowEditor) {
       window.insertCSSFileInput = fileInput;
     }
     
-    tabButtons.appendChild(createButton(`${editorName}TabInsertCSS`, 'tabInsertCSS', isShadowEditor));
+    tabButtons.appendChild(createButton(`${editorName}TabInsertCSS`, 'tabInsertCSS', isShadowEditor, 'Insert sample CSS into input'));
   } else {
-    tabButtons.appendChild(createButton(`${editorName}TabOpenRaw`, 'tabOpenRaw', isShadowEditor));
+    tabButtons.appendChild(createButton(`${editorName}TabOpenRaw`, 'tabOpenRaw', isShadowEditor, 'Open CSS as Raw'));
   }
 
-  tabButtons.appendChild(createButton(`${editorName}TabDeleteAll`, 'tabDeleteAll', isShadowEditor));
+  tabButtons.appendChild(createButton(`${editorName}TabDeleteAll`, 'tabDeleteAll', isShadowEditor, 'Delete all input code'));
 
   // Add file name and buttons to the tab
   editorTab.appendChild(fileName);
@@ -113,6 +117,19 @@ function wrapEditorWithGroup(editor, editorTab) {
   const wrapperElement = document.createElement("div");
   wrapperElement.id = `${editor.id}Wrapper`;
   wrapperElement.classList.add('editorWrapper');
+
+  // Find the fileName div inside the tab you passed in
+  const fileNameDiv = editorTab.querySelector('.fileName');
+  if (fileNameDiv) {
+    // Give the filename div a unique ID so we can reference it
+    const labelId = `${editor.id}-label`;
+    fileNameDiv.id = labelId;
+
+    // 1. Make the wrapper a landmark "region"
+    wrapperElement.setAttribute('role', 'region');
+    // 2. Label this entire region with the filename
+    wrapperElement.setAttribute('aria-labelledby', labelId);
+  }
 
   const editorGroup = document.createElement("div");
   editorGroup.classList.add('editorGroup');

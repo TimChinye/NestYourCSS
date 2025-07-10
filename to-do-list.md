@@ -1,15 +1,14 @@
 # To-do List
 
 ## Next up:
-- Show a different number of ads dependent on @container
+- Add all the aria-* stuff
 
 ## To-do now, before [release]:
-- "Disable" history, settings, and share feedback
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
-- Add all the aria-* stuff
-- Optimise for lighthouse
-- Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)
 - Add SEO features
+- Optimise for lighthouse
+- "Disable" history, settings, and share feedback
+- Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)
 
 ## List of (potential) stuff to add to the site, after release:
 - Refine nesting logic, optimize it.

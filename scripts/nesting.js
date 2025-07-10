@@ -1,5 +1,5 @@
 function nestCode(onClick = false) {
-    if (!inputEditorInstance) return;
+    if (!inputEditorInstance || document.getElementById('nestBtn').hasAttribute('disabled')) return;
 
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));
 

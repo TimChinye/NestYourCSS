@@ -203,7 +203,7 @@ body {
 								}
 
 								#indentationType {
-									flex: 0;
+									flex: 1;
 								}
 
 								#indentationSize {
@@ -327,23 +327,24 @@ body {
 									width: fit-content;
 									color: var(--component-text);
 									border: none;
+									padding: 1rem;
+									gap: calc(2 * var(--component-gap));
+									background: var(--component-background);
+									border-radius: 1rem;
 								
 									&:hover {
 										color: var(--component-text-hover);
 									}
+								
+									:focus {
+										outline: none;
+										box-shadow: 0 0 2em var(--shades-black);
+									}
 
-									span {
+									> output > span {
 										cursor: auto;
 										display: inline-block;
-										background: var(--component-background);
-										border-radius: 1rem;
-										padding: 1rem;
-										padding-right: calc(1rem + 2ch);
-								
-										&:focus {
-											outline: none;
-											box-shadow: 0 0 2em var(--shades-black);
-										}
+										padding-right: 2ch;
 
 										+ div {
 											position: absolute;
@@ -877,16 +878,16 @@ body {
 	
 							> picture {
 								height: 250px;
+								transition: filter 0.25s;
 
 								> * {
-									transition: inherit;
 									cursor: pointer;
 									height: 100%;
 									width: auto;
 									aspect-ratio: 1 / 1;
 									object-fit: contain;
 
-									&.adsbygoogle[data-ad-status="unfilled"] {
+									&.adsbygoogle:not([data-ad-status="filled"]) {
 										display: none;
 
 										& + img {
@@ -903,11 +904,11 @@ body {
 							&:hover {
 								border-color: rgb(from var(--shades-lighter) r g b / var(--opacity-low));
 	
-								&:has(> img:hover) {
+								&:has(> picture:hover) {
 									border-color: rgb(from var(--shades-lighter) r g b / var(--opacity-medium));
 								}
 								
-								:not(:hover) {
+								picture:not(:hover) {
 									filter: grayscale(1);
 								}
 							}

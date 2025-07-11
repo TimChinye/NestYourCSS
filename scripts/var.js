@@ -1,10 +1,13 @@
 const scrollWrapper = document.getElementById('siteWrapper');
 const mainElement = scrollWrapper.querySelector('main');
+const sectionsWrapperElement = scrollWrapper.querySelector('main article');
 const editorSection = document.getElementById('groupingStylesTogether');
-const mainSettings = scrollWrapper.querySelector('#mainSettings');
+const mainSettings = document.getElementById('mainSettings');
 const mainContent = document.getElementById('mainContent');
 const cursor = document.getElementById('nyssCursor');
 const cssBadge = document.getElementById('nycssBadge');
 const splashTextElem = document.getElementById("splashText");
 const lineNumbers = document.getElementById('lineNumbers');
 const errorTable = document.getElementById('errors');
+const nestBtn = document.getElementById('nestBtn');
+const codeEditorElem = document.getElementById('codeEditor');

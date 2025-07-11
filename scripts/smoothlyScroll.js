@@ -9,23 +9,32 @@ const updateLenisTarget = async () => {
 
   await waitForVar('Lenis');
   currentLenis = new Lenis({
-      wrapper: target,
-      autoResize: true
+    wrapper: target,
+    autoResize: true
   });
 };
+
+function handleNestingChange(isCurrentlyNesting) {
+  window.isNesting = isCurrentlyNesting;
+  
+  // 1. Disable the button immediately to prevent multiple clicks during animation.
+  nestBtn.disabled = true;
+
+  codeEditorElem.addEventListener('animationend', () => {console.log('overrr');
+    nestBtn.disabled = false;
+  }, { once: true });
+
+  mainSettings.toggleAttribute('inert', !window.isNesting);
+  sectionsWrapperElement.toggleAttribute('inert', window.isNesting);
+  
+  updateLenisTarget();
+}
 
 const observer = new MutationObserver(() => {
   const isCurrentlyNesting = mainElement.classList.contains('nesting');
 
   if (isCurrentlyNesting !== window.isNesting) {
-    window.isNesting = isCurrentlyNesting;
-
-    document.getElementById('nestBtn').toggleAttribute('disabled', true);
-    setTimeout(() => document.getElementById('nestBtn').toggleAttribute('disabled', false), 2000);
-    mainElement.firstElementChild.toggleAttribute('inert', !window.isNesting);
-    if (window.isNesting) mainElement.nextElementSibling.toggleAttribute('inert', true);
-
-    updateLenisTarget();
+    handleNestingChange(isCurrentlyNesting);
   }
 });
 

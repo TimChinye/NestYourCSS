@@ -27,7 +27,9 @@ function convertToNestedCSS(cssProvided, htmlString) {
     cssProvided = flattenCSS(cssProvided);
     if (window.processMode == 2) return denestCSS(cssProvided);
 
+    // console.log('1 - ' + cssProvided);
     cssProvided = renestCSS(cssProvided, htmlString);
+    // console.log('2 - ' + cssProvided);
     if (window.processMode == 1) return beautifyCSS(cssProvided);
 };
 
@@ -1074,6 +1076,8 @@ function renestCSS(cssProvided, withHtml) {
             } else {
                 // Handle pseudo selectors
                 let openBracketCount = 0;
+            
+                let oldSelectorParts = cloneArray(selectorParts);
 
                 for (let i = 0; i < selectorParts.length; i++) {
                     // let openBracketCount = 0; // Reset for each top-level selector part (Note: current openBracketCount is outside this loop)
@@ -1149,7 +1153,7 @@ function renestCSS(cssProvided, withHtml) {
                             let needsColonPrefix = false;
                             if (resultParts.length > 0) {
                                 const lastResult = resultParts[resultParts.length - 1];
-                                if (lastResult && !lastResult.endsWith('(') && !lastResult.endsWith(':')) {
+                                if (lastResult && !lastResult.endsWith(':')) {
                                     needsColonPrefix = true;
                                 }
                             } else if (j > 0) { 
@@ -1173,6 +1177,9 @@ function renestCSS(cssProvided, withHtml) {
                     
                     selectorParts[i] = resultParts.join('');
                 }
+
+                if (oldSelectorParts.join('XXX') != cloneArray(selectorParts).join('XXX'))
+                    console.log(oldSelectorParts, selectorParts)
 
                 function endsWithCSSEscape(str) {
                     if (str.length === 0) return false;

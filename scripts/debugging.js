@@ -187,12 +187,12 @@ async function processAndShowSampleByName(sampleKey, iterations = 5, mute = fals
  */
 async function processAndShowSampleByIndex(sampleIndex, iterations = 5, mute = false) {
     const keys = Object.keys(cssSamples);
-    if (sampleIndex < 0 || sampleIndex >= keys.length) {
-        if (!mute) console.error(`Sample index ${sampleIndex} is out of bounds. Valid range: 0 to ${keys.length - 1}.`);
+    if (Math.abs(sampleIndex) >= keys.length) {
+        if (!mute) console.error(`Sample index ${sampleIndex} is out of bounds. Valid range: ${0 - (keys.length - 1)} to ${keys.length - 1}.`);
         outputEditor.getSession().setValue(`/* Sample index ${sampleIndex} is out of bounds. */`);
         return;
     }
-    const sampleKey = keys[sampleIndex];
+    const sampleKey = keys.at(sampleIndex);
     await processAndShowSampleByName(sampleKey, iterations, mute);
 }
 

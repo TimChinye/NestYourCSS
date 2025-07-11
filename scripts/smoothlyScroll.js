@@ -1,13 +1,13 @@
 let currentLenis;
 
-const mainSettings = scrollWrapper.querySelector('#mainSettings');
 window.isNesting = mainElement.classList.contains('nesting');
 
-const updateLenisTarget = () => {
+const updateLenisTarget = async () => {
   const target = window.isNesting ? mainSettings : scrollWrapper;
 
   if (currentLenis) currentLenis.destroy();
 
+  await waitForVar('Lenis');
   currentLenis = new Lenis({
       wrapper: target,
       autoResize: true
@@ -22,7 +22,6 @@ const observer = new MutationObserver(() => {
 
     document.getElementById('nestBtn').toggleAttribute('disabled', true);
     setTimeout(() => document.getElementById('nestBtn').toggleAttribute('disabled', false), 2000);
-    console.log("test");
     mainElement.firstElementChild.toggleAttribute('inert', !window.isNesting);
     if (window.isNesting) mainElement.nextElementSibling.toggleAttribute('inert', true);
 

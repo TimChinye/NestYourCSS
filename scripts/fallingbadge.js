@@ -1,5 +1,3 @@
-let cssBadge = document.getElementById('nycssBadge');
-
 // Variable to keep track of the timer
 let scrollTimer, hovered = false;
 

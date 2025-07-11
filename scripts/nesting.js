@@ -11,7 +11,7 @@ function nestCode(onClick = false) {
         scrollWrapper.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    let tableBodyElem = document.getElementById('errors').tBodies[0];
+    let tableBodyElem = errorTable.tBodies[0];
 	const annotations = inputEditorInstance.getSession().getAnnotations().filter((a) => a.type == 'error');
 	if (annotations.length == 0) {
 		outputEditorInstance.getSession().setValue(convertToNestedCSS(inputEditorInstance.getValue()) || '/* Your output CSS will appear here */');

@@ -75,8 +75,8 @@
 }
 
 @keyframes swapText {
-	from, to { translate: 0 -1lh; }
-	30%, 70% { translate: 0 -0lh; }
+	from, to { padding-top: 0lh; }
+	30%, 70% { padding-top: 1lh; }
 }
 
 @keyframes showText {
@@ -180,9 +180,8 @@
 }
 
 @keyframes moveRight {
-	from { width: calc(100cqw - var(--padding)); }
+	from { width: calc(var(--code-editor-width) - var(--padding)); }
 	to { width: calc(var(--single-editor-width)); }
-	/* to { translate: calc(var(--editor-canvas-inner-width) - var(--code-editor-width)); } */
 }
 
 @keyframes shadowRotate {

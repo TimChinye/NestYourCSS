@@ -1,5 +1,3 @@
-let lineNumbers = document.getElementById('lineNumbers');
-
 let lines = lineNumbers.nextElementSibling.textContent.split("\n");
 lineNumbers.nextElementSibling.innerHTML = lines.map((item) => {
   if (!item.trim()) return '<br>';

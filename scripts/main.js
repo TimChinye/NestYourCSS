@@ -51,3 +51,20 @@ function isElementInViewport(el) {
         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
 }
+
+/**
+ * Waits for a global variable to be defined.
+ * @param {string} varName The name of the variable on the window object.
+ * @returns {Promise<void>}
+ */
+function waitForVar(varName) {
+    return new Promise(resolve => {
+      const checkInterval = setInterval(() => {
+        console.log(`Waiting for '${varName}'...`);
+        if (typeof window[varName] !== 'undefined') {
+          clearInterval(checkInterval);
+          resolve();
+        }
+      }, 100);
+    });
+  }

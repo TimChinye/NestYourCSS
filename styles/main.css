@@ -927,6 +927,7 @@ body {
 						--vertical-padding: (2 * var(--padding));
 						--horizontal-padding: (2 * var(--padding));
 						--code-editor-height: (100cqh);
+						--code-editor-width: (100cqw);
 						--content-height: (var(--code-editor-height) - var(--vertical-padding));
 						--total-editor-width: ((var(--total-width) / 7) * var(--content-height));
 						--single-editor-width: ((var(--editor-width) / 7) * var(--content-height));
@@ -1353,7 +1354,14 @@ body {
 							height: 1lh;
 							overflow: hidden;
 							line-height: 100%;
-							text-shadow: 0 -1lh;
+							text-shadow: 0 1lh;
+							
+							> p {
+								margin: 0;
+								display: inline-block;
+								vertical-align: middle;
+								translate: 0 -1lh;
+							}
 
 							@supports (animation-range: normal) {
 								animation: swapText linear 1ms;
@@ -1388,11 +1396,6 @@ body {
 								margin-right: 0.5ch;
 								text-align: right;
 							}
-							
-							> p {
-								display: inline;
-								vertical-align: middle;
-							}
 						}
 					}
 				}
@@ -1413,6 +1416,7 @@ body {
 						flex-direction: column;
 						
 						> span {
+							cursor: text;
 							height: 1lh;
 							line-height: 100%;
 							overflow: hidden;

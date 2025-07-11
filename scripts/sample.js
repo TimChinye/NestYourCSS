@@ -1,4 +1,4 @@
-let cssSamples = {
+window.cssSamples = {
 /* Showcase - Unnested */
 'unnestedShowcase': `
 /* Statement at-rules */

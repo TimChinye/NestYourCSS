@@ -1,4 +1,3 @@
-const mainContent = document.getElementById('mainContent');
 mainContent.querySelectorAll('menu > button').forEach((btn) => {
 	['transitionrun', 'transitionstart', 'transitioncancel', 'transitionend'].forEach(event => btn.lastElementChild.addEventListener(event, repositionButtonBG));
 
@@ -15,19 +14,15 @@ linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / 
 var(--shades-black)
 `;
 
-const scrollWrapper = document.getElementById('siteWrapper');
-const mainSection = scrollWrapper.firstElementChild;
-const editorSection = document.getElementById('groupingStylesTogether');
-
 document.body.addEventListener('mousemove', (e) => {
-  if (typeof splashTextElem === 'undefined' || splashTextElem === null || !mainSection) return;
+  if (typeof splashTextElem === 'undefined' || splashTextElem === null || !mainElement) return;
   
   window.cursorX = e.clientX;
   window.cursorY = e.clientY;
   
   requestAnimationFrame(() => {
     const horizValue = roundNumber((e.clientX / document.body.clientWidth) * 100) + '%';
-    if (window.isNesting || scrollWrapper.scrollTop < mainSection.offsetHeight)
+    if (window.isNesting || scrollWrapper.scrollTop < mainElement.offsetHeight)
       mainContent.style.background = mainContentBackgroundString(horizValue);
 
     if (window.isNesting) {
@@ -66,7 +61,7 @@ const elements = [
 const intersectionObserver = new IntersectionObserver((entries) => entries.forEach(entry => entry.target.classList.toggle('hidden', !entry.isIntersecting)), { threshold: 0.01 });
 elements.flatMap(s => [...document.querySelectorAll(s)]).filter(Boolean).forEach(el => intersectionObserver.observe(el));
 
-scrollWrapper.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof splashTextElem !== 'undefined' && splashTextElem !== null) && updateLogoState()));
+scrollWrapper.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof updateLogoState !== 'undefined' && updateLogoState())));
 
 function tabButtonHandler(e) {
   let tabButton = e.currentTarget;

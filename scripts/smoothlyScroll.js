@@ -14,28 +14,31 @@ const updateLenisTarget = async () => {
   });
 };
 
-function handleNestingChange(isCurrentlyNesting) {
+async function handleNestingChange(isCurrentlyNesting) {
   window.isNesting = isCurrentlyNesting;
-  
-  // 1. Disable the button immediately to prevent multiple clicks during animation.
+
+  // Disable the button immediately to prevent spam-clicking during the transition
   nestBtn.disabled = true;
 
-  codeEditorElem.addEventListener('animationend', () => {console.log('overrr');
-    nestBtn.disabled = false;
-  }, { once: true });
 
+  // Update the 'inert' attribute on the views for accessibility
   mainSettings.toggleAttribute('inert', !window.isNesting);
   sectionsWrapperElement.toggleAttribute('inert', window.isNesting);
   
+  // Update the Lenis scroller target (whole to page => nesting settings section)
   updateLenisTarget();
+
+  // Re-enable the button after transition has finished
+  let animatingElem = window.isNesting ? codeEditorElem : editorSideElem;
+  await waitElementTransitionEnd(animatingElem, 3000);
+  nestBtn.disabled = false;
 }
 
 const observer = new MutationObserver(() => {
   const isCurrentlyNesting = mainElement.classList.contains('nesting');
 
-  if (isCurrentlyNesting !== window.isNesting) {
-    handleNestingChange(isCurrentlyNesting);
-  }
+  if (isCurrentlyNesting !== window.isNesting) handleNestingChange(isCurrentlyNesting);
+  
 });
 
 updateLenisTarget();

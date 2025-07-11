@@ -1,3 +1,12 @@
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked.
+*
+* @param {Function} func The function to debounce.
+* @param {number} wait The number of milliseconds to delay.
+* @returns {Function} Returns the new debounced function.
+*/
 let debounceDelays = {};
 const debounce = (func, wait) => {
 	return (...args) => {
@@ -13,17 +22,28 @@ const debounce = (func, wait) => {
  * This function will round a number to a certain decimal point.
  * 
  * @param {number} num The number being rounded.
- * @param {number} dp The number of decimal points being rounded to.
- * @returns {number}
+ * @param {number} [dp=2] The number of decimal points being rounded to.
+ * @returns {number} The rounded number.
  */
 const roundNumber = (num, dp = 2) => {
 	let multiplier = Math.pow(10, dp);
 	return Math.floor(num * multiplier) / multiplier;
 };
 
+/**
+ * Creates a deep clone of an object.
+ *
+ * @param {any} obj The object to clone.
+ * @returns {any} Returns the deep cloned object.
+ */
 const clone = (obj) => JSON.parse(JSON.stringify(obj));
 
-/** JSON.stringify but also avoids circular references */
+/**
+ * Converts a JavaScript value to a JSON string, but also avoids circular references.
+ *
+ * @param {any} obj The value to convert.
+ * @returns {string} Returns the JSON string.
+ */
 function safeStringify(obj) {
     const seen = new WeakSet();
     return JSON.stringify(obj, (key, value) => {
@@ -37,9 +57,19 @@ function safeStringify(obj) {
     });
 }
 
-// Prevents chrome's console for logging references of arrays
+/**
+ * Prevents chrome's console for logging references of arrays.
+ *
+ * @param {...any} args The arguments to log.
+ */
 console.logNow = ((logFunc) => (...args) => logFunc(...args.map(arg => JSON.parse(safeStringify(arg)))))(console.log);
 
+/**
+ * Checks if an element is in the viewport.
+ *
+ * @param {Element} el The element to check.
+ * @returns {boolean} Returns `true` if the element is in the viewport, else `false`.
+ */
 function isElementInViewport(el) {
     if (!el) return false;
   
@@ -60,11 +90,35 @@ function isElementInViewport(el) {
 function waitForVar(varName) {
     return new Promise(resolve => {
       const checkInterval = setInterval(() => {
-        console.log(`Waiting for '${varName}'...`);
+        // console.log(`Waiting for '${varName}'...`);
         if (typeof window[varName] !== 'undefined') {
           clearInterval(checkInterval);
           resolve();
         }
       }, 100);
     });
-  }
+}
+
+/**
+ * Waits for a CSS animation or transition to end, with a failsafe timeout.
+ * Returns a promise that resolves when either the event fires or the timeout is reached.
+ *
+ * @param {HTMLElement} element The element that is animating or transitioning.
+ * @param {number} fallbackDurationMs The duration of the animation/transition for the failsafe timeout.
+ * @returns {Promise<void>} A promise that resolves when the process is complete.
+ */
+function waitElementTransitionEnd(element, fallbackDurationMs) {
+  return new Promise(resolve => {
+    let failsafeTimeoutId;
+
+    // A single cleanup function that resolves the promise and clears the timeout.
+    const finalize = () => {
+      clearTimeout(failsafeTimeoutId);
+      resolve();
+    };
+
+    element.addEventListener('animationend', finalize, { once: true }); // 'once' cleans up
+
+    failsafeTimeoutId = setTimeout(finalize, fallbackDurationMs + 50);
+  });
+}

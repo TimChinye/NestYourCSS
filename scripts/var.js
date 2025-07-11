@@ -11,3 +11,4 @@ const lineNumbers = document.getElementById('lineNumbers');
 const errorTable = document.getElementById('errors');
 const nestBtn = document.getElementById('nestBtn');
 const codeEditorElem = document.getElementById('codeEditor');
+const editorSideElem = document.getElementById('editorSide');

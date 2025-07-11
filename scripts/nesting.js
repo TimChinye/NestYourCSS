@@ -1,9 +1,10 @@
 function nestCode(onClick = false) {
-    if (!inputEditorInstance || document.getElementById('nestBtn').hasAttribute('disabled')) return;
+    if (!inputEditorInstance || nestBtn.hasAttribute('disabled')) return;
+
+    console.log("test");
 
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));
 
-    const nestBtn = document.getElementById('nestBtn');
     nestBtn.setAttribute('aria-label', window.isNesting ? "View Homepage" : "Start Nesting");
 
     if (onClick) {

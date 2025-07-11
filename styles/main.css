@@ -1198,12 +1198,14 @@ body {
 
 				& + article,
 				& + article section {
-					top: -100dvh;
+					top: 100dvh;
 					height: 0;
 					gap: 0;
 					opacity: 0;
 					transition: gap 1s 1s, height 1s 1s, opacity 1s, top 1s;
 					pointer-events: none; 
+					
+					&article { top: 0dvh; }
 				}
 
 				> #mainSettings {

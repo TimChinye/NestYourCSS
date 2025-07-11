@@ -90,7 +90,6 @@ function isElementInViewport(el) {
 function waitForVar(varName) {
     return new Promise(resolve => {
       const checkInterval = setInterval(() => {
-        // console.log(`Waiting for '${varName}'...`);
         if (typeof window[varName] !== 'undefined') {
           clearInterval(checkInterval);
           resolve();

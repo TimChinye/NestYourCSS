@@ -1,8 +1,6 @@
 function nestCode(onClick = false) {
     if (!inputEditorInstance || nestBtn.hasAttribute('disabled')) return;
 
-    console.log("test");
-
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));
 
     nestBtn.setAttribute('aria-label', window.isNesting ? "View Homepage" : "Start Nesting");

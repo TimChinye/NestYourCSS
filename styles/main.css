@@ -917,7 +917,6 @@ body {
 
 				> #editorSide {
 					container-type: inline-size;
-					width: calc(var(--single-editor-width));
 					flex: none;
 					max-width: 100%;
 
@@ -926,12 +925,12 @@ body {
 						--editor-width: 5;
 						--total-width: (var(--editor-width) + var(--gutter-width) + var(--editor-width));
 						--vertical-padding: (2 * var(--padding));
+						--horizontal-padding: (2 * var(--padding));
 						--code-editor-height: (100cqh);
 						--content-height: (var(--code-editor-height) - var(--vertical-padding));
 						--total-editor-width: ((var(--total-width) / 7) * var(--content-height));
 						--single-editor-width: ((var(--editor-width) / 7) * var(--content-height));
-						--vertical-padding: (2 * var(--padding));
-						--horizontal-padding: calc(2 * var(--padding));
+						--settings-panel-width: (58.441558ch * 1.232);
 
 					}
 
@@ -1162,10 +1161,10 @@ body {
 				> #mainContent {
 					gap: var(--padding);
 					
-					> #editorSide > #codeEditor {
+					> #editorSide {
 						animation: moveRight 2s cubic-bezier(1, 0, 0.5, 1) both;
 
-						.editorWrapper {
+						> #codeEditor .editorWrapper {
 							transition: 1s 0.5s;
 							border-left: calc(1rem / 16) solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
 

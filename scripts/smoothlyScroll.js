@@ -19,9 +19,12 @@ const observer = new MutationObserver(() => {
 
   if (isCurrentlyNesting !== window.isNesting) {
     window.isNesting = isCurrentlyNesting;
+
     document.getElementById('nestBtn').toggleAttribute('disabled', true);
-    setTimeout(() => document.getElementById('nestBtn').toggleAttribute('disabled', false), 2000)
-    mainElement.firstElementChild.toggleAttribute('inert', !window.isNesting)
+    setTimeout(() => document.getElementById('nestBtn').toggleAttribute('disabled', false), 2000);
+    console.log("test");
+    mainElement.firstElementChild.toggleAttribute('inert', !window.isNesting);
+    if (window.isNesting) mainElement.nextElementSibling.toggleAttribute('inert', true);
 
     updateLenisTarget();
   }

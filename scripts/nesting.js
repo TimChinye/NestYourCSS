@@ -3,6 +3,9 @@ function nestCode(onClick = false) {
 
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));
 
+    const nestBtn = document.getElementById('nestBtn');
+    nestBtn.setAttribute('aria-label', window.isNesting ? "View Homepage" : "Start Nesting");
+
     if (onClick) {
         if (window.isNesting) return;
         scrollWrapper.scrollTo({ top: 0, behavior: 'smooth' });

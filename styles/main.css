@@ -9,6 +9,11 @@
 		display: none;
 		background-color: transparent;
 	}
+
+	#outputEditorWrapper {
+		opacity: 0;
+		background-color: transparent;
+	}
 }
 /* The actual main CSS file for this website */
 
@@ -922,7 +927,7 @@ body {
 					max-width: 100%;
 
 					& {
-						--gutter-width: 0.5;
+						--gutter-width: 0.25;
 						--editor-width: 5;
 						--total-width: (var(--editor-width) + var(--gutter-width) + var(--editor-width));
 						--vertical-padding: (2 * var(--padding));
@@ -1027,7 +1032,6 @@ body {
  
 					> #codeEditor {
 						flex: none;
-						width: auto;
 						height: 100%;
 						display: flex;
 						justify-content: center;
@@ -1048,7 +1052,6 @@ body {
 
 						.editorWrapper:not(.shadowEditorWrapper) {
 							width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
-							margin: 0 auto;
 							
 							&#inputEditorWrapper {
 								border-radius: 0 3rem 3rem 0;
@@ -1069,6 +1072,11 @@ body {
 										pointer-events: none;
 									}
 								}
+							}
+
+							&#outputEditorWrapper {
+								transition: opacity 1s, display 1s;
+								transition-behavior: allow-discrete;
 							}
 						}
 							
@@ -1168,12 +1176,12 @@ body {
 
 						> #codeEditor .editorWrapper {
 							transition: 1s 0.5s;
-							border-left: calc(1rem / 16) solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
-
+							
 							&#inputEditorWrapper {
 								display: block;
 								padding: var(--padding);
 								padding-left: 0;
+								border-left: calc(1rem / 16) solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
 								border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
 								background-color: rgb(from var(--shades-white) r g b / 3%);
 
@@ -1183,6 +1191,8 @@ body {
 							}
 
 							&#outputEditorWrapper {
+								padding-block: var(--padding);
+								margin-right: -3.25rem;
 								width: 0;
 								opacity: 0;
 								display: none;
@@ -1651,6 +1661,21 @@ body {
 						gap: 3ch;
 						width: fit-content;
 						color: var(--shades-white);
+
+						@supports (animation-range: normal) {
+							animation: viewed linear;
+							animation-timeline: view();
+							animation-range-start: contain;
+							animation-range-end: cover calc(0% + 5lh);
+							
+							div :is(> div, span) {
+								--charIndex: -1;
+								animation: slideInLines linear forwards;
+								animation-timeline: view();
+								animation-range-start: cover 0%;
+								animation-range-end: cover 5lh;
+							}
+						}
 						
 						> #lineNumbers {
 							width: 2ch;
@@ -1687,6 +1712,8 @@ body {
 										transition: 0.5s ease;
 									}
 								}
+							
+								span { display: inline-block; }
 							}
 						}
 					}

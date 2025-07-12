@@ -1,30 +1,145 @@
 # All known bugs
-## Still working on it.
+## Bug #1
+### Input:
 ```diff
-Input:
-+ |@media (max-aspect-ratio:1.097 / 1) {
-+ |	body > #siteWrapper > {
-+ |		article {
-+ |			font-size: clamp(1.1px, 1.15dvw, 22.5px);
++ | label {
++ |  	flex: 1;
 + | 
-+ |			> section,  > a > section {
-+ |				contain: size;
-+ |				position: relative;
-+ |				height: min(100dvh, 1600px);
++ | 	&:has(:disabled) {
++ | 		&, &:hover {
++ | 			cursor: not-allowed;
++ | 		}
++ | 	}
++ | }
+```
+### Output:
+```diff
+- | label {
+- | 	flex: 1;
+- | 
+- | 	&:has(:disabled) :is(&:has(:disabled), &:has(:disabled):hover) {
+- | 		cursor: not-allowed;
+- | 	}
+- | }
+```
+### Expected Output:
+```diff
++ | label {
++ | 	flex: 1;
 + | 
-+ |				&#reducingBoilerplateCode > {
-+ |					#repeatingText {
-+ |						top: 50%;
-+ |						translate: 0 calc(-50% - 7.5em);
-+ |					}
++ | 	&:has(:disabled):is(&:has(:disabled), &:has(:disabled):hover) {
++ | 		cursor: not-allowed;
++ | 	}
++ | }
+```
+## Bug #2
+### Input:
+```diff
++ | label {
++ | 	flex: 1;
 + | 
-+ |					#parallaxText {
-+ |						bottom: 50%;
-+ |						translate: 0 calc(-50% + 6em);
-+ |					}
-+ |				}
-+ |			}
-+ |		}
-+ |	}
-+ |}
++ | 	&:has(:disabled) {
++ | 	    color: red;
++ | 	    
++ | 		&, &:hover {
++ | 			cursor: not-allowed;
++ | 		}
++ | 	}
++ | }
+```
+### Output:
+```diff
+- | label {
+- | 	flex: 1;
+- | 
+- | 	&:has(:disabled) {
+- | 		color: red;
+- | 
+- | 		:is(&:has(:disabled), &:has(:disabled):hover) {
+- | 			cursor: not-allowed;
+- | 		}
+- | 	}
+- | }
+```
+### Expected Output:
+```diff
++ | label {
++ | 	flex: 1;
++ | 
++ | 	&:has(:disabled) {
++ | 		color: red;
++ | 
++ | 		&:is(&:has(:disabled), &:has(:disabled):hover) {
++ | 			cursor: not-allowed;
++ | 		}
++ | 	}
++ | }
+```
+### Input:
+```diff
++ | &#inputEditorWrapper {
++ |     display: block;
++ |     padding: var(--padding);
++ |     padding-left: 0;
++ |     border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
++ |     background-color: rgb(from var(--shades-white) r g b / 3%);
++ | 
++ |     &, > .editorGroup {
++ |         max-width: 100%;
++ |     }
++ | }
+```
+### Output:
+```diff
+- | &#inputEditorWrapper {
+- |     display: block;
+- |     padding: var(--padding);
+- |     padding-left: 0;
+- |     border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
+- |     background-color: rgb(from var(--shades-white) r g b / 3%);
+- | 
+- |     &:is(&#inputEditorWrapper, > .editorGroup) {
+- |         max-width: 100%;
+- |     }
+- | }
+```
+### Expected Output:
+```diff
++ | &#inputEditorWrapper {
++ |     display: block;
++ |     padding: var(--padding);
++ |     padding-left: 0;
++ |     border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
++ |     background-color: rgb(from var(--shades-white) r g b / 3%);
++ | 
++ |     &:is(&#inputEditorWrapper), :is(> .editorGroup) {
++ |         max-width: 100%;
++ |     }
++ | }
+```
+### Input:
+```diff
++ | body { && {
++ |   background-color: green;  
++ | }}
+```
+### Output:
+```diff
+- | body& {
+- | 	background-color: green;
+- | }
+```
+### Expected Output:
+```diff
++ | &#inputEditorWrapper {
++ |     display: block;
++ |     padding: var(--padding);
++ |     padding-left: 0;
++ |     border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
++ |     background-color: rgb(from var(--shades-white) r g b / 3%);
++ | 
++ |     &:is(&#inputEditorWrapper), :is(> .editorGroup) {
++ |         max-width: 100%;
++ |     }
++ | }
 ```

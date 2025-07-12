@@ -96,6 +96,7 @@ body {
         --total-width: calc(var(--gutter-width) + (2 * var(--editor-width)));
 
         display: flex;
+        justify-content: center;
         gap: calc((var(--gutter-width) / var(--total-width)) * 100%);
 			
         .editorGroup {

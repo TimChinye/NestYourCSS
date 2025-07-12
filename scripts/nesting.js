@@ -1077,7 +1077,7 @@ function renestCSS(cssProvided, withHtml) {
                 // Handle pseudo selectors
                 let openBracketCount = 0;
             
-                let oldSelectorParts = cloneArray(selectorParts);
+                let oldSelectorParts = clone(selectorParts);
 
                 for (let i = 0; i < selectorParts.length; i++) {
                     // let openBracketCount = 0; // Reset for each top-level selector part (Note: current openBracketCount is outside this loop)
@@ -1178,7 +1178,7 @@ function renestCSS(cssProvided, withHtml) {
                     selectorParts[i] = resultParts.join('');
                 }
 
-                if (oldSelectorParts.join('XXX') != cloneArray(selectorParts).join('XXX'))
+                if (oldSelectorParts.join('XXX') != clone(selectorParts).join('XXX'))
                     console.log(oldSelectorParts, selectorParts)
 
                 function endsWithCSSEscape(str) {

@@ -15,17 +15,27 @@ async function setupEditors() {
   }
 
   let sample;
+  sample = `
+body {
+    @media (min-width: 768px) {
+        font-size: 16px;
+    
+        @supports ( (display: grid) or (display: -ms-grid) ) {
+            display: grid;
+            grid-template-columns: minmax(200px, 1fr) 3fr;
+
+            nav {
+                grid-column: 1 / 2;
+            }
+        }
+    }
+}
+  `;
   // sample = cssSamples[0]; // First one
   // sample = cssSamples[0]; // Specific one 
+  sample = cssSamples["atRulesGalore"]; // Specific one
   // sample = cssSamples.slice(0, 2).join(''); // Range
   // sample = cssSamples.join(''); // All
-  sample = `
-  main > article form :is(label, input) {
-  font-weight: bold;
-  font-size: 0.625em;
-  margin-bottom: 0.25rem;
-  }
-  `;
 
   window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
   window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');

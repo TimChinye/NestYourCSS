@@ -16,28 +16,11 @@ async function setupEditors() {
 
   let sample;
   sample = `
-@media (max-aspect-ratio:1.097 / 1) {
-    body {
-    	> div {
-    		background: green;
-    		height: 100vh;
-    	}
-    	
-    	> figure {
-    		background: green;
-    		height: 100vh;
-    	}
-	}
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:2 / 1),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
-    .icp-flag-2,.icp-flag-3,.icp-nav-flag,.icp-nav-globe-img-2,.icp-radio,.nav-arrow.icp-up-down-arrow {
-        background-image:url(https://m.media-amazon.com/images/S/sash/EZ7BoVI$-KcNmTV.png);
-        background-size: 194px 295px
-    }
+*[hidden] {
+	display: none;
 }
   `;
-  sample = Object.values(cssSamples)[0]; // First one
+  // sample = Object.values(cssSamples)[0]; // First one
   // sample = Object.values(cssSamples)[0]; // Specific one 
   // sample = cssSamples["hopefullyTheEnd"]; // Specific one
   // sample = Object.values(cssSamples).slice(0, 2).join(''); // Range

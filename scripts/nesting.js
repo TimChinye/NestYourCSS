@@ -24,9 +24,7 @@ function convertToNestedCSS(cssProvided, htmlString) {
     if (window.processMode == 0) return cssProvided;
 
     cssProvided = splitCSS(cssProvided);
-    // console.log(cssProvided);
     cssProvided = flattenCSS(cssProvided);
-    // console.log(cssProvided);
     if (window.processMode == 2) return denestCSS(cssProvided);
 
     cssProvided = renestCSS(cssProvided, htmlString);
@@ -448,103 +446,103 @@ function flattenCSS(cssProvided, prefix = '') {
         return selectors;
     }
 
-/**
-     * Splits a string by a delimiter (defaulting to a comma), but ignores
-     * delimiters found inside matching pairs of brackets, braces, quotes, or within
-     * CSS at-rules (e.g., `@media ...`).
-     *
-     * Supported brackets: (), [], {}
-     * Supported quotes: '', ""
-     *
-     * @param {string} str The string to split.
-     * @returns {string[]} An array of substrings.
-     */
-function _splitRespectingBrackets(str) {
-    if (!str || typeof str !== 'string') {
-        return [];
-    }
-
-    const results = [];
-    let lastSplitIndex = 0;
-    let parenDepth = 0;
-    let bracketDepth = 0;
-    let braceDepth = 0;
-    let inSingleQuotes = false;
-    let inDoubleQuotes = false;
-    let inAtRule = false;
-
-    for (let i = 0; i < str.length; i++) {
-        const char = str[i];
-        const prevChar = i > 0 ? str[i - 1] : '';
-
-        // Check for the start of an at-rule.
-        if (char === '@' && str.substring(lastSplitIndex, i).trim() === '') {
-            inAtRule = true;
+    /**
+         * Splits a string by a delimiter (defaulting to a comma), but ignores
+         * delimiters found inside matching pairs of brackets, braces, quotes, or within
+         * CSS at-rules (e.g., `@media ...`).
+         *
+         * Supported brackets: (), [], {}
+         * Supported quotes: '', ""
+         *
+         * @param {string} str The string to split.
+         * @returns {string[]} An array of substrings.
+         */
+    function _splitRespectingBrackets(str) {
+        if (!str || typeof str !== 'string') {
+            return [];
         }
 
-        // Don't process the character as special if it's escaped
-        if (prevChar === '\\') {
-            continue;
-        }
+        const results = [];
+        let lastSplitIndex = 0;
+        let parenDepth = 0;
+        let bracketDepth = 0;
+        let braceDepth = 0;
+        let inSingleQuotes = false;
+        let inDoubleQuotes = false;
+        let inAtRule = false;
 
-        switch (char) {
-            case '(':
-                if (!inSingleQuotes && !inDoubleQuotes) parenDepth++;
-                break;
-            case ')':
-                if (!inSingleQuotes && !inDoubleQuotes) parenDepth--;
-                break;
-            case '[':
-                if (!inSingleQuotes && !inDoubleQuotes) bracketDepth++;
-                break;
-            case ']':
-                if (!inSingleQuotes && !inDoubleQuotes) bracketDepth--;
-                break;
-            case '{':
-                if (!inSingleQuotes && !inDoubleQuotes) braceDepth++;
-                break;
-            case '}':
-                if (!inSingleQuotes && !inDoubleQuotes) {
-                    braceDepth--;
-                    if (inAtRule && braceDepth === 0) {
+        for (let i = 0; i < str.length; i++) {
+            const char = str[i];
+            const prevChar = i > 0 ? str[i - 1] : '';
+
+            // Check for the start of an at-rule.
+            if (char === '@' && str.substring(lastSplitIndex, i).trim() === '') {
+                inAtRule = true;
+            }
+
+            // Don't process the character as special if it's escaped
+            if (prevChar === '\\') {
+                continue;
+            }
+
+            switch (char) {
+                case '(':
+                    if (!inSingleQuotes && !inDoubleQuotes) parenDepth++;
+                    break;
+                case ')':
+                    if (!inSingleQuotes && !inDoubleQuotes) parenDepth--;
+                    break;
+                case '[':
+                    if (!inSingleQuotes && !inDoubleQuotes) bracketDepth++;
+                    break;
+                case ']':
+                    if (!inSingleQuotes && !inDoubleQuotes) bracketDepth--;
+                    break;
+                case '{':
+                    if (!inSingleQuotes && !inDoubleQuotes) braceDepth++;
+                    break;
+                case '}':
+                    if (!inSingleQuotes && !inDoubleQuotes) {
+                        braceDepth--;
+                        if (inAtRule && braceDepth === 0) {
+                            inAtRule = false;
+                        }
+                    }
+                    break;
+                case "'":
+                    if (!inDoubleQuotes) inSingleQuotes = !inSingleQuotes;
+                    break;
+                case '"':
+                    if (!inSingleQuotes) inDoubleQuotes = !inDoubleQuotes;
+                    break;
+                case ';':
+                    if (inAtRule && parenDepth === 0 && bracketDepth === 0 && braceDepth === 0) {
                         inAtRule = false;
                     }
-                }
-                break;
-            case "'":
-                if (!inDoubleQuotes) inSingleQuotes = !inSingleQuotes;
-                break;
-            case '"':
-                if (!inSingleQuotes) inDoubleQuotes = !inDoubleQuotes;
-                break;
-            case ';':
-                if (inAtRule && parenDepth === 0 && bracketDepth === 0 && braceDepth === 0) {
-                    inAtRule = false;
-                }
-                break;
+                    break;
+            }
+
+            // Check if we should split at the current position
+            if (
+                char === ',' &&
+                !inAtRule &&
+                parenDepth === 0 &&
+                bracketDepth === 0 &&
+                braceDepth === 0 &&
+                !inSingleQuotes &&
+                !inDoubleQuotes
+            ) {
+                results.push(str.substring(lastSplitIndex, i).trim());
+                lastSplitIndex = i + 1;
+                inAtRule = false; // Reset for the new segment
+            }
         }
 
-        // Check if we should split at the current position
-        if (
-            char === ',' &&
-            !inAtRule &&
-            parenDepth === 0 &&
-            bracketDepth === 0 &&
-            braceDepth === 0 &&
-            !inSingleQuotes &&
-            !inDoubleQuotes
-        ) {
-            results.push(str.substring(lastSplitIndex, i).trim());
-            lastSplitIndex = i + 1;
-            inAtRule = false; // Reset for the new segment
-        }
+        // Add the final segment of the string after the last comma
+        results.push(str.substring(lastSplitIndex).trim());
+
+        return results;
     }
-
-    // Add the final segment of the string after the last comma
-    results.push(str.substring(lastSplitIndex).trim());
-
-    return results;
-}
 
     function _formatSelectorString(selectorStr) {
         if (!selectorStr) return "";
@@ -608,30 +606,29 @@ function _splitRespectingBrackets(str) {
             // 2. Space before certain characters (*, [, #, .) if not already spaced and not inside () or []
             //    and not immediately after another combinator or start of string.
             if (spaceBeforeChars.includes(char) && parenthesisDepth === 0 && bracketDepth === 0) {
-                if (prevChar && prevChar !== ' ' && !combinators.includes(prevChar) && prevChar !== '(' &&
-                    // Do NOT add a space if prevChar is '&' and current char is a class/id/pseudo selector start
-                    !(prevChar === '&' && (char === '.' || char === '#' || char === ':')) &&
-                    // Do NOT add a space if prevChar is alphanumeric and current char is a class/id selector start
-                    !(/[a-zA-Z0-9]/.test(prevChar) && (char === '.' || char === '#')) &&
-                    // Do NOT add a space if prevChar is a closing bracket/paren or '*' and current char is class/id
-                    !((prevChar === ']' || prevChar === ')' || prevChar === '*') && (char === '.' || char === '#'))
-                ) {
-                    result += ' ';
-                }
-            }
+                if (prevChar && prevChar !== ' ' && !combinators.includes(prevChar) && prevChar !== '(' && prevChar !== ',') {
+                    // Check if the previous character is one that can be directly attached
+                    // to a class, id, or attribute selector without a space.
+                    const isPartOfCompoundSelector =
+                        // e.g., div.class, h1#main
+                        /[a-zA-Z0-9]/.test(prevChar) ||
+                        // e.g., *.class, *[lang]
+                        prevChar === '*' ||
+                        // e.g., [type="text"].input
+                        prevChar === ']' ||
+                        // e.g., :hover.active
+                        prevChar === ':' ||
+                        // e.g., :not(...).active
+                        prevChar === ')' ||
+                        // e.g., &.active
+                        prevChar === '&';
             
-            // 3. Special handling for universal selector '*'
-            if (char === '*' && parenthesisDepth === 0 && bracketDepth === 0) {
-                result += char;
-                if (nextChar && (nextChar === '[' || nextChar === '#' || nextChar === '.' || /^[a-zA-Z]/.test(nextChar))) {
-                    if (nextChar !== ' ') {
-                         if (nextChar === '[') { 
-                            result += ' ';
-                         }
+                    if (!isPartOfCompoundSelector) {
+                        // The previous character is not part of a compound selector,
+                        // so we are starting a new descendant selector. Add a space.
+                        result += ' ';
                     }
                 }
-                i++;
-                continue;
             }
     
             result += char;
@@ -823,7 +820,7 @@ function _splitRespectingBrackets(str) {
                     return prefix + (needsSpace ? ' ' : '') + part;
                 }
             });
-            
+
             // Join the fully-formed parts back into a final selector string.
             let absoluteSelector = absoluteParts.join(', ');
                 

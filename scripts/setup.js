@@ -16,18 +16,24 @@ async function setupEditors() {
 
   let sample;
   sample = `
-body {
-    @media (min-width: 768px) {
-        font-size: 16px;
-    
-        @supports ( (display: grid) or (display: -ms-grid) ) {
-            display: grid;
-            grid-template-columns: minmax(200px, 1fr) 3fr;
+@media (max-aspect-ratio:1.097 / 1) {
+    body {
+    	> div {
+    		background: green;
+    		height: 100vh;
+    	}
+    	
+    	> figure {
+    		background: green;
+    		height: 100vh;
+    	}
+	}
+}
 
-            nav {
-                grid-column: 1 / 2;
-            }
-        }
+@media only screen and (-webkit-min-device-pixel-ratio: 2),only screen and (min--moz-device-pixel-ratio:2),only screen and (-o-min-device-pixel-ratio:2 / 1),only screen and (min-device-pixel-ratio:2),only screen and (min-resolution:192dpi),only screen and (min-resolution:2dppx) {
+    .icp-flag-2,.icp-flag-3,.icp-nav-flag,.icp-nav-globe-img-2,.icp-radio,.nav-arrow.icp-up-down-arrow {
+        background-image:url(https://m.media-amazon.com/images/S/sash/EZ7BoVI$-KcNmTV.png);
+        background-size: 194px 295px
     }
 }
   `;

@@ -24,7 +24,9 @@ function convertToNestedCSS(cssProvided, htmlString) {
     if (window.processMode == 0) return cssProvided;
 
     cssProvided = splitCSS(cssProvided);
+    // console.log(cssProvided);
     cssProvided = flattenCSS(cssProvided);
+    // console.log(cssProvided);
     if (window.processMode == 2) return denestCSS(cssProvided);
 
     cssProvided = renestCSS(cssProvided, htmlString);
@@ -288,86 +290,6 @@ function splitCSS(cssProvided) {
 
 function flattenCSS(cssProvided, prefix = '') {
     /**
-     * Splits a CSS selector group string into an array of individual selectors.
-     *
-     * This function is more robust than a simple `selector.split(',')` because it correctly
-     * handles commas within parentheses (e.g., `:is(a, b)`), attribute selectors
-     * (e.g., `[attr="foo,bar"]`), and quoted strings.
-     *
-     * @param {string} selectorGroup - The CSS selector group string to split.
-     * @returns {string[]} An array of individual, trimmed CSS selectors.
-     * @example
-     * const selector = 'h1, p:is(.foo, .bar), [data-content="a, b"], .final';
-     * const result = splitCssSelectorGroup(selector);
-     * // result is ['h1', 'p:is(.foo, .bar)', '[data-content="a, b"]', '.final']
-     *
-     * @example
-     * const singleSelector = 'div.main-content';
-     * const result = splitCssSelectorGroup(singleSelector);
-     * // result is ['div.main-content']
-     */
-    function _splitCssSelectorGroup(selectorGroup) {
-        if (!selectorGroup || typeof selectorGroup !== 'string') {
-            return [];
-        }
-        
-        const selectors = [];
-        let currentSelector = '';
-        let parenthesisDepth = 0;
-        let bracketDepth = 0;
-        let isInSingleQuotes = false;
-        let isInDoubleQuotes = false;
-
-        for (let i = 0; i < selectorGroup.length; i++) {
-            const char = selectorGroup[i];
-            const prevChar = i > 0 ? selectorGroup[i - 1] : '';
-
-            currentSelector += char;
-
-            // Don't parse quotes if they are escaped
-            if (prevChar === '\\') {
-                continue;
-            }
-
-            switch (char) {
-                case '(':
-                    if (!isInSingleQuotes && !isInDoubleQuotes) parenthesisDepth++;
-                    break;
-                case ')':
-                    if (!isInSingleQuotes && !isInDoubleQuotes) parenthesisDepth--;
-                    break;
-                case '[':
-                    if (!isInSingleQuotes && !isInDoubleQuotes) bracketDepth++;
-                    break;
-                case ']':
-                    if (!isInSingleQuotes && !isInDoubleQuotes) bracketDepth--;
-                    break;
-                case '"':
-                    isInDoubleQuotes = !isInDoubleQuotes;
-                    break;
-                case "'":
-                    isInSingleQuotes = !isInSingleQuotes;
-                    break;
-            }
-
-            // Split if the comma is a top-level separator
-            if (char === ',' && parenthesisDepth === 0 && bracketDepth === 0 && !isInSingleQuotes && !isInDoubleQuotes) {
-                // Push the selector without the trailing comma
-                selectors.push(currentSelector.slice(0, -1).trim());
-                currentSelector = '';
-            }
-        }
-
-        // Add the last selector to the array if it's not empty
-        const trimmedLastSelector = currentSelector.trim();
-        if (trimmedLastSelector) {
-            selectors.push(trimmedLastSelector);
-        }
-
-        return selectors;
-    }
-
-    /**
      * Combines an array of CSS selectors into a compact string using the :is() pseudo-class.
      * It intelligently groups selectors that start with '&' separately from the others.
      *
@@ -419,69 +341,210 @@ function flattenCSS(cssProvided, prefix = '') {
     }
 
     /**
-     * Splits a string by a delimiter (defaulting to a comma), but ignores
-     * delimiters found inside matching pairs of brackets or quotes.
+     * Splits a CSS selector group or at-rule string into an array of individual components.
      *
-     * Supported brackets: (), []
+     * This function is more robust than a simple `string.split(',')` because it correctly
+     * handles commas within parentheses (e.g., `:is(a, b)`), attribute selectors
+     * (e.g., `[attr="foo,bar"]`), and quoted strings. It also treats CSS at-rules
+     * (e.g., `@media ...;` or `@media ... { ... }`) as single, unsplittable units.
+     *
+     * @param {string} selectorGroup - The CSS string to split, which can contain selector groups and at-rules.
+     * @returns {string[]} An array of individual, trimmed CSS selectors or at-rules.
+     * @example
+     * const selector = 'h1, p:is(.foo, .bar), [data-content="a, b"], .final';
+     * const result = _splitCssSelectorGroup(selector);
+     * // result is ['h1', 'p:is(.foo, .bar)', '[data-content="a, b"]', '.final']
+     *
+     * @example
+     * const mediaQuery = '@media (min-width: 600px), (orientation: landscape);, body';
+     * const result = _splitCssSelectorGroup(mediaQuery);
+     * // result is ['@media (min-width: 600px), (orientation: landscape);', 'body']
+     */
+    function _splitCssSelectorGroup(selectorGroup) {
+        if (!selectorGroup || typeof selectorGroup !== 'string') {
+            return [];
+        }
+
+        const selectors = [];
+        let currentSelector = '';
+        let parenthesisDepth = 0;
+        let bracketDepth = 0;
+        let braceDepth = 0; // To handle at-rule blocks like @media { ... }
+        let isInSingleQuotes = false;
+        let isInDoubleQuotes = false;
+        let inAtRule = false; // To track if we are inside an @-rule
+
+        for (let i = 0; i < selectorGroup.length; i++) {
+            const char = selectorGroup[i];
+            const prevChar = i > 0 ? selectorGroup[i - 1] : '';
+
+            // A new segment starts if currentSelector is empty or only whitespace.
+            // If it starts with '@', we enter an at-rule.
+            if (currentSelector.trim() === '' && char === '@') {
+                inAtRule = true;
+            }
+
+            currentSelector += char;
+
+            // Don't process the character as special if it's escaped
+            if (prevChar === '\\') {
+                continue;
+            }
+
+            switch (char) {
+                case '(':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) parenthesisDepth++;
+                    break;
+                case ')':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) parenthesisDepth--;
+                    break;
+                case '[':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) bracketDepth++;
+                    break;
+                case ']':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) bracketDepth--;
+                    break;
+                case '{':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) braceDepth++;
+                    break;
+                case '}':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) {
+                        braceDepth--;
+                        // If we were in an at-rule and its main block just closed, exit at-rule mode.
+                        if (inAtRule && braceDepth === 0) {
+                            inAtRule = false;
+                        }
+                    }
+                    break;
+                case '"':
+                    if (!isInSingleQuotes) isInDoubleQuotes = !isInDoubleQuotes;
+                    break;
+                case "'":
+                    if (!isInDoubleQuotes) isInSingleQuotes = !isInSingleQuotes;
+                    break;
+                case ';':
+                    // A semicolon at the top level of nesting can terminate an at-rule (like @import).
+                    if (inAtRule && parenthesisDepth === 0 && bracketDepth === 0 && braceDepth === 0) {
+                        inAtRule = false;
+                    }
+                    break;
+            }
+
+            // Split if the comma is a top-level separator and not inside an at-rule
+            if (char === ',' && !inAtRule && parenthesisDepth === 0 && bracketDepth === 0 && braceDepth === 0 && !isInSingleQuotes && !isInDoubleQuotes) {
+                // Push the selector without the trailing comma
+                selectors.push(currentSelector.slice(0, -1).trim());
+                currentSelector = '';
+                inAtRule = false; // Reset for the new segment
+            }
+        }
+
+        // Add the last selector to the array if it's not empty
+        const trimmedLastSelector = currentSelector.trim();
+        if (trimmedLastSelector) {
+            selectors.push(trimmedLastSelector);
+        }
+
+        return selectors;
+    }
+
+/**
+     * Splits a string by a delimiter (defaulting to a comma), but ignores
+     * delimiters found inside matching pairs of brackets, braces, quotes, or within
+     * CSS at-rules (e.g., `@media ...`).
+     *
+     * Supported brackets: (), [], {}
      * Supported quotes: '', ""
      *
      * @param {string} str The string to split.
      * @returns {string[]} An array of substrings.
      */
-    function _splitRespectingBrackets(str) {
-        const results = [];
-        let lastSplitIndex = 0;
-        let parenDepth = 0;    // for ()
-        let bracketDepth = 0;  // for []
-        let inSingleQuotes = false;
-        let inDoubleQuotes = false;
+function _splitRespectingBrackets(str) {
+    if (!str || typeof str !== 'string') {
+        return [];
+    }
 
-        for (let i = 0; i < str.length; i++) {
+    const results = [];
+    let lastSplitIndex = 0;
+    let parenDepth = 0;
+    let bracketDepth = 0;
+    let braceDepth = 0;
+    let inSingleQuotes = false;
+    let inDoubleQuotes = false;
+    let inAtRule = false;
+
+    for (let i = 0; i < str.length; i++) {
         const char = str[i];
+        const prevChar = i > 0 ? str[i - 1] : '';
 
-        // Update state based on the current character
+        // Check for the start of an at-rule.
+        if (char === '@' && str.substring(lastSplitIndex, i).trim() === '') {
+            inAtRule = true;
+        }
+
+        // Don't process the character as special if it's escaped
+        if (prevChar === '\\') {
+            continue;
+        }
+
         switch (char) {
             case '(':
-            if (!inSingleQuotes && !inDoubleQuotes) parenDepth++;
-            break;
+                if (!inSingleQuotes && !inDoubleQuotes) parenDepth++;
+                break;
             case ')':
-            if (!inSingleQuotes && !inDoubleQuotes) parenDepth--;
-            break;
+                if (!inSingleQuotes && !inDoubleQuotes) parenDepth--;
+                break;
             case '[':
-            if (!inSingleQuotes && !inDoubleQuotes) bracketDepth++;
-            break;
+                if (!inSingleQuotes && !inDoubleQuotes) bracketDepth++;
+                break;
             case ']':
-            if (!inSingleQuotes && !inDoubleQuotes) bracketDepth--;
-            break;
+                if (!inSingleQuotes && !inDoubleQuotes) bracketDepth--;
+                break;
+            case '{':
+                if (!inSingleQuotes && !inDoubleQuotes) braceDepth++;
+                break;
+            case '}':
+                if (!inSingleQuotes && !inDoubleQuotes) {
+                    braceDepth--;
+                    if (inAtRule && braceDepth === 0) {
+                        inAtRule = false;
+                    }
+                }
+                break;
             case "'":
-            if (!inDoubleQuotes) inSingleQuotes = !inSingleQuotes;
-            break;
+                if (!inDoubleQuotes) inSingleQuotes = !inSingleQuotes;
+                break;
             case '"':
-            if (!inSingleQuotes) inDoubleQuotes = !inDoubleQuotes;
-            break;
+                if (!inSingleQuotes) inDoubleQuotes = !inDoubleQuotes;
+                break;
+            case ';':
+                if (inAtRule && parenDepth === 0 && bracketDepth === 0 && braceDepth === 0) {
+                    inAtRule = false;
+                }
+                break;
         }
 
         // Check if we should split at the current position
-        // A split happens if we find a comma and we are not inside any brackets or quotes.
         if (
             char === ',' &&
+            !inAtRule &&
             parenDepth === 0 &&
             bracketDepth === 0 &&
+            braceDepth === 0 &&
             !inSingleQuotes &&
             !inDoubleQuotes
         ) {
-            // Extract the segment from the last split point to the current position
             results.push(str.substring(lastSplitIndex, i).trim());
-            // Update the last split index to start after the comma
             lastSplitIndex = i + 1;
+            inAtRule = false; // Reset for the new segment
         }
-        }
-
-        // Add the final segment of the string after the last comma
-        results.push(str.substring(lastSplitIndex).trim());
-        
-        return results;
     }
+
+    // Add the final segment of the string after the last comma
+    results.push(str.substring(lastSplitIndex).trim());
+
+    return results;
+}
 
     function _formatSelectorString(selectorStr) {
         if (!selectorStr) return "";

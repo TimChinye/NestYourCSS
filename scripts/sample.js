@@ -1639,7 +1639,7 @@ h2, /* H2 elements */
   font-weight: bold;
 }
 `,
-/* */
+/* Hopefully the final permanent sample I need */
 'hopefullyTheEnd': `
 .item, .product {
     padding: 10px;

@@ -20,7 +20,7 @@ async function setupEditors() {
 	display: none;
 }
   `;
-  // sample = Object.values(cssSamples)[0]; // First one
+  sample = Object.values(cssSamples)[0]; // First one
   // sample = Object.values(cssSamples)[0]; // Specific one 
   // sample = cssSamples["hopefullyTheEnd"]; // Specific one
   // sample = Object.values(cssSamples).slice(0, 2).join(''); // Range

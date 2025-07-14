@@ -31,62 +31,61 @@ function convertToNestedCSS(cssProvided, htmlString) {
     if (window.processMode == 1) return beautifyCSS(cssProvided);
 };
 
+/**
+ * Minimizes CSS by removing only comments and unnecessary whitespace.
+ *
+ * This function is inspired by the robust "extract, process, restore" pattern
+ * found in the provided PHP Minify library. It ensures that string content
+ * and significant selector whitespace (like descendant combinators) are
+ * never accidentally modified.
+ *
+ * @param {string} cssProvided The raw CSS string.
+ * @returns {string} The minified CSS string.
+ */
 function minimizeCSS(cssProvided) {
-    // 1. Remove all comments, respecting strings
-    // This regex matches either a double-quoted string (g1), a single-quoted string (g3), or a comment (g5).
-    // If a string is matched, it's kept. If a comment is matched, it's replaced with an empty string.
-    cssProvided = cssProvided.replace(
-        /("([^"\\]|\\.)*")|('([^'\\]|\\.)*')|(\/\*[\s\S]*?\*\/)/g,
-        (match, doubleQuotedString, _g2, singleQuotedString, _g4, comment) => {
-            if (doubleQuotedString) return doubleQuotedString; // Keep double-quoted string
-            if (singleQuotedString) return singleQuotedString; // Keep single-quoted string
-            if (comment) return ''; // Remove comment
-            return match; // Should not be reached if regex is comprehensive
-        }
-    );
-
-    // 2. Extract string literals
-    const strings = [];
-    const placeholderPrefix = "__MINIMIZECSS_STRING_LITERAL_";
+    const extracted = [];
+    const placeholderPrefix = "__MINIMIZE_CSS_EXTRACTED_";
     const placeholderSuffix = "__";
 
-    // This regex matches either a double-quoted string or a single-quoted string.
-    // It's used to find strings to replace them with placeholders.
+    // 1. Extract strings and remove comments in a single pass.
     cssProvided = cssProvided.replace(
-        /("([^"\\]|\\.)*")|('([^'\\]|\\.)*')/g,
-        (match) => {
-            strings.push(match);
-            return `${placeholderPrefix}${strings.length - 1}${placeholderSuffix}`;
+        /("([^"\\]|\\.)*")|('([^'\\]|\\.)*')|(\/\*[\s\S]*?\*\/)/g,
+        (match, doubleQuotedString, _g2, singleQuotedString) => {
+            if (doubleQuotedString || singleQuotedString) {
+                const placeholder = `${placeholderPrefix}${extracted.length}${placeholderSuffix}`;
+                extracted.push(match);
+                return placeholder;
+            }
+            return ''; // It's a comment, so remove it.
         }
     );
 
-    // 3. Perform original minification operations on the CSS with placeholders
+    // 2. Perform careful whitespace minification.
     cssProvided = cssProvided
-        // .split('/*').map(part => part.split('*/').pop()).join('') // Comment removal already done
-
-        // Join gaps together
+        // Collapse all whitespace sequences to a single space, then trim.
         .replace(/\s+/g, ' ')
+        .trim()
+        // Remove space around unambiguous delimiters and combinators.
+        // NOTE: The colon ':' is intentionally excluded from this expression.
+        .replace(/\s*([>~+,;{}])\s*/g, '$1')
+        // Remove space AFTER any colon. This is always safe.
+        // e.g., `color: red` => `color:red`, `a: hover` => `a:hover`
+        .replace(/:\s+/g, ':')
+        // Remove space BEFORE a colon, but ONLY if it's a property-value
+        // colon inside a declaration block. This is the key to preserving
+        // descendant combinators like `#id :focus`.
+        // The negative lookahead `(?![^}]*\{)` ensures the colon is not
+        // part of a selector block.
+        .replace(/\s+:(?![^}]*\{)/g, ':')
+        // Remove the last semicolon in a rule block.
+        .replace(/;}/g, '}');
 
-        // Close gaps between css property names, property values and rules
-        .replace(/([,;:{}])\s/g, '$1')
-
-        // Close gaps between prop name and open braces
-        .replace(/\s\{/g, '{') // Note: \s{ means a space followed by literal '{'. Same as \s\{
-
-        // Ensure proper spacing around @rules
-        .replace(/\s*@/g, '@');
-
-    // The commented-out @rule formatting (if you decide to use it)
-    // .replace(/@(?!import)\w+\s*/g, (match) => {
-    //  return match.trim() + ' ';
-    // });
-
-    // 4. Restore string literals
-    for (let i = 0; i < strings.length; i++) {
-        // Use a RegExp for replacement to avoid issues if placeholder string contains special regex characters
-        // (though unlikely with the chosen placeholder format)
-        const placeholder = new RegExp(`${placeholderPrefix}${i}${placeholderSuffix}`, 'g');
-        cssProvided = cssProvided.replace(placeholder, strings[i]);
+    // 3. Restore the extracted string literals.
+    if (extracted.length) {
+        for (let i = 0; i < extracted.length; i++) {
+            const placeholder = new RegExp(`${placeholderPrefix}${i}${placeholderSuffix}`, 'g');
+            cssProvided = cssProvided.replace(placeholder, extracted[i]);
+        }
     }
 
     return cssProvided;
@@ -189,17 +188,6 @@ function splitCSS(cssProvided) {
                     insideCurlyBrackets = false;
                 }
             }
-             // Quote/paren/bracket tracking inside declaration blocks might be needed for complex cases,
-             // but the problem description implies the main issue is at the selector/block boundary.
-             // For this specific problem, the fix to quote handling in the outer parsing loop
-             // and in hasNestableConstruct should be sufficient. The curly bracket counting
-             // within a block relies on the context established by the outer loop.
-             // If properties themselves could contain complex structures needing quote/paren/bracket
-             // protection for their *internal* braces, then the state variables (isInSingleQuotes, etc.)
-             // would need to be updated within this `if (insideCurlyBrackets)` block as well.
-             // However, for CSS structure, the provided logic for `curlyBracketCount` is typical
-             // once a block is entered. The key is *correctly* entering and exiting blocks.
-
         } else { // Not inside curly brackets
             
             if (char === ';' && !isInSingleQuotes && !isInDoubleQuotes && parenthesisDepth === 0 && bracketDepth === 0) {

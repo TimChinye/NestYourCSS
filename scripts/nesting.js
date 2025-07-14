@@ -43,7 +43,9 @@ function convertToNestedCSS(cssProvided, htmlString) {
     if (window.processMode == 0) return cssProvided;
 
     cssProvided = splitCSS(cssProvided);
+    // console.log(cssProvided);
     cssProvided = flattenCSS(cssProvided);
+    // console.log(cssProvided);
     if (window.processMode == 2) return denestCSS(cssProvided);
 
     cssProvided = renestCSS(cssProvided, htmlString);
@@ -305,9 +307,263 @@ function splitCSS(cssProvided) {
     return parsedCSS;
 }
 
-function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
-    // Initialize the parsed CSS array
-    let parsedCSS = [];
+function flattenCSS(cssProvided, prefix = '') {
+    /**
+     * Combines an array of CSS selectors into a compact string using the :is() pseudo-class.
+     * It intelligently groups selectors that start with '&' separately from the others.
+     *
+     * @param {string[]} selectors The array of selector strings to combine.
+     * @returns {string} The combined and formatted selector string.
+     */
+    function _combineCssSelectors(selectors) {
+        const combinators = ['>', '+', '~'];
+        
+        // Return an empty string if the input is not a valid array or is empty.
+        if (!Array.isArray(selectors) || selectors.length === 0) {
+        return "";
+        }
+    
+        // 1. Categorize selectors into two groups.
+        let ampersandSelectors = [];
+        let otherSelectors = [];
+    
+        for (const selector of selectors) {
+        // Use trim() to be robust against accidental whitespace.
+        const trimmedSelector = selector.trim();
+        if (trimmedSelector.startsWith('&')) {
+            // Add the selector to the list, but *without* its leading '&'.
+            ampersandSelectors.push(trimmedSelector.substring(1));
+        } else {
+            otherSelectors.push(trimmedSelector);
+        }
+        }
+    
+        // 2. Build the string parts for each group if they contain any selectors.
+        const finalParts = [];
+    
+        if (ampersandSelectors.length > 0) {
+            // Join the selectors and wrap them with &:is()
+            finalParts.push(`&:is(${ampersandSelectors.join(', ')})`);
+        }
+    
+        if (otherSelectors.length > 0) {
+            // Join the selectors and wrap them with :is()
+            if (ampersandSelectors.length > 0) otherSelectors = otherSelectors.map((selector) => ((combinators.includes(selector[0])) ? '& ' : '') + selector);
+            let wrapped = otherSelectors.join(', ');
+            if (ampersandSelectors.length > 0) wrapped = `:is(${wrapped})`;
+            finalParts.push(wrapped);
+        }
+    
+        // 3. Join the final parts with a comma and space.
+        // This gracefully handles cases where one of the groups was empty.
+        return finalParts.join(', ');
+    }
+
+    /**
+     * Splits a CSS selector group or at-rule string into an array of individual components.
+     *
+     * This function is more robust than a simple `string.split(',')` because it correctly
+     * handles commas within parentheses (e.g., `:is(a, b)`), attribute selectors
+     * (e.g., `[attr="foo,bar"]`), and quoted strings. It also treats CSS at-rules
+     * (e.g., `@media ...;` or `@media ... { ... }`) as single, unsplittable units.
+     *
+     * @param {string} selectorGroup - The CSS string to split, which can contain selector groups and at-rules.
+     * @returns {string[]} An array of individual, trimmed CSS selectors or at-rules.
+     * @example
+     * const selector = 'h1, p:is(.foo, .bar), [data-content="a, b"], .final';
+     * const result = _splitCssSelectorGroup(selector);
+     * // result is ['h1', 'p:is(.foo, .bar)', '[data-content="a, b"]', '.final']
+     *
+     * @example
+     * const mediaQuery = '@media (min-width: 600px), (orientation: landscape);, body';
+     * const result = _splitCssSelectorGroup(mediaQuery);
+     * // result is ['@media (min-width: 600px), (orientation: landscape);', 'body']
+     */
+    function _splitCssSelectorGroup(selectorGroup) {
+        if (!selectorGroup || typeof selectorGroup !== 'string') {
+            return [];
+        }
+
+        const selectors = [];
+        let currentSelector = '';
+        let parenthesisDepth = 0;
+        let bracketDepth = 0;
+        let braceDepth = 0; // To handle at-rule blocks like @media { ... }
+        let isInSingleQuotes = false;
+        let isInDoubleQuotes = false;
+        let inAtRule = false; // To track if we are inside an @-rule
+
+        for (let i = 0; i < selectorGroup.length; i++) {
+            const char = selectorGroup[i];
+            const prevChar = i > 0 ? selectorGroup[i - 1] : '';
+
+            // A new segment starts if currentSelector is empty or only whitespace.
+            // If it starts with '@', we enter an at-rule.
+            if (currentSelector.trim() === '' && char === '@') {
+                inAtRule = true;
+            }
+
+            currentSelector += char;
+
+            // Don't process the character as special if it's escaped
+            if (prevChar === '\\') {
+                continue;
+            }
+
+            switch (char) {
+                case '(':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) parenthesisDepth++;
+                    break;
+                case ')':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) parenthesisDepth--;
+                    break;
+                case '[':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) bracketDepth++;
+                    break;
+                case ']':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) bracketDepth--;
+                    break;
+                case '{':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) braceDepth++;
+                    break;
+                case '}':
+                    if (!isInSingleQuotes && !isInDoubleQuotes) {
+                        braceDepth--;
+                        // If we were in an at-rule and its main block just closed, exit at-rule mode.
+                        if (inAtRule && braceDepth === 0) {
+                            inAtRule = false;
+                        }
+                    }
+                    break;
+                case '"':
+                    if (!isInSingleQuotes) isInDoubleQuotes = !isInDoubleQuotes;
+                    break;
+                case "'":
+                    if (!isInDoubleQuotes) isInSingleQuotes = !isInSingleQuotes;
+                    break;
+                case ';':
+                    // A semicolon at the top level of nesting can terminate an at-rule (like @import).
+                    if (inAtRule && parenthesisDepth === 0 && bracketDepth === 0 && braceDepth === 0) {
+                        inAtRule = false;
+                    }
+                    break;
+            }
+
+            // Split if the comma is a top-level separator and not inside an at-rule
+            if (char === ',' && !inAtRule && parenthesisDepth === 0 && bracketDepth === 0 && braceDepth === 0 && !isInSingleQuotes && !isInDoubleQuotes) {
+                // Push the selector without the trailing comma
+                selectors.push(currentSelector.slice(0, -1).trim());
+                currentSelector = '';
+                inAtRule = false; // Reset for the new segment
+            }
+        }
+
+        // Add the last selector to the array if it's not empty
+        const trimmedLastSelector = currentSelector.trim();
+        if (trimmedLastSelector) {
+            selectors.push(trimmedLastSelector);
+        }
+
+        return selectors;
+    }
+
+/**
+     * Splits a string by a delimiter (defaulting to a comma), but ignores
+     * delimiters found inside matching pairs of brackets, braces, quotes, or within
+     * CSS at-rules (e.g., `@media ...`).
+     *
+     * Supported brackets: (), [], {}
+     * Supported quotes: '', ""
+     *
+     * @param {string} str The string to split.
+     * @returns {string[]} An array of substrings.
+     */
+function _splitRespectingBrackets(str) {
+    if (!str || typeof str !== 'string') {
+        return [];
+    }
+
+    const results = [];
+    let lastSplitIndex = 0;
+    let parenDepth = 0;
+    let bracketDepth = 0;
+    let braceDepth = 0;
+    let inSingleQuotes = false;
+    let inDoubleQuotes = false;
+    let inAtRule = false;
+
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        const prevChar = i > 0 ? str[i - 1] : '';
+
+        // Check for the start of an at-rule.
+        if (char === '@' && str.substring(lastSplitIndex, i).trim() === '') {
+            inAtRule = true;
+        }
+
+        // Don't process the character as special if it's escaped
+        if (prevChar === '\\') {
+            continue;
+        }
+
+        switch (char) {
+            case '(':
+                if (!inSingleQuotes && !inDoubleQuotes) parenDepth++;
+                break;
+            case ')':
+                if (!inSingleQuotes && !inDoubleQuotes) parenDepth--;
+                break;
+            case '[':
+                if (!inSingleQuotes && !inDoubleQuotes) bracketDepth++;
+                break;
+            case ']':
+                if (!inSingleQuotes && !inDoubleQuotes) bracketDepth--;
+                break;
+            case '{':
+                if (!inSingleQuotes && !inDoubleQuotes) braceDepth++;
+                break;
+            case '}':
+                if (!inSingleQuotes && !inDoubleQuotes) {
+                    braceDepth--;
+                    if (inAtRule && braceDepth === 0) {
+                        inAtRule = false;
+                    }
+                }
+                break;
+            case "'":
+                if (!inDoubleQuotes) inSingleQuotes = !inSingleQuotes;
+                break;
+            case '"':
+                if (!inSingleQuotes) inDoubleQuotes = !inDoubleQuotes;
+                break;
+            case ';':
+                if (inAtRule && parenDepth === 0 && bracketDepth === 0 && braceDepth === 0) {
+                    inAtRule = false;
+                }
+                break;
+        }
+
+        // Check if we should split at the current position
+        if (
+            char === ',' &&
+            !inAtRule &&
+            parenDepth === 0 &&
+            bracketDepth === 0 &&
+            braceDepth === 0 &&
+            !inSingleQuotes &&
+            !inDoubleQuotes
+        ) {
+            results.push(str.substring(lastSplitIndex, i).trim());
+            lastSplitIndex = i + 1;
+            inAtRule = false; // Reset for the new segment
+        }
+    }
+
+    // Add the final segment of the string after the last comma
+    results.push(str.substring(lastSplitIndex).trim());
+
+    return results;
+}
 
     function _formatSelectorString(selectorStr) {
         if (!selectorStr) return "";
@@ -371,16 +627,13 @@ function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
             // 2. Space before certain characters (*, [, #, .) if not already spaced and not inside () or []
             //    and not immediately after another combinator or start of string.
             if (spaceBeforeChars.includes(char) && parenthesisDepth === 0 && bracketDepth === 0) {
-                // MODIFIED CONDITION:
                 if (prevChar && prevChar !== ' ' && !combinators.includes(prevChar) && prevChar !== '(' &&
-                    // --- Start of new conditions ---
                     // Do NOT add a space if prevChar is '&' and current char is a class/id/pseudo selector start
                     !(prevChar === '&' && (char === '.' || char === '#' || char === ':')) &&
                     // Do NOT add a space if prevChar is alphanumeric and current char is a class/id selector start
                     !(/[a-zA-Z0-9]/.test(prevChar) && (char === '.' || char === '#')) &&
                     // Do NOT add a space if prevChar is a closing bracket/paren or '*' and current char is class/id
                     !((prevChar === ']' || prevChar === ')' || prevChar === '*') && (char === '.' || char === '#'))
-                    // --- End of new conditions ---
                 ) {
                     result += ' ';
                 }
@@ -424,13 +677,68 @@ function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
             .trim();
     }
 
-    // Loop through each rule in the provided CSS
-    for (let i = 0; i < cssProvided.length; i++) {
+    /**
+     * Splits a complex CSS selector string into an array of its constituent parts.
+     *
+     * This function parses a string containing mixed standard selectors and at-rules,
+     * splitting them at logical boundaries (`;` for at-rules, the start of a new
+     * at-rule for standard selectors). It preserves the original order of the parts.
+     *
+     * @param {string} selectorString The raw CSS selector string to parse.
+     *   e.g., "body @media (min-width: 768px); nav > ul"
+     * @returns {string[]} An array containing the separated parts in their original order.
+     *   e.g., ['body', '@media (min-width: 768px)', 'nav > ul']
+     *
+     * @example
+     * // Returns parts in the order they appear
+     * const parts = extractCssSelectorParts("body @media (min-width: 768px); nav > ul");
+     * // parts is: ['body', '@media (min-width: 768px)', 'nav > ul']
+     */
+    function _extractCssSelectorParts(selectorString) {
+        const parts = [];
+        let remainingSelector = selectorString.trim();
 
+        while (remainingSelector.length > 0) {
+            remainingSelector = remainingSelector.trim();
+            if (remainingSelector.length === 0) break;
+
+            if (remainingSelector.startsWith('@')) {
+                // It's an at-rule. It ends at the next semicolon.
+                let semicolonIndex = remainingSelector.indexOf(';');
+                if (semicolonIndex === -1) {
+                    // No semicolon, so the at-rule is the rest of the string.
+                    parts.push(remainingSelector);
+                    remainingSelector = "";
+                } else {
+                    parts.push(remainingSelector.substring(0, semicolonIndex).trim());
+                    remainingSelector = remainingSelector.substring(semicolonIndex + 1);
+                }
+            } else {
+                // It's a standard selector. It ends at the next at-rule or the end of the string.
+                let nextAtSymbolIndex = remainingSelector.indexOf('@');
+                if (nextAtSymbolIndex === -1) {
+                    parts.push(remainingSelector.trim());
+                    remainingSelector = "";
+                } else {
+                    let selectorPart = remainingSelector.substring(0, nextAtSymbolIndex).trim();
+                    if (selectorPart) {
+                        parts.push(selectorPart);
+                    }
+                    remainingSelector = remainingSelector.substring(nextAtSymbolIndex);
+                }
+            }
+        }
+        return parts;
+    }
+
+    // Loop through each rule in the provided CSS
+    // Initialize the parsed CSS array
+    let parsedCSS = [];
+    const combinators = ["+", ">", "~"];
+    for (const rule of cssProvided) {
         // If the current rule is an array, it's a nested rule
-        if (Array.isArray(cssProvided[i])) {
-            // Extract the relative selector and declarations from the current rule
-            let [relativeSelector, declarations] = cssProvided[i];
+        if (Array.isArray(rule)) {
+            let [relativeSelector, declarations] = rule;
 
             // If the relative selector starts with '@', append a semicolon to it
 
@@ -501,132 +809,70 @@ function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
 
             relativeSelector = _formatSelectorString(relativeSelector);
 
-            let isSelectorList = false;
-            if ((prefix != '' || Array.isArray(declarations)) && relativeSelector.includes(',') && relativeSelector.at(-1) != ';') {
-                let tempSelector = '';
-                let parenthesisDepth = 0;
-                let bracketDepth = 0;
-                let isInSingleQuotes = false;
-                let isInDoubleQuotes = false;
+            // Transform the relative selector to handle all `&` cases.
+            if (relativeSelector.includes('&') && prefix) {
+                const partitionedAbsoluteSelector = _extractCssSelectorParts(prefix);
+                const extractedAtRules = partitionedAbsoluteSelector.filter((part) => part[0] != '@').join(' ');
 
-                // Update this code take the part of lastRelativeSelector that's related to the closest relative, e.g; `body main article` - the real closest relative here is "article" 
-
-                // Loop through each character in the declarations
-                // Changed from for...of to a standard for loop to get index 'i'
-                for (let i = 0; i < relativeSelector.length; i++) {
-                    let char = relativeSelector[i];
-                    // Handle semicolons, colons, quotes, and escape characters
-                    let isInside = isInSingleQuotes || isInDoubleQuotes || bracketDepth != 0 || parenthesisDepth != 0; // Is inside quotes/brackets
-
-                    switch (char) {
-                        case '(':
-                            parenthesisDepth++;
-                            break;
-                        case ')':
-                            parenthesisDepth--;
-                            break;
-                        case '[':
-                            bracketDepth++;
-                            break;
-                        case ']':
-                            bracketDepth--;
-                            break;
-                        case '"':
-                            isInDoubleQuotes ^= 1;
-                            break;
-                        case "'":
-                            isInSingleQuotes ^= 1;
-                            break;
-                    }
-
-                    tempSelector += char;
-
-                    if (!isInside) {
-                        if (char === ',' && !isSelectorList) isSelectorList = true;
-
-                        if (isSelectorList && tempSelector.slice(-3) == ', &')
-                            tempSelector = tempSelector.slice(0, -1) + lastRelativeSelector;
-                    }
-                }
-
-                let simpleSelectorList = `:is(${relativeSelector.startsWith('&') ? lastRelativeSelector + tempSelector.slice(1) : tempSelector})`;
-                relativeSelector = isSelectorList ? simpleSelectorList : tempSelector;
+                const replacement = `:is(${extractedAtRules})`;
+                const selectorParts = _splitRespectingBrackets(relativeSelector);
+                const transformedParts = selectorParts.map(part => {
+                    return part.replace(/&/g, (match, offset) => {
+                        if (offset === 0) return '&';
+                        return replacement;
+                    });
+                });
+                relativeSelector = transformedParts.join(', ');
             }
 
-            // If the declarations are an array, there are nested rules within the current rule
-            if (Array.isArray(declarations)) {
-                let absoluteSelector = prefix + ((!prefix) ? '' : ' ') + relativeSelector;
+            const relativeParts = _splitRespectingBrackets(relativeSelector);
+
+            const absoluteParts = relativeParts.map(part => {
+                const isNestingSelector = part == '&';
+                const isAnchor = part.startsWith('&');
+                const needsSpace = !!prefix;
                 
+                if (isNestingSelector) {
+                    return prefix + ' ' + part;
+                } else if (isAnchor) {
+                    // For `&.class`, concatenate `prefix` with the part (minus `&`).
+                    return prefix + part.substring(1);
+                } else {
+                    // For `div`, `> div`, etc., combine with a space if needed.
+                    return prefix + (needsSpace ? ' ' : '') + part;
+                }
+            });
+            
+            // Join the fully-formed parts back into a final selector string.
+            let absoluteSelector = absoluteParts.join(', ');
+                
+            // Split selector groups and duplicate the nested rules:
+            let splitSelectorGroup = _splitCssSelectorGroup(absoluteSelector);
+
+            if (Array.isArray(declarations)) {
                 // If not all declarations are arrays, add them to the parsed CSS
                 if (!declarations.every(Array.isArray)) {
-                    parsedCSS.push([absoluteSelector, declarations.filter((d) => typeof d === 'string').join(';')]);
-                }
+                    let getRuleOfDeclarations = (innerAbsoluteSelector) => [innerAbsoluteSelector, declarations.filter((d) => typeof d === 'string').join(';')];
 
+                    const newRule = splitSelectorGroup.map((innerAbsoluteSelector) => getRuleOfDeclarations(innerAbsoluteSelector))
+                    parsedCSS.push(...newRule);
+                }
+                
                 // Recursively call the function to denest the nested rules, and concatenate the result to the parsed CSS
-                parsedCSS = parsedCSS.concat(flattenCSS(declarations.filter(Array.isArray).map(([nestedSelector, nestedDeclarations]) => [nestedSelector, nestedDeclarations]), absoluteSelector, relativeSelector));
+                const nestedRules = declarations.filter(Array.isArray);
+
+                const newRule = splitSelectorGroup.map((innerAbsoluteSelector) => flattenCSS(nestedRules, innerAbsoluteSelector));
+                parsedCSS = parsedCSS.concat(...newRule);
             } else {
-                // If the declarations are not an array, add them to the parsed CSS
-
-                // Split selector groups:
-                let splitSelectors = [];
-                let currentSelector = '';
-                let parenthesisDepth = 0;
-                let bracketDepth = 0;
-                let isInSingleQuotes = false;
-                let isInDoubleQuotes = false;
-
-                for (let j = 0; j < relativeSelector.length; j++) {
-                    const char = relativeSelector[j];
-
-                    currentSelector += char;
-                    
-                    switch (char) {
-                        case '(':
-                            parenthesisDepth++;
-                            break;
-                        case ')':
-                            parenthesisDepth--;
-                            break;
-                        case '[':
-                            bracketDepth++;
-                            break;
-                        case ']':
-                            bracketDepth--;
-                            break;
-                        case '"':
-                            if (j === 0 || relativeSelector[j-1] !== '\\') isInDoubleQuotes ^= 1; // Handle escaped quotes
-                            break;
-                        case "'":
-                            if (j === 0 || relativeSelector[j-1] !== '\\') isInSingleQuotes ^= 1; // Handle escaped quotes
-                            break;
-                    }
-
-                    // If current character is a comma, and it's not within brackets/quotes... and not apart of an @at-rule
-                    if (!currentSelector.startsWith('@') && char == ',' && parenthesisDepth == 0 && bracketDepth == 0 && !isInSingleQuotes && !isInDoubleQuotes) {
-                        splitSelectors.push(currentSelector.slice(0, -1).trim());
-                        currentSelector = '';
-                    }
-
-                    // If last character of the relativeSelector string
-                    if ((j + 1) == relativeSelector.length) {
-                        if (currentSelector.trim() !== '')
-                            splitSelectors.push(currentSelector.trim());
-
-                        currentSelector = '';
-                    }
-                }
-
-                // If currentSelector has content left after loop (e.g; no comma at end), it was handled by (j+1) == relativeSelector.length
-                let splitSelectorsWithPrefix = splitSelectors.map((newSelector) => prefix + ((!prefix) ? '' : ' ') + newSelector);
-                parsedCSS.push(...splitSelectorsWithPrefix.map((newSelector) => [newSelector, declarations]));
+                const newRule = splitSelectorGroup.map((newSelector) => [newSelector, declarations]);
+                parsedCSS.push(...newRule);
             }
         } else {
-            // If the current rule is not an array, add it to the parsed CSS
-            parsedCSS.push([cssProvided[i]])
+            // If the current rule is not an array, add it to the parsed CS
+            parsedCSS.push([rule])
         }
     }
 
-    // Return the parsed CSS
     return parsedCSS;
 }
 
@@ -657,103 +903,132 @@ function denestCSS(cssProvided) {
         return resultChars.join(''); // Combine all collected characters into the final string.
     }
 
-    cssProvided.forEach(([selector, declarations]) => { // declarations parameter is not used in this selector parsing logic
-        let selectorParts = [];
-        let remainingSelector = selector.trim(); // Initial trim of the whole selector string
+    /**
+     * Splits a complex CSS selector string into an array of its constituent parts.
+     *
+     * This function parses a string containing mixed standard selectors and at-rules,
+     * splitting them at logical boundaries (`;` for at-rules, the start of a new
+     * at-rule for standard selectors). It preserves the original order of the parts.
+     *
+     * @param {string} selectorString The raw CSS selector string to parse.
+     *   e.g., "body @media (min-width: 768px); nav > ul"
+     * @returns {string[]} An array containing the separated parts in their original order.
+     *   e.g., ['body', '@media (min-width: 768px)', 'nav > ul']
+     *
+     * @example
+     * // Returns parts in the order they appear
+     * const parts = extractCssSelectorParts("body @media (min-width: 768px); nav > ul");
+     * // parts is: ['body', '@media (min-width: 768px)', 'nav > ul']
+     */
+    function _extractCssSelectorParts(selectorString) {
+        const parts = [];
+        let remainingSelector = selectorString.trim();
 
         while (remainingSelector.length > 0) {
-            // Trim whitespace from the current start of remainingSelector before processing
             remainingSelector = remainingSelector.trim();
-            if (remainingSelector.length === 0) {
-                break; // Nothing left to process
-            }
+            if (remainingSelector.length === 0) break;
 
             if (remainingSelector.startsWith('@')) {
-                // Current segment is an At-rule
+                // It's an at-rule. It ends at the next semicolon.
                 let semicolonIndex = remainingSelector.indexOf(';');
-                
                 if (semicolonIndex === -1) {
-                    // No semicolon, this @-rule is the last part of the selector string
-                    // (e.g; "@keyframes animName" or "@font-face" if it's the end of the input string)
-                    selectorParts.push(remainingSelector); // Push the whole remaining string
-                    remainingSelector = ""; // Consumed
+                    // No semicolon, so the at-rule is the rest of the string.
+                    parts.push(remainingSelector);
+                    remainingSelector = "";
                 } else {
-                    // Semicolon found. This at-rule declaration (e.g; @media query, @import, @supports condition) ends here.
-                    selectorParts.push(remainingSelector.substring(0, semicolonIndex).trim()); // Trim the extracted at-rule part
+                    parts.push(remainingSelector.substring(0, semicolonIndex).trim());
                     remainingSelector = remainingSelector.substring(semicolonIndex + 1);
                 }
             } else {
-                // Current segment is a standard selector group (does not start with '@')
-                // This selector group ends either at the end of the string, or just before the next @-rule.
-                // We find the next '@' symbol. If it exists, the selector part is everything before it.
-                // If no '@' is found, the entire remaining string is the selector part.
-                
+                // It's a standard selector. It ends at the next at-rule or the end of the string.
                 let nextAtSymbolIndex = remainingSelector.indexOf('@');
-                
                 if (nextAtSymbolIndex === -1) {
-                    // No more '@' symbols, the rest of the string is this selector group
-                    selectorParts.push(remainingSelector.trim()); // Trim the final selector part
-                    remainingSelector = ""; // Consumed
+                    parts.push(remainingSelector.trim());
+                    remainingSelector = "";
                 } else {
-                    // Found an '@' symbol. Assume it starts a new @-rule.
-                    // The current selector group is everything before this '@'.
-                    // Example: "body @media..." -> "body" is selector, "@media..." is the start of the next segment.
-                    let selectorPart = remainingSelector.substring(0, nextAtSymbolIndex);
-                    selectorParts.push(selectorPart.trim()); // Trim the extracted selector part
-                    // The remainder starts with '@', and will be processed in the next iteration of the loop.
-                    remainingSelector = remainingSelector.substring(nextAtSymbolIndex); 
+                    let selectorPart = remainingSelector.substring(0, nextAtSymbolIndex).trim();
+                    if (selectorPart) {
+                        parts.push(selectorPart);
+                    }
+                    remainingSelector = remainingSelector.substring(nextAtSymbolIndex);
                 }
             }
+        }
+        return parts;
+    }
+
+    /**
+     * Reorders an array of CSS selector parts, grouping at-rules and combining standard selectors.
+     *
+     * This function takes an array of selector parts (as produced by `extractCssSelectorParts`),
+     * separates them into at-rules and standard selectors, and returns a new array.
+     * The returned array contains all at-rules first, followed by a single string
+     * representing all standard selectors joined together as descendants. It also handles
+     * the SASS-style nesting selector `&` by removing it during combination.
+     *
+     * @param {string[]} selectorParts An array of selector strings, some potentially at-rules.
+     *   e.g., ['body', '@media (min-width: 768px)', 'nav > ul']
+     * @returns {string[]} A new, ordered array for creating nested CSS structures.
+     *   e.g., ['@media (min-width: 768px)', 'body nav > ul']
+     *
+     * @example
+     * const ordered = orderCssSelectorParts(['body', '@media (min-width: 768px)', 'nav > ul']);
+     * // ordered is: ['@media (min-width: 768px)', 'body nav > ul']
+     *
+     * @example
+     * // Handles the nesting selector '&'
+     * const ordered2 = orderCssSelectorParts(['.parent', '&:hover', '@media (pointer: fine)']);
+     * // ordered2 is: ['@media (pointer: fine)', '.parent:hover']
+     */
+    function _orderCssSelectorParts(selectorParts) {
+        // Helper to correctly combine selectors containing the nesting ampersand.
+        function _processInternalAmpersands(str) {
+            if (str.indexOf('&') === -1) return str;
+            // Replaces '&' and any surrounding whitespace, effectively concatenating parts.
+            // e.g., "parent & :hover" becomes "parent:hover"
+            return str.replace(/\s*&\s*/g, '').trim();
         }
 
-        const finalAtRules = [];
-        let currentSelectorAccumulator = "";
-    
-        for (const rawPart of selectorParts) {
-            if (rawPart.startsWith('@')) {
-                // This is an at-rule, collect it.
-                // We assume at-rules themselves don't need internal ampersand processing.
-                finalAtRules.push(rawPart);
+        const atRules = [];
+        let combinedSelector = "";
+
+        for (const part of selectorParts) {
+            if (part.startsWith('@')) {
+                atRules.push(part);
             } else {
-                // This is a selector part.
-                // Determine if it's meant for direct concatenation (starts with '&')
-                // or if it's a new sub-selector (potentially a descendant).
-                const isConcatenation = rawPart.startsWith('&');
-    
-                // Process the part for any internal ampersands (e.g., "foo & bar" -> "foobar",
-                // or "&:hover" -> ":hover" if _processInternalAmpersands behaves like replace(/\s*&/g, '')).
-                // Based on the _processInternalAmpersands code, it correctly handles leading ampersands
-                // by removing them and any preceding whitespace.
-                let processedPart = _processInternalAmpersands(rawPart);
-    
-                if (isConcatenation) {
-                    // The rawPart started with '&', so append its processed version.
-                    // _processInternalAmpersands will have removed the leading '&' (and any spaces before it).
-                    currentSelectorAccumulator += processedPart;
+
+                const processedPart = _processInternalAmpersands(part);
+                if (!processedPart) continue;
+
+                if (combinedSelector === "") {
+                    combinedSelector = processedPart;
                 } else {
-                    // The rawPart did NOT start with '&'.
-                    // If there's an existing selector, and this part is not empty,
-                    // add a space for descendant selector.
-                    if (currentSelectorAccumulator !== "" && processedPart !== "") {
-                        currentSelectorAccumulator += ' ';
-                    }
-                    currentSelectorAccumulator += processedPart;
+                    // If the part was meant for concatenation (started with '&'),
+                    // _processInternalAmpersands has already handled it.
+                    // Otherwise, join with a descendant space.
+                    combinedSelector += ' ' + processedPart;
                 }
             }
         }
-    
-        // Clean up the accumulated selector string:
-        // - Replace multiple spaces with a single space.
-        // - Trim leading/trailing whitespace.
-        currentSelectorAccumulator = currentSelectorAccumulator.replace(/\s\s+/g, ' ').trim();
-    
-        const finalResult = [...finalAtRules];
-        if (currentSelectorAccumulator) { // Only add the selector string if it's not empty
-            finalResult.push(currentSelectorAccumulator);
-        }
         
-        // Update selectorParts with the transformed array.
-        selectorParts = finalResult;
+        // Clean up potential double spaces created during combination.
+        combinedSelector = combinedSelector.replace(/\s\s+/g, ' ').trim();
+
+        const finalResult = [...atRules];
+        if (combinedSelector) {
+            finalResult.push(combinedSelector);
+        }
+
+        return finalResult;
+    }
+
+    cssProvided.forEach(([selector, declarations]) => { // declarations parameter is not used in this selector parsing logic
+
+        // Step 1: Extract the parts from the string.
+        const extractedParts = _extractCssSelectorParts(selector);
+        
+        // Step 2: Order the extracted parts for nesting.
+        const selectorParts = _orderCssSelectorParts(extractedParts);
 
         // Actually nest the CSS
         let currentLevel = parsedCSS;
@@ -1090,6 +1365,35 @@ function renestCSS(cssProvided, withHtml) {
 
                 // Third part: Final flatMap operation (from original code, added trim() for safety)
                 selectorParts = selectorParts.flatMap((part) => ((part.trim().startsWith('@') || part.trim().startsWith(':is(')) ? part : part.split(' ').map((pseudoPart) => pseudoPart.split(',').join(', '))));
+                
+                // Re-joins combinators (like '>') with their targets (like 'div'),
+                // preventing them from being nested incorrectly.
+                const combinators = ["+", ">", "~"];
+                let nestedSelectorDepth = 0;
+                let startIndex = -1;
+
+                for (let i = 0; i < selectorParts.length; i++) {
+                    let nestedSelector = selectorParts[i];
+
+                    if (nestedSelector.includes('(')) {
+                        if (nestedSelectorDepth === 0) startIndex = i;
+                        nestedSelectorDepth += nestedSelector.split("(").length - 1;
+                    }
+
+                    if (nestedSelector.includes(')')) {
+                        nestedSelectorDepth -= nestedSelector.split(")").length - 1;
+
+                        if (nestedSelectorDepth === 0 && startIndex !== -1) {
+                            selectorParts.splice(startIndex, i - startIndex + 1, selectorParts.slice(startIndex, i + 1).join(' '));
+                            i = startIndex;
+                        }
+                    }
+                    
+                    if (combinators.includes(nestedSelector) && i + 1 < selectorParts.length) {
+                        selectorParts.splice(i, 2, nestedSelector + ' ' + selectorParts[i + 1]);
+                        i--; 
+                    }
+                }
             } else {
                 // Handle pseudo selectors
                 let openBracketCount = 0;
@@ -1168,7 +1472,7 @@ function renestCSS(cssProvided, withHtml) {
                             let needsColonPrefix = false;
                             if (resultParts.length > 0) {
                                 const lastResult = resultParts[resultParts.length - 1];
-                                if (lastResult && !lastResult.endsWith('(') && !lastResult.endsWith(':')) {
+                                if (lastResult && !lastResult.endsWith(':')) {
                                     needsColonPrefix = true;
                                 }
                             } else if (j > 0) { 
@@ -1261,9 +1565,7 @@ function renestCSS(cssProvided, withHtml) {
             }
 
             // Actually nest the CSS
-            let currentLevel = parsedCSS;
-
-            function addSpaceAfterComma(declarations) {
+            function _addSpaceAfterComma(declarations) {
                 if (!declarations) return declarations;
 
                 // Split the declarations by comma
@@ -1292,34 +1594,49 @@ function renestCSS(cssProvided, withHtml) {
                 // Add the space after comma
                 return result.join(', ');
             }
+            
+            // `currentLevel` acts as a pointer to the current nesting level in the `parsedCSS` tree.
+            // It starts at the root and descends as the selector path is processed.
+            let currentLevel = parsedCSS;
 
+            // Iterate over each segment of the selector path (e.g., ['nav', '>', 'ul'])
+            // to build or traverse the nested structure.
             selectorParts.forEach((part, i) => {
+                // Check if a node for the current selector part already exists at this level.
                 let existingIndex = currentLevel.findIndex(([s]) => s === part);
 
+                // If the node doesn't exist, create it.
                 if (existingIndex == -1) {
+                    // A new node is a [selector, children] tuple.
                     let newPart = [part, []];
 
+                    // If this is the last part of the path, it's a leaf node; add its declarations.
                     if (i === selectorParts.length - 1) {
                         if (declarations?.endsWith(';')) declarations = declarations.slice(0, -1);
-                        newPart[1].push([addSpaceAfterComma(declarations)]);
+                        newPart[1].push([_addSpaceAfterComma(declarations)]);
                     }
 
+                    // Add the new node to the current level of the tree.
                     currentLevel.push(newPart);
+                    // Descend into the new node's children array for the next iteration.
                     currentLevel = newPart[1];
+                
+                // If the node already exists, traverse into it.
                 } else {
-                    let currentDeclarations = currentLevel[existingIndex][1][0];
-
+                    // If this is the last part of the path, merge declarations into the existing node.
                     if (i === selectorParts.length - 1) {
+                        let currentDeclarations = currentLevel[existingIndex][1][0];
                         if (declarations?.endsWith(';')) declarations = declarations.slice(0, -1);
 
-
+                        // Merge new declarations with existing ones.
                         if (currentDeclarations.length > 1)  {
-                            currentLevel[existingIndex][1].unshift([addSpaceAfterComma(declarations)]);
+                            currentLevel[existingIndex][1].unshift([_addSpaceAfterComma(declarations)]);
                         } else {
-                            if (declarations) currentLevel[existingIndex][1][0] = [currentDeclarations[0] + ';' + addSpaceAfterComma(declarations)];
+                            if (declarations) currentLevel[existingIndex][1][0] = [currentDeclarations[0] + ';' + _addSpaceAfterComma(declarations)];
                         }
-
                     }
+
+                    // Descend into the existing node's children array for the next iteration.
                     currentLevel = currentLevel[existingIndex][1];
                 }
             });
@@ -1344,8 +1661,8 @@ function beautifyCSS(cssProvided, indent = '') {
 
             while (!selector.startsWith('@') && nestedDeclarations.length === 1 && nestedDeclarations[0].length === 2 && !nestedDeclarations[0][0].startsWith('@')) {
                 let [childSelector, childDeclarations] = nestedDeclarations[0];
-                
-                if (childSelector.startsWith('&')) childSelector = childSelector.slice(1);
+
+                if (childSelector.startsWith('&') && childSelector[1]) childSelector = childSelector.slice(1);
                 else childSelector = ' ' + childSelector;
 
                 selector += childSelector;

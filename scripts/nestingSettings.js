@@ -77,19 +77,22 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'dropdown',
             defaultValue: 'Fira Code', // Fira Code for 'Font Family Fira Code'
             action: (value) => {
-                if (typeof outputEditorInstance === 'undefined' || typeof inputEditorElem === 'undefined') return;
+                if (typeof outputEditorInstance === 'undefined' || typeof inputEditorInstance === 'undefined') return;
                 const fontFamily = `${value}, monospace`;
                 outputEditorInstance.container.style.fontFamily = fontFamily;
-                inputEditorElem.style.fontFamily = fontFamily;
+                inputEditorInstance.container.style.fontFamily = fontFamily;
             }
         },
         fontsizes: {
             type: 'dropdown',
             defaultValue: '1.25rem', // 1.25rem for 'Font Size 1.25'
             action: (value) => {
-                 if (typeof outputEditorInstance === 'undefined' || typeof inputEditorElem === 'undefined') return;
+                console.log("test");
+                 if (typeof outputEditorInstance === 'undefined' || typeof inputEditorInstance === 'undefined') return;
+                 console.log("test2");
                 outputEditorInstance.container.style.fontSize = value;
-                inputEditorElem.style.fontSize = value;
+                inputEditorInstance.container.style.fontSize = value;
+                console.log("test3", document.querySelectorAll('.ace_tooltip'));
                 document.querySelectorAll('.ace_tooltip').forEach((elem) => {
                     elem.style.fontSize = `${parseFloat(value) * 0.8}rem`;
                 });
@@ -453,9 +456,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function initializeApp() {
+    async function initializeApp() {
         // 0. Set the global initialization flag
         window.appIsInitializing = true;
+
+        await waitForVar('inputEditorInstance');
+        await waitForVar('outputEditorInstance');
 
         // 1. Load settings from storage or use defaults
         loadSettings();

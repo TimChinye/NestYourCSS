@@ -168,9 +168,9 @@ async function processAndShowSampleByName(sampleKey, iterations = 5, mute = fals
     let issuesFound = Object.values(issues).some(flag => flag === true);
 
     if (issuesFound) {
-        if (!mute) console.warn(`[${sampleKey}] Potential issues detected for this sample. Review logs and flags:`, issues);
+        console.warn(`[${sampleKey}] Potential issues detected for this sample. Review logs and flags:`, issues);
     } else {
-        if (!mute) console.log(`[${sampleKey}] No immediate issues flagged for this sample.`);
+        console.log(`[${sampleKey}] No immediate issues flagged for this sample.`);
     }
     
     console.log(`--- Final output for ${sampleKey} (after ${iterations} iterations) shown in output editor ---`);

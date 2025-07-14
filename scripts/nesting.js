@@ -288,6 +288,7 @@ function splitCSS(cssProvided) {
     return parsedCSS;
 }
 
+function flattenCSS(cssProvided, prefix = '', nestingSelector = '') {
     /**
      * Combines an array of CSS selectors into a compact string using the :is() pseudo-class.
      * It intelligently groups selectors that start with '&' separately from the others.
@@ -516,164 +517,14 @@ function splitCSS(cssProvided) {
             .trim();
     }
 
-/* --> */
-
-// function flattenCSS(cssProvided, prefix = '', nestingSelector = '') {
-//     // Initialize the parsed CSS array
-//     let parsedCSS = [];
-//     const combinators = ["+", ">", "~"];
-
-//     // Loop through each rule in the provided CSS
-//     for (const rule of cssProvided) {
-//         // If the current rule is an array, it's a nested rule
-//         if (Array.isArray(rule)) {
-//             let [relativeSelector, declarations] = rule;
-
-//             if (relativeSelector.startsWith('@')) {
-//                 relativeSelector += ';';
-
-//                 if (relativeSelector.includes(':')) {
-//                     let tempSelector = '';
-//                     let parenthesisDepth = 0;
-//                     let bracketDepth = 0;
-//                     let isInSingleQuotes = false;
-//                     let isInDoubleQuotes = false;
-
-//                     // Loop through each character in the declarations
-//                     // Changed from for...of to a standard for loop to get index 'i'
-//                     for (let i = 0; i < relativeSelector.length; i++) {
-//                         let char = relativeSelector[i];
-//                         // Handle semicolons, colons, quotes, and escape characters
-//                         let isInside = isInSingleQuotes || isInDoubleQuotes || bracketDepth != 0 || parenthesisDepth != 0; // Is inside quotes/brackets
-
-//                         let isPseudoSelectorContextColon = false;
-//                         if (char === ':') {
-//                             let nextChar = (i + 1 < relativeSelector.length) ? relativeSelector[i+1] : null;
-//                             let prevCharWasColon = (i > 0 && relativeSelector[i-1] === ':');
-
-//                             // Check if it's part of '::'
-//                             if (nextChar === ':' || prevCharWasColon) {
-//                                 isPseudoSelectorContextColon = true;
-//                             }
-//                             // Check if it's like ':pseudo-class' (e.g., :hover, :nth-child)
-//                             // i.e., colon followed by a non-whitespace character that isn't another colon
-//                             else if (nextChar && nextChar.trim() !== '') {
-//                                 isPseudoSelectorContextColon = true;
-//                             }
-//                         }
-
-//                         if (char === ':' && isInside && !isPseudoSelectorContextColon) {
-//                             tempSelector += char + ' ';
-//                         } else {
-//                             switch (char) {
-//                                 case '(':
-//                                     parenthesisDepth++;
-//                                     break;
-//                                 case ')':
-//                                     parenthesisDepth--;
-//                                     break;
-//                                 case '[':
-//                                     bracketDepth++;
-//                                     break;
-//                                 case ']':
-//                                     bracketDepth--;
-//                                     break;
-//                                 case '"':
-//                                     isInDoubleQuotes ^= 1;
-//                                     break;
-//                                 case "'":
-//                                     isInSingleQuotes ^= 1;
-//                                     break;
-//                             }
-    
-//                             tempSelector += char;
-//                         }
-//                     }
-    
-//                     relativeSelector = tempSelector;
-//                 }
-//             }
-            
-//             relativeSelector = _formatSelectorString(relativeSelector);
-
-//             // Transform the relative selector to handle all `&` cases.
-//             let transformedRelative = relativeSelector;
-//             if (relativeSelector.includes('&') && nestingSelector) {
-//                 const replacement = `:is(${nestingSelector})`;
-//                 const selectorParts = _splitRespectingBrackets(relativeSelector);
-//                 const transformedParts = selectorParts.map(part => {
-//                     return part.replace(/&/g, (match, offset) => {
-//                         if (offset === 0) return '&';
-//                         return replacement;
-//                     });
-//                 });
-//                 transformedRelative = transformedParts.join(', ');
-//             }
-            
-//             // This block correctly combines the parent `prefix` with the `transformedRelative` selector,
-//             // even when it's a comma-separated list.
-//             let absoluteSelector;
-            
-//             // Split the relative selector into parts to handle lists correctly.
-//             const relativeParts = _splitRespectingBrackets(transformedRelative);
-            
-//             const absoluteParts = relativeParts.map(part => {
-//                 const isNestingSelector = part == '&';
-//                 const isAnchor = part.startsWith('&');
-//                 const needsSpace = prefix && !isAnchor && !/^\s*[>+~]/.test(part);
-                
-//                 if (isNestingSelector) {
-//                     return prefix + ' ' + part;
-//                 } else if (isAnchor) {
-//                     // For `&.class`, concatenate `prefix` with the part (minus `&`).
-//                     return prefix + part.substring(1);
-//                 } else {
-//                     // For `div`, `> div`, etc., combine with a space if needed.
-//                     return prefix + (needsSpace ? ' ' : '') + part;
-//                 }
-//             });
-            
-//             // Join the fully-formed parts back into a final selector string.
-//             absoluteSelector = absoluteParts.join(', ');
-            
-//             const newNestingSelector = absoluteSelector;
-
-//             if (Array.isArray(declarations)) {
-//                 if (!declarations.every(Array.isArray)) {
-//                     parsedCSS.push([absoluteSelector, declarations.filter((d) => typeof d === 'string').join(';')]);
-//                 }
-//                 const nestedRules = declarations.filter(Array.isArray);
-//                 // if (relativeSelector.split("").some((c) => combinators.includes(c))) console.logNow(['A'], [relativeSelector], [absoluteSelector]);
-//                 parsedCSS = parsedCSS.concat(flattenCSS(nestedRules, absoluteSelector, newNestingSelector));
-//             } else {
-//                 const hasCombinator = relativeSelector.split("").some((c) => combinators.includes(c));
-//                 const startsWithCombinator = combinators.includes(relativeSelector[0]);
-//                 if (hasCombinator && startsWithCombinator) {
-//                     // console.logNow(['A'], [relativeSelector], [absoluteSelector]);
-//                     absoluteSelector = absoluteSelector.split(relativeSelector).join(' ' + relativeSelector);
-//                     // console.logNow(['A'], [relativeSelector], [absoluteSelector]);
-//                 }
-//                 parsedCSS.push([absoluteSelector, declarations]);
-//             }
-//         } else {
-//             parsedCSS.push([rule]);
-//         }
-//     }
-
-//     return parsedCSS;
-// };
-
-/* --> */
-
-function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
     // Loop through each rule in the provided CSS
+    // Initialize the parsed CSS array
     let parsedCSS = [];
-    for (let i = 0; i < cssProvided.length; i++) {
-
+    const combinators = ["+", ">", "~"];
+    for (const rule of cssProvided) {
         // If the current rule is an array, it's a nested rule
-        if (Array.isArray(cssProvided[i])) {
-            // Extract the relative selector and declarations from the current rule
-            let [relativeSelector, declarations] = cssProvided[i];
+        if (Array.isArray(rule)) {
+            let [relativeSelector, declarations] = rule;
 
             // If the relative selector starts with '@', append a semicolon to it
 
@@ -788,11 +639,11 @@ function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
                         if (char === ',' && !isSelectorList) isSelectorList = true;
 
                         if (isSelectorList && tempSelector.slice(-3) == ', &')
-                            tempSelector = tempSelector.slice(0, -1) + lastRelativeSelector;
+                            tempSelector = tempSelector.slice(0, -1) + nestingSelector;
                     }
                 }
 
-                let simpleSelectorList = `:is(${relativeSelector.startsWith('&') ? lastRelativeSelector + tempSelector.slice(1) : tempSelector})`;
+                let simpleSelectorList = `:is(${relativeSelector.startsWith('&') ? nestingSelector + tempSelector.slice(1) : tempSelector})`;
                 relativeSelector = isSelectorList ? simpleSelectorList : tempSelector;
             }
 
@@ -865,219 +716,12 @@ function flattenCSS(cssProvided, prefix = '', lastRelativeSelector = '') {
             }
         } else {
             // If the current rule is not an array, add it to the parsed CSS
-            parsedCSS.push([cssProvided[i]])
+            parsedCSS.push([rule])
         }
     }
 
     return parsedCSS;
 }
-
-/* --> */
-
-// function flattenCSS(cssProvided, prefix = '', nestingSelector = '') {
-//     let parsedCSS = [];
-//     for (const rule of cssProvided) {
-//         // If the current rule is an array, it's a nested rule
-//         if (Array.isArray(rule)) {
-//             let [relativeSelector, declarations] = rule;
-            
-//             relativeSelector = _formatSelectorString(relativeSelector);
-
-//             // Transform the relative selector to handle all `&` cases.
-//             let transformedRelative = relativeSelector;
-//             if (relativeSelector.includes('&') && nestingSelector) {
-//                 const replacement = `:is(${nestingSelector})`;
-//                 const selectorParts = _splitRespectingBrackets(relativeSelector);
-//                 const transformedParts = selectorParts.map(part => {
-//                     return part.replace(/&/g, (match, offset) => {
-//                         if (offset === 0) return '&';
-//                         return replacement;
-//                     });
-//                 });
-//                 transformedRelative = transformedParts.join(', ');
-//             }
-            
-//             // This block correctly combines the parent `prefix` with the `transformedRelative` selector,
-//             // even when it's a comma-separated list.
-//             let absoluteSelector;
-            
-//             // Split the relative selector into parts to handle lists correctly.
-//             const relativeParts = _splitRespectingBrackets(transformedRelative);
-            
-//             const absoluteParts = relativeParts.map(part => {
-//                 const isNestingSelector = part == '&';
-//                 const isAnchor = part.startsWith('&');
-//                 const needsSpace = prefix && !isAnchor && !/^\s*[>+~]/.test(part);
-                
-//                 if (isNestingSelector) {
-//                     return prefix + ' ' + part;
-//                 } else if (isAnchor) {
-//                     // For `&.class`, concatenate `prefix` with the part (minus `&`).
-//                     return prefix + part.substring(1);
-//                 } else {
-//                     // For `div`, `> div`, etc., combine with a space if needed.
-//                     return prefix + (needsSpace ? ' ' : '') + part;
-//                 }
-//             });
-            
-//             // Join the fully-formed parts back into a final selector string.
-//             absoluteSelector = absoluteParts.join(', ');
-            
-//             const newNestingSelector = absoluteSelector;
-
-//             if (Array.isArray(declarations)) {
-//                 if (!declarations.every(Array.isArray)) {
-//                     parsedCSS.push([absoluteSelector, declarations.filter((d) => typeof d === 'string').join(';')]);
-//                 }
-//                 const nestedRules = declarations.filter(Array.isArray);
-//                 parsedCSS = parsedCSS.concat(flattenCSS(nestedRules, absoluteSelector, newNestingSelector));
-//             } else {
-//                 parsedCSS.push([absoluteSelector, declarations]);
-//             }
-//         } else {
-//             parsedCSS.push([rule]);
-//         }
-//     }
-
-//     return parsedCSS;
-// }
-
-/* --> */
-
-// function flattenCSS(cssProvided, prefix = '', nestingSelector = '') {
-//     let parsedCSS = [];
-//     for (const rule of cssProvided) {
-//         // If the current rule is an array, it's a nested rule
-//         if (Array.isArray(rule)) {
-//             let [relativeSelector, declarations] = rule;
-
-//             if (relativeSelector.startsWith('@')) {
-//                 relativeSelector += ';';
-
-//                 if (relativeSelector.includes(':')) {
-//                     let tempSelector = '';
-//                     let parenthesisDepth = 0;
-//                     let bracketDepth = 0;
-//                     let isInSingleQuotes = false;
-//                     let isInDoubleQuotes = false;
-
-//                     // Loop through each character in the declarations
-//                     // Changed from for...of to a standard for loop to get index 'i'
-//                     for (let i = 0; i < relativeSelector.length; i++) {
-//                         let char = relativeSelector[i];
-//                         // Handle semicolons, colons, quotes, and escape characters
-//                         let isInside = isInSingleQuotes || isInDoubleQuotes || bracketDepth != 0 || parenthesisDepth != 0; // Is inside quotes/brackets
-
-//                         let isPseudoSelectorContextColon = false;
-//                         if (char === ':') {
-//                             let nextChar = (i + 1 < relativeSelector.length) ? relativeSelector[i+1] : null;
-//                             let prevCharWasColon = (i > 0 && relativeSelector[i-1] === ':');
-
-//                             // Check if it's part of '::'
-//                             if (nextChar === ':' || prevCharWasColon) {
-//                                 isPseudoSelectorContextColon = true;
-//                             }
-//                             // Check if it's like ':pseudo-class' (e.g., :hover, :nth-child)
-//                             // i.e., colon followed by a non-whitespace character that isn't another colon
-//                             else if (nextChar && nextChar.trim() !== '') {
-//                                 isPseudoSelectorContextColon = true;
-//                             }
-//                         }
-
-//                         if (char === ':' && isInside && !isPseudoSelectorContextColon) {
-//                             tempSelector += char + ' ';
-//                         } else {
-//                             switch (char) {
-//                                 case '(':
-//                                     parenthesisDepth++;
-//                                     break;
-//                                 case ')':
-//                                     parenthesisDepth--;
-//                                     break;
-//                                 case '[':
-//                                     bracketDepth++;
-//                                     break;
-//                                 case ']':
-//                                     bracketDepth--;
-//                                     break;
-//                                 case '"':
-//                                     isInDoubleQuotes ^= 1;
-//                                     break;
-//                                 case "'":
-//                                     isInSingleQuotes ^= 1;
-//                                     break;
-//                             }
-    
-//                             tempSelector += char;
-//                         }
-//                     }
-    
-//                     relativeSelector = tempSelector;
-//                 }
-//             }
-            
-//             relativeSelector = _formatSelectorString(relativeSelector);
-
-//             // Transform the relative selector to handle all `&` cases.
-//             let transformedRelative = relativeSelector;
-//             if (relativeSelector.includes('&') && nestingSelector) {
-//                 const replacement = `:is(${nestingSelector})`;
-//                 const selectorParts = _splitRespectingBrackets(relativeSelector);
-//                 const transformedParts = selectorParts.map(part => {
-//                     return part.replace(/&/g, (match, offset) => {
-//                         if (offset === 0) return '&';
-//                         return replacement;
-//                     });
-//                 });
-//                 transformedRelative = transformedParts.join(', ');
-//             }
-            
-//             // This block correctly combines the parent `prefix` with the `transformedRelative` selector,
-//             // even when it's a comma-separated list.
-//             let absoluteSelector;
-            
-//             // Split the relative selector into parts to handle lists correctly.
-//             const relativeParts = _splitRespectingBrackets(transformedRelative);
-            
-//             const absoluteParts = relativeParts.map(part => {
-//                 const isNestingSelector = part == '&';
-//                 const isAnchor = part.startsWith('&');
-//                 const needsSpace = prefix && !isAnchor && !/^\s*[>+~]/.test(part);
-                
-//                 if (isNestingSelector) {
-//                     return prefix + ' ' + part;
-//                 } else if (isAnchor) {
-//                     // For `&.class`, concatenate `prefix` with the part (minus `&`).
-//                     return prefix + part.substring(1);
-//                 } else {
-//                     // For `div`, `> div`, etc., combine with a space if needed.
-//                     return prefix + (needsSpace ? ' ' : '') + part;
-//                 }
-//             });
-            
-//             // Join the fully-formed parts back into a final selector string.
-//             absoluteSelector = absoluteParts.join(', ');
-            
-//             const newNestingSelector = absoluteSelector;
-
-//             if (Array.isArray(declarations)) {
-//                 if (!declarations.every(Array.isArray)) {
-//                     parsedCSS.push([absoluteSelector, declarations.filter((d) => typeof d === 'string').join(';')]);
-//                 }
-//                 const nestedRules = declarations.filter(Array.isArray);
-//                 parsedCSS = parsedCSS.concat(flattenCSS(nestedRules, absoluteSelector, newNestingSelector));
-//             } else {
-//                 parsedCSS.push([absoluteSelector, declarations]);
-//             }
-//         } else {
-//             parsedCSS.push([rule]);
-//         }
-//     }
-
-//     return parsedCSS;
-// }
-
-/* --> */
 
 function denestCSS(cssProvided) {
     let parsedCSS = [];

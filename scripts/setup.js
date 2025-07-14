@@ -31,11 +31,11 @@ body {
     }
 }
   `;
-  // sample = cssSamples[0]; // First one
-  // sample = cssSamples[0]; // Specific one 
-  sample = cssSamples["hopefullyTheEnd"]; // Specific one
-  // sample = cssSamples.slice(0, 2).join(''); // Range
-  // sample = cssSamples.join(''); // All
+  sample = Object.values(cssSamples)[0]; // First one
+  // sample = Object.values(cssSamples)[0]; // Specific one 
+  // sample = cssSamples["hopefullyTheEnd"]; // Specific one
+  // sample = Object.values(cssSamples).slice(0, 2).join(''); // Range
+  // sample = Object.values(cssSamples).join(''); // All - It would be stupid to do this
 
   window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
   window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');

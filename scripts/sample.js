@@ -1641,6 +1641,30 @@ h2, /* H2 elements */
 `,
 /* */
 'hopefullyTheEnd': `
+.item, .product {
+    padding: 10px;
+    
+    &:hover {
+        box-shadow: 0 0 5px #ccc;
+    }
+    
+    .name {
+        font-weight: bold;
+    }
+    
+    .car, .van {
+        padding: 10px;
+        
+        &:hover {
+            box-shadow: 0 0 5px #ccc;
+        }
+        
+        .model {
+            font-weight: bold;
+        }
+    }
+}
+
 @media (max-aspect-ratio:1.097 / 1) {
     body {
     	> div {

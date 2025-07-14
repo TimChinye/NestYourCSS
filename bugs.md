@@ -1,24 +1,5 @@
 # All known bugs
-## Bug #1
-### Input:
-```diff
-+ | main { && {
-+ |   background-color: green;  
-+ | }}
-```
-### Output:
-```diff
-- | main& {
-- | 	background-color: green;
-- | }
-```
-### Expected Output:
-```diff
-+ | main:is(main) {
-+ | 	background-color: green;
-+ | }
-```
-## Bug #2
+## None.
 ### Input:
 ```diff
 + | @media (max-aspect-ratio:1.097 / 1) {

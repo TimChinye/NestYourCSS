@@ -87,12 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'dropdown',
             defaultValue: '1.25rem', // 1.25rem for 'Font Size 1.25'
             action: (value) => {
-                console.log("test");
                  if (typeof outputEditorInstance === 'undefined' || typeof inputEditorInstance === 'undefined') return;
-                 console.log("test2");
                 outputEditorInstance.container.style.fontSize = value;
                 inputEditorInstance.container.style.fontSize = value;
-                console.log("test3", document.querySelectorAll('.ace_tooltip'));
                 document.querySelectorAll('.ace_tooltip').forEach((elem) => {
                     elem.style.fontSize = `${parseFloat(value) * 0.8}rem`;
                 });

@@ -285,3 +285,11 @@ async function setupEditors() {
 }
 
 setupEditors();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const elements = document.querySelectorAll('#strechingText, #visibleText > u > strong');
+
+  elements.forEach(element => {
+    splitTextForAnimation(element);
+  });
+});

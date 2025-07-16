@@ -173,7 +173,9 @@ function startSplashTextAnimation(originalText, newText) {
     if (isUpdating && animationState.animationFrameId) return;
     
     isUpdating = true;
+
     splashTextElem.style.willChange = "contents";
+    splashTextElem.ariaBusy = "true";
 
     // Cancel any lingering animation frame from a previous, possibly aborted, run
     if (animationState.animationFrameId) {
@@ -199,6 +201,8 @@ function startSplashTextAnimation(originalText, newText) {
 
         onCompleteCallback: () => { // Cooldown after animation finishes
             splashTextElem.style.willChange = "auto";
+            splashTextElem.ariaBusy = "false";
+            console.log(splashTextElem.textContent);
 
             setTimeout(() => {
                 isUpdating = false;

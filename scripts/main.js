@@ -121,3 +121,23 @@ function waitElementTransitionEnd(element, fallbackDurationMs) {
     failsafeTimeoutId = setTimeout(finalize, fallbackDurationMs + 50);
   });
 }
+
+/**
+ * Splits the text content of elements into individual <span>s for animation.
+ * It makes the result accessible by setting an aria-label on the parent
+ * and hiding the individual letter spans from screen readers.
+ *
+ * @param {HTMLElement} element - The CSS selector for the target elements.
+ */
+function splitTextForAnimation(element) {
+    const originalText = element.textContent.trim();
+    element.setAttribute('aria-label', originalText);
+    element.innerHTML = '';
+    
+    originalText.split('').forEach((char, index) => {
+      const span = document.createElement('span');
+      span.setAttribute('aria-hidden', 'true');
+      span.textContent = (char === ' ') ? '\u00A0' : char; // Use non-breaking space
+      element.appendChild(span);
+    });
+}

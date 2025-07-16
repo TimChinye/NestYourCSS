@@ -64,16 +64,16 @@
         <div>
           <label id="samples" class="dropdown">
             <input type="checkbox" aria-hidden="true" tabindex="-1">
-            <output role="button" aria-haspopup="listbox" aria-controls="samples-listbox" aria-labelledby="samples-label">Unnested Showcase</output>
+            <output role="button" aria-haspopup="listbox" aria-controls="samples-listbox" aria-labelledby="samples-label" aria-activedescendant="samples-option-1">Unnested Showcase</output>
             <ul hidden id="samples-listbox" role="listbox" aria-labelledby="samples-label">
-              <li data-input="dropdown" tabindex="0" value="unnestedShowcase" role="option">Unnested Showcase</li>
-              <li data-input="dropdown" tabindex="0" value="nestedShowcase" role="option">Nested Showcase</li>
-              <li data-input="dropdown" tabindex="0" value="complexSelectorGroups" role="option">Complex selector group</li>
-              <li data-input="dropdown" tabindex="0" value="escapedCharacters" role="option">Escaped characters</li>
-              <li data-input="dropdown" tabindex="0" value="unnestedNavbar" role="option">Unnested navbar</li>
-              <li data-input="dropdown" tabindex="0" value="aphellaLoginPage" role="option">Aphella Login</li>
-              <li data-input="dropdown" tabindex="0" value="aphellaDashboard" role="option">Aphella Dashboard</li>
-              <li data-input="dropdown" tabindex="0" value="amazonHomepage" role="option">Amazon Homepage</li>
+              <li id="samples-option-1" tabindex="-1" value="unnestedShowcase" role="option" aria-selected="true">Unnested Showcase</li>
+              <li id="samples-option-2" tabindex="-1" value="nestedShowcase" role="option">Nested Showcase</li>
+              <li id="samples-option-3" tabindex="-1" value="complexSelectorGroups" role="option">Complex selector group</li>
+              <li id="samples-option-4" tabindex="-1" value="escapedCharacters" role="option">Escaped characters</li>
+              <li id="samples-option-5" tabindex="-1" value="unnestedNavbar" role="option">Unnested navbar</li>
+              <li id="samples-option-6" tabindex="-1" value="aphellaLoginPage" role="option">Aphella Login</li>
+              <li id="samples-option-7" tabindex="-1" value="aphellaDashboard" role="option">Aphella Dashboard</li>
+              <li id="samples-option-8" tabindex="-1" value="amazonHomepage" role="option">Amazon Homepage</li>
             </ul>
           </label>
         </div>
@@ -85,15 +85,15 @@
         </label>
         <div>
           <label id="externalCss" class="combobox" onclick="event.preventDefault(); this.control.checked ^= 1">
-            <input type="checkbox" tabindex="-1" aria-hidden="true">
-            <output tabindex="0">
-              <div role="textbox" contenteditable="true" data-input="combo-text" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox"></div>
+            <input type="checkbox" tabindex="-1" aria-hidden="true" />
+            <output tabindex="0" aria-activedescendant="">
+              <div role="textbox" contenteditable="true" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox"></div>
             </output>
             <ul hidden id="external-css-listbox" role="listbox" aria-labelledby="external-css-label">
               <!-- Pre-populated/recent items will be managed by JS -->
-              <li data-input="combo-dropdown" tabindex="0" role="option">/styles/main.css</li>
-              <li data-input="combo-dropdown" tabindex="0" role="option">/styles/keyframes.css</li>
-              <li data-input="combo-dropdown" tabindex="0" role="option">/styles/editor.css</li>
+              <li id="external-css-option-1" tabindex="-1" role="option">/styles/main.css</li>
+              <li id="external-css-option-2" tabindex="-1" role="option">/styles/keyframes.css</li>
+              <li id="external-css-option-3" tabindex="-1" role="option">/styles/editor.css</li>
             </ul>
           </label>
         </div>
@@ -107,29 +107,29 @@
         <label id="font-label">Font</label>
         <div>
           <label id="typefaces" class="dropdown">
-            <input type="checkbox" aria-hidden="true" tabindex="-1">
-            <output role="button" aria-haspopup="listbox" aria-controls="typefaces-listbox" aria-labelledby="font-label">Fira Code</output>
+            <input type="checkbox" aria-hidden="true" tabindex="-1" />
+            <output role="button" aria-haspopup="listbox" aria-controls="typefaces-listbox" aria-labelledby="font-label" aria-activedescendant="typefaces-option-2">Fira Code</output>
             <ul hidden id="typefaces-listbox" role="listbox" aria-labelledby="font-label">
-              <li data-input="dropdown" tabindex="0" role="option">DejaVu Mono</li>
-              <li data-input="dropdown" tabindex="0" role="option">Fira Code</li>
-              <li data-input="dropdown" tabindex="0" role="option">iA Writer Mono</li>
-              <li data-input="dropdown" tabindex="0" role="option">Jetbrains Mono</li>
-              <li data-input="dropdown" tabindex="0" role="option">PT Sans</li>
+              <li id="typefaces-option-1" tabindex="-1" role="option">DejaVu Mono</li>
+              <li id="typefaces-option-2" tabindex="-1" role="option" aria-selected="true">Fira Code</li>
+              <li id="typefaces-option-3" tabindex="-1" role="option">iA Writer Mono</li>
+              <li id="typefaces-option-4" tabindex="-1" role="option">Jetbrains Mono</li>
+              <li id="typefaces-option-5" tabindex="-1" role="option">PT Sans</li>
             </ul>
           </label>
           <label id="fontsizes" class="dropdown">
-            <input type="checkbox" aria-hidden="true" tabindex="-1">
-            <output role="button" aria-haspopup="listbox" aria-controls="fontsizes-listbox" aria-label="Font Size">1.25rem</output>
+            <input type="checkbox" aria-hidden="true" tabindex="-1" />
+            <output role="button" aria-haspopup="listbox" aria-controls="fontsizes-listbox" aria-label="Font Size" aria-activedescendant="fontsizes-option-4">1.25rem</output>
             <ul hidden id="fontsizes-listbox" role="listbox" aria-label="Font Size">
-              <li data-input="dropdown" tabindex="0" role="option">0.5rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">0.75rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">1rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">1.25rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">1.5rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">1.75rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">2rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">2.25rem</li>
-              <li data-input="dropdown" tabindex="0" role="option">2.5rem</li>
+              <li id="fontsizes-option-1" tabindex="-1" role="option">0.5rem</li>
+              <li id="fontsizes-option-2" tabindex="-1" role="option">0.75rem</li>
+              <li id="fontsizes-option-3" tabindex="-1" role="option">1rem</li>
+              <li id="fontsizes-option-4" tabindex="-1" role="option" aria-selected="true">1.25rem</li>
+              <li id="fontsizes-option-5" tabindex="-1" role="option">1.5rem</li>
+              <li id="fontsizes-option-6" tabindex="-1" role="option">1.75rem</li>
+              <li id="fontsizes-option-7" tabindex="-1" role="option">2rem</li>
+              <li id="fontsizes-option-8" tabindex="-1" role="option">2.25rem</li>
+              <li id="fontsizes-option-9" tabindex="-1" role="option">2.5rem</li>
             </ul>
           </label>
         </div>
@@ -138,17 +138,17 @@
         <label id="indentation-type-label">Indentation</label>
         <div>
           <label id="indentationType" class="checkbox">
-            <input type="checkbox" data-input="checkbox" checked role="switch" aria-labelledby="indentation-type-label">
+            <input type="checkbox" checked role="switch" aria-labelledby="indentation-type-label" />
             <span aria-hidden="true">Soft</span>
             <span aria-hidden="true">Hard</span>
           </label>
           <label id="indentationSize" class="number">
             <span id="indentation-size-label">Size:</span>
             <output>
-              <span role="textbox" contenteditable="true" inputmode="numeric" data-input="number-display" aria-labelledby="indentation-size-label">4</span>
+              <span role="textbox" contenteditable="true" inputmode="numeric" aria-labelledby="indentation-size-label">4</span>
               <div>
-                <svg role="button" tabindex="0" aria-label="Increase indentation size" fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-input="number-stepper"><path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z"></path></svg>
-                <svg role="button" tabindex="0" aria-label="Decrease indentation size" fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-input="number-stepper"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
+                <svg role="button" tabindex="0" aria-label="Increase indentation size" fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z"></path></svg>
+                <svg role="button" tabindex="0" aria-label="Decrease indentation size" fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
               </div>
             </output>
           </label>
@@ -158,10 +158,10 @@
         <label id="coordinates-group-label">Coordinates</label>
         <div>
           <label id="coordinates" class="radio-group" role="radiogroup" aria-labelledby="coordinates-group-label">
-            <label>Both<input type="radio" name="coordinates" data-input="radio"></label>
-            <label>Line<input type="radio" name="coordinates" data-input="radio"></label>
-            <label>Col<input type="radio" name="coordinates" data-input="radio"></label>
-            <label>None<input type="radio" name="coordinates" data-input="radio" checked></label>
+            <label>Both<input type="radio" name="coordinates" role="radio" /></label>
+            <label>Line<input type="radio" name="coordinates" role="radio" /></label>
+            <label>Col<input type="radio" name="coordinates" role="radio" /></label>
+            <label>None<input type="radio" name="coordinates" role="radio" checked /></label>
           </label>
         </div>
       </li>
@@ -174,9 +174,9 @@
         <label id="mode-group-label">Mode</label>
         <div>
           <label id="mode" class="radio-group" role="radiogroup" aria-labelledby="mode-group-label">
-            <label>Minify<input type="radio" name="mode" data-input="radio"></label>
-            <label>Nest<input type="radio" name="mode" data-input="radio" checked></label>
-            <label>Unnest<input type="radio" name="mode" data-input="radio"></label>
+            <label>Minify<input type="radio" name="mode" role="radio" /></label>
+            <label>Nest<input type="radio" name="mode" role="radio" checked /></label>
+            <label>Unnest<input type="radio" name="mode" role="radio" /></label>
           </label>
         </div>
       </li>
@@ -184,7 +184,7 @@
         <label id="auto-label">Auto</label>
         <div>
           <label id="auto" class="checkbox">
-            <input type="checkbox" data-input="checkbox" checked role="switch" aria-labelledby="auto-label">
+            <input type="checkbox" checked role="switch" aria-labelledby="auto-label" />
             <span aria-hidden="true">Off</span>
             <span aria-hidden="true">On</span>
           </label>

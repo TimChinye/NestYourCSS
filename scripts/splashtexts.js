@@ -202,7 +202,6 @@ function startSplashTextAnimation(originalText, newText) {
         onCompleteCallback: () => { // Cooldown after animation finishes
             splashTextElem.style.willChange = "auto";
             splashTextElem.ariaBusy = "false";
-            console.log(splashTextElem.textContent);
 
             setTimeout(() => {
                 isUpdating = false;

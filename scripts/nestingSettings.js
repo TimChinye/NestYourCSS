@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================================================
        1. SETTINGS CONFIGURATION
        ========================================================================== */
-
+  
     // Central configuration object for all settings.
     // To add a new setting, just add a new entry here.
     const settingsConfig = {
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             action: (value, isInitialLoad) => {
                 // These global variables are assumed to be defined elsewhere
                 if (typeof cssSamples === 'undefined' || typeof inputEditorInstance === 'undefined' || typeof nestCode === 'undefined') return;
-
+  
                 window.cssSample = value;
                 inputEditorInstance.setValue(cssSamples[window.cssSample] || '', -1);
                 if (!isInitialLoad) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
             recentCount: 5, // How many recent entries to keep
             action: (value, isInitialLoad, elem) => {
                 if (!value || isInitialLoad) return;
-
+  
                 fetch(value).then((response) => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -160,14 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     };
-
-
+  
+  
     /* ==========================================================================
        2. STATE MANAGEMENT (localStorage)
        ========================================================================== */
     const settings = {};
     const STORAGE_KEY = 'nestingToolSettings';
-
+  
     function getDefaults() {
         const defaults = {};
         for (const key in settingsConfig) {
@@ -175,27 +175,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         return defaults;
     }
-
+  
     function saveSettings() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     }
-
+  
     function loadSettings() {
         const savedSettings = JSON.parse(localStorage.getItem(STORAGE_KEY));
         // Merge saved settings with defaults to ensure all keys are present
         Object.assign(settings, getDefaults(), savedSettings);
     }
-
-
+  
+  
     /* ==========================================================================
        3. UI UPDATE LOGIC
        ========================================================================== */
-
+  
     function applySetting(id, value) {
         const config = settingsConfig[id];
         const elem = document.getElementById(id);
         if (!elem || !config) return;
-
+  
         switch (config.type) {
             case 'dropdown': {
                 const outputElem = elem.querySelector('output');
@@ -252,13 +252,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (config.action) {
             config.action(value, isInitialLoad, sourceElement);
         }
-
+  
         if (!isInitialLoad) {
             saveSettings();
         }
     }
-
-
+  
+  
     /* ==========================================================================
        4. GENERIC EVENT HANDLERS
        ========================================================================== */
@@ -267,32 +267,77 @@ document.addEventListener('DOMContentLoaded', () => {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
         const value = inputElem.getAttribute('value') || inputElem.textContent;
-
+  
         updateAndCommit(id, value);
-
+  
         if (close) {
             labelElem.control.checked = false;
         }
     }
-
+  
+    function handleKeyNavigation(e, listElem) {
+        const items = Array.from(listElem.querySelectorAll('[role="option"]'));
+        if (items.length === 0) return;
+    
+        const activeIndex = items.findIndex(item => item === document.activeElement);
+    
+        let nextIndex = -1;
+    
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            nextIndex = activeIndex >= 0 ? (activeIndex + 1) % items.length : 0;
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            nextIndex = activeIndex > 0 ? (activeIndex - 1) : items.length - 1;
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            nextIndex = 0;
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            nextIndex = items.length - 1;
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            const labelElem = listElem.closest('label');
+            if (labelElem) {
+                labelElem.control.checked = false;
+                labelElem.querySelector('output').focus();
+            }
+        } else if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            if (activeIndex >= 0) {
+                const item = items[activeIndex];
+                if (listElem.closest('.dropdown')) {
+                    handleSelect(item, true);
+                } else if (listElem.closest('.combobox')) {
+                    handleCombo(item, true);
+                }
+            }
+        }
+    
+        if (nextIndex !== -1) {
+            items[nextIndex].focus();
+            listElem.closest('label').querySelector('output').setAttribute('aria-activedescendant', items[nextIndex].id);
+        }
+    }
+  
     function handleCombo(inputElem, close = false) {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
         const isTextInput = inputElem.hasAttribute('contenteditable');
-        const value = isTextInput ? inputElem.textContent.trim() : inputElem.innerHTML;
-
+        const value = isTextInput ? inputElem.textContent.trim() : inputElem.textContent;
+  
         // When a dropdown item is clicked, update the text input's value
         if (!isTextInput) {
              labelElem.querySelector('div[contenteditable]').textContent = value;
         }
-
+  
         updateAndCommit(id, value, false, inputElem);
-
+  
         if (close) {
             labelElem.control.checked = false;
         }
     }
-
+  
     const activeHold = {
         timerInitial: null,
         timerDelay: null,
@@ -309,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
         const displayElem = labelElem.querySelector('span[role="textbox"]');
-
+  
         function updateNumber(updateDirection) {
             let currentValue = +displayElem.textContent;
             if (updateDirection) {
@@ -319,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateAndCommit(id, currentValue);
         }
-
+  
         switch (event.type) {
             case 'input': // From contenteditable span
                 updateAndCommit(id, +inputElem.textContent.replace(/(\D)+/g, ''));
@@ -328,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'click': // From stepper arrows
                 updateNumber(!inputElem.previousElementSibling);
                 break;
-
+  
             case 'keydown': {
                 if (inputElem.hasAttribute('contenteditable')) { // Number display
                     if (event.key === 'ArrowUp') { event.preventDefault(); updateNumber(true); }
@@ -336,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 break;
             }
-
+  
             case 'mousedown':
             case 'touchstart': {
                 activeHold.clear(); // Clear any previous hold
@@ -350,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 400);
                 break;
             }
-
+  
             case 'mouseup':
             case 'mouseleave':
             case 'touchend': {
@@ -371,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const radioIndex = Array.from(labelElem.querySelectorAll('input[type="radio"]')).indexOf(inputElem);
         updateAndCommit(id, radioIndex);
     }
-
+  
     // Special case from original HTML for non-auto mode button
     function handleModeClick(inputElem) {
         if (!(window.processAuto ?? true)) {
@@ -382,27 +427,69 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         }
     }
-
-
+  
+  
     /* ==========================================================================
        5. INITIALIZATION
        ========================================================================== */
-
+  
     function attachEventListeners(scope = document) {
         // Dropdowns
-        scope.querySelectorAll('[data-input="dropdown"]').forEach(elem => {
-            elem.addEventListener('click', () => handleSelect(elem));
-            elem.addEventListener('keydown', e => (e.code === 'Space' || e.code === 'Enter') && (e.preventDefault(), handleSelect(elem, true)));
+        scope.querySelectorAll('.dropdown').forEach(elem => {
+            const listElem = elem.querySelector('ul');
+            const outputElem = elem.querySelector('output');
+            if (listElem && outputElem) {
+                listElem.addEventListener('keydown', e => handleKeyNavigation(e, listElem));
+                outputElem.addEventListener('keydown', e => {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    elem.control.checked = !elem.control.checked;
+                    if (elem.control.checked) {
+                        setTimeout(() => {
+                            const firstItem = listElem.querySelector('[role="option"]');
+                            if (firstItem) {
+                                firstItem.focus();
+                                    outputElem.setAttribute('aria-activedescendant', firstItem.id);
+                                }
+                            }, 0);
+                        }
+                    }
+                });
+                outputElem.addEventListener('click', () => {
+                    elem.control.checked = !elem.control.checked;
+                    if (elem.control.checked) {
+                        setTimeout(() => {
+                            const firstItem = listElem.querySelector('[role="option"]');
+                            if (firstItem) {
+                                firstItem.focus();
+                                outputElem.setAttribute('aria-activedescendant', firstItem.id);
+                            }
+                        }, 0);
+                    }
+                });
+            }
         });
-
+  
+        scope.querySelectorAll('.dropdown [role="option"]').forEach(elem => {
+            elem.addEventListener('click', () => handleSelect(elem, true));
+            // elem.addEventListener('keydown', e => (e.code === 'Space' || e.code === 'Enter') && (e.preventDefault(), handleSelect(elem, true)));
+        });
+  
         // Combo Box (Dropdown List)
-        scope.querySelectorAll('[data-input="combo-dropdown"]').forEach(elem => {
-            elem.addEventListener('click', () => handleCombo(elem, true));
-            elem.addEventListener('keydown', e => (e.code === 'Space' || e.code === 'Enter') && (e.preventDefault(), handleCombo(elem, true)));
+        scope.querySelectorAll('.combobox').forEach(elem => {
+            const listElem = elem.querySelector('ul');
+            if (listElem) {
+                listElem.addEventListener('keydown', e => handleKeyNavigation(e, listElem));
+            }
         });
-
+  
+        scope.querySelectorAll('.combobox [role="option"]').forEach(elem => {
+            elem.addEventListener('click', () => handleCombo(elem, true));
+            // elem.addEventListener('keydown', e => (e.code === 'Space' || e.code === 'Enter') && (e.preventDefault(), handleCombo(elem, true)));
+        });
+  
         // Combo Box (Text Input)
-        scope.querySelectorAll('[data-input="combo-text"]').forEach(elem => {
+        scope.querySelectorAll('.combobox [role="textbox"]').forEach(elem => {
             elem.addEventListener('keydown', e => {
                 if (e.code === 'Enter') {
                     e.preventDefault();
@@ -425,49 +512,49 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             elem.addEventListener('blur', () => elem.scrollLeft = 0);
         });
-
+  
         // Number Steppers
         ['click', 'mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touchend'].forEach(type => {
-            scope.querySelectorAll('[data-input="number-stepper"]').forEach(elem => {
+            scope.querySelectorAll('.number [role="button"]').forEach(elem => {
                 elem.addEventListener(type, e => handleNumber(elem, e));
             });
         });
         
         // Number Display
-        scope.querySelectorAll('[data-input="number-display"]').forEach(elem => {
+        scope.querySelectorAll('.number [role="textbox"]').forEach(elem => {
             elem.addEventListener('input', e => handleNumber(elem, e));
             elem.addEventListener('keydown', e => handleNumber(elem, e));
         });
-
+  
         // Checkboxes
-        scope.querySelectorAll('[data-input="checkbox"]').forEach(elem => {
+        scope.querySelectorAll('.checkbox [role="switch"]').forEach(elem => {
             elem.addEventListener('change', () => handleCheckbox(elem));
         });
-
+  
         // Radios
-        scope.querySelectorAll('[data-input="radio"]').forEach(elem => {
+        scope.querySelectorAll('.radio-group [role="radio"]').forEach(elem => {
             elem.addEventListener('change', () => handleRadio(elem));
             if (elem.name === 'mode') {
                 elem.addEventListener('click', () => handleModeClick(elem));
             }
         });
     }
-
+  
     async function initializeApp() {
         // 0. Set the global initialization flag
         window.appIsInitializing = true;
-
+  
         await waitForVar('inputEditorInstance');
         await waitForVar('outputEditorInstance');
-
+  
         // 1. Load settings from storage or use defaults
         loadSettings();
-
+  
         // 2. Apply settings to UI and execute initial actions
         for (const id in settings) {
             // Apply UI state without triggering saves or processing
             applySetting(id, settings[id]);
-
+  
             // Run the action logic for initial setup (e.g., set font size)
             const config = settingsConfig[id];
             if (config.action) {
@@ -477,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 3. Attach all event listeners
         attachEventListeners();
-
+  
         // 4. Global listener to close dropdowns when clicking outside
         document.addEventListener('click', (e) => {
             document.querySelectorAll('.dropdown > input[type="checkbox"], .combobox > input[type="checkbox"]').forEach(chk => {
@@ -486,11 +573,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
-
+  
         // 5. Unset the global initialization flag
         // setTimeout(() => window.appIsInitializing = false, 0);
         window.appIsInitializing = false;
     }
-
+  
     initializeApp();
-});
+  });

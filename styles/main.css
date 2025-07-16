@@ -375,7 +375,7 @@ body {
 										color: var(--component-text-hover);
 									}
 								
-									:focus {
+									:focus, :has(:focus) {
 										outline: none;
 										box-shadow: 0 0 2em var(--shades-black);
 									}
@@ -424,6 +424,11 @@ body {
 
 									&:has(:checked)::before {
 										left: 50%;
+									}
+									
+									&:has(:focus, :focus-visible) {
+										outline: none;
+										box-shadow: 0 0 2em var(--shades-black);
 									}
 
 									> input {
@@ -480,6 +485,11 @@ body {
 								
 										&:hover {
 											color: var(--component-text-hover);
+										}
+										
+										&:has(:focus, :focus-visible) {
+											outline: none;
+											box-shadow: 0 0 2em var(--shades-black);
 										}
 
 										> input {

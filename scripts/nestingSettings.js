@@ -44,15 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Add to recent list
                     const ulElem = elem.closest('label').querySelector('ul');
                     const existingLi = Array.from(ulElem.children).find(li => li.textContent === value);
+
                     if (!existingLi) {
                         if (ulElem.children.length >= settingsConfig.externalCss.recentCount) {
                             ulElem.lastElementChild.remove();
                         }
+                        
                         const newLi = document.createElement('li');
                         newLi.dataset.input = 'combo-dropdown';
                         newLi.tabIndex = 0;
                         newLi.textContent = value;
+
                         ulElem.insertAdjacentElement('afterbegin', newLi);
+
                         // Re-attach listeners to the new element
                         attachEventListeners(newLi);
                     }
@@ -78,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             defaultValue: 'Fira Code', // Fira Code for 'Font Family Fira Code'
             action: (value) => {
                 if (typeof outputEditorInstance === 'undefined' || typeof inputEditorInstance === 'undefined') return;
+
                 const fontFamily = `${value}, monospace`;
                 outputEditorInstance.container.style.fontFamily = fontFamily;
                 inputEditorInstance.container.style.fontFamily = fontFamily;
@@ -88,8 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
             defaultValue: '1.25rem', // 1.25rem for 'Font Size 1.25'
             action: (value) => {
                  if (typeof outputEditorInstance === 'undefined' || typeof inputEditorInstance === 'undefined') return;
+
                 outputEditorInstance.container.style.fontSize = value;
                 inputEditorInstance.container.style.fontSize = value;
+
                 document.querySelectorAll('.ace_tooltip').forEach((elem) => {
                     elem.style.fontSize = `${parseFloat(value) * 0.8}rem`;
                 });
@@ -100,10 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
             defaultValue: true, // true for 'soft' (checked)
             action: (value, isInitialLoad) => {
                 if (typeof inputEditorInstance === 'undefined' || typeof outputEditorInstance === 'undefined' || typeof nestCode === 'undefined') return;
+
                 const useSoftTabs = value;
                 inputEditorInstance.getSession().setUseSoftTabs(useSoftTabs);
                 outputEditorInstance.getSession().setUseSoftTabs(useSoftTabs);
                 window.editorIndentChar = useSoftTabs ? ' '.repeat(inputEditorInstance.getSession().getTabSize()) : '\t';
+
                 if (!isInitialLoad) {
                     nestCode();
                 }
@@ -114,22 +123,43 @@ document.addEventListener('DOMContentLoaded', () => {
             defaultValue: 4, // 4 for 'Indentation Level 4'
             action: (value, isInitialLoad) => {
                 if (typeof inputEditorInstance === 'undefined' || typeof outputEditorInstance === 'undefined' || typeof nestCode === 'undefined') return;
+
                 const size = +value;
                 inputEditorInstance.getSession().setTabSize(size);
                 outputEditorInstance.getSession().setTabSize(size);
-                if (window.editorIndentChar?.startsWith(' ')) {
+
+                if (window.editorIndentChar?.startsWith(' ') || window.editorIndentChar == '') {
                     window.editorIndentChar = ' '.repeat(size);
+
                      if (!isInitialLoad) {
                         nestCode();
                     }
                 }
             }
         },
+        wordWrap: {
+            type: 'checkbox',
+            defaultValue: false, // false for 'Off' (unchecked)
+            action: (value, isInitialLoad) => {
+                // Ensure the editor instances are loaded before trying to apply settings
+                if (typeof inputEditorInstance === 'undefined' || typeof outputEditorInstance === 'undefined') return;
+
+                // Apply the word wrap setting to both editor instances
+                const useWordWrap = value;
+                inputEditorInstance.getSession().setUseWrapMode(useWordWrap);
+                outputEditorInstance.getSession().setUseWrapMode(useWordWrap);
+
+                if (!isInitialLoad) {
+                    nestCode();
+                }
+            }
+        },
         coordinates: {
             type: 'radio-group',
-            defaultValue: 3, // index for 'None'
+            defaultValue: 2, // index for 'Col'
             action: (value) => {
                 if (typeof updateCoordinateDisplay === 'undefined' || typeof inputEditorInstance === 'undefined' || typeof outputEditorInstance === 'undefined') return;
+                
                 window.coordDisplayMode = value;
                 updateCoordinateDisplay(inputEditorInstance);
                 updateCoordinateDisplay(outputEditorInstance);
@@ -190,6 +220,35 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================================================
        3. UI UPDATE LOGIC
        ========================================================================== */
+
+    /**
+     * Updates the ARIA selection state for a list of items.
+     * @param {HTMLElement} newSelectedItem - The newly selected element.
+     * @param {HTMLElement} controllingElement - The element that controls the active descendant (e.g., the output or input).
+     */
+    function updateAriaSelection(newSelectedItem, controllingElement) {
+        // Guard clause: If there's no new item to select, do nothing.
+        if (!newSelectedItem) {
+        return;
+        }
+    
+        // Set the active descendant on the controlling element (e.g., the output/combobox)
+        controllingElement.setAttribute('aria-activedescendant', newSelectedItem.id);
+    
+        // Find the previously selected item *within the same list*
+        const listContainer = newSelectedItem.parentElement;
+        if (!listContainer) return; // Exit if the item has no parent
+    
+        const prevSelectedItem = listContainer.querySelector('[aria-selected="true"]');
+        
+        // Make it robust: Only remove the attribute if a previously selected item exists
+        if (prevSelectedItem) {
+        prevSelectedItem.removeAttribute('aria-selected');
+        }
+    
+        // Set the new item as selected
+        newSelectedItem.setAttribute('aria-selected', 'true');
+    }
   
     function applySetting(id, value) {
         const config = settingsConfig[id];
@@ -197,23 +256,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!elem || !config) return;
   
         switch (config.type) {
-            case 'dropdown': {
-                const outputElem = elem.querySelector('output');
-                const inputElem = elem.querySelector(`[value="${value}"]`);
-                value = inputElem?.textContent || value;
-                if (outputElem) {
+            case 'dropdown':
+            case 'combobox': {
+                const listElem = elem.querySelector('ul');
+                const liItems = Array.from(listElem.children);
+                const getItemByText = (elem) => elem.textContent.trim() === value;
+                const inputElem = elem.querySelector(`[value="${value}"]`) || liItems.find(getItemByText);
+                let outputElem = elem.querySelector('output div[contenteditable]');
+                let focusableElem = outputElem;
+
+                if (config.type == 'dropdown') {
+                    outputElem = elem.querySelector('output');
+                    focusableElem = outputElem.previousElementSibling;
+                    value = inputElem.textContent;
+                }
+
+                if (outputElem && inputElem) {
                     outputElem.innerHTML = value;
-                    outputElem.previousElementSibling.focus();
+                    focusableElem.focus();
+
+                    updateAriaSelection(inputElem, outputElem);
                 }
                 break;
-            }
-            case 'combobox': {
-                 const outputElem = elem.querySelector('output div[contenteditable]');
-                 if (outputElem) {
-                    outputElem.innerHTML = value;
-                    outputElem.focus();
-                 }
-                 break;
             }
             case 'number': {
                 const displayElem = elem.querySelector('span[role="textbox"]');
@@ -283,8 +347,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const id = labelElem.id;
         const isTextInput = inputElem.hasAttribute('contenteditable');
         const value = isTextInput ? inputElem.textContent.trim() : inputElem.textContent;
-        
-        inputElem.setAttribute('aria-selected', 'true');
   
         // When a dropdown item is clicked, update the text input's value
         if (!isTextInput) {
@@ -299,11 +361,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     function handleKeyNavigation(e, listElem) {
+        let labelElem = listElem.closest('label');
+
         const items = Array.from(listElem.querySelectorAll('[role="option"]'));
         if (items.length === 0) return;
     
         const activeIndex = items.findIndex(item => item === document.activeElement);
-        const labelElem = listElem.closest('label');
     
         let nextIndex = -1;
     
@@ -321,16 +384,14 @@ document.addEventListener('DOMContentLoaded', () => {
             nextIndex = items.length - 1;
         } else if (e.key === 'Escape') {
             e.preventDefault();
-            if (labelElem) {
-                labelElem.control.checked = false;
-            }
+            if (labelElem) labelElem.control.checked = false;
         } else if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
             if (activeIndex >= 0) {
                 const item = items[activeIndex];
-                if (listElem.closest('.dropdown')) {
+                if (labelElem.classList.contains('dropdown')) {
                     handleSelect(item, true);
-                } else if (listElem.closest('.combobox')) {
+                } else if (labelElem.classList.contains('combobox')) {
                     handleCombo(item, true);
                 }
             }
@@ -443,10 +504,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
     function attachEventListeners(scope = document) {
         // Dropdowns
-        scope.querySelectorAll('.dropdown').forEach(elem => {
-            const inputElem = elem.querySelector('input');
-            const listElem = elem.querySelector('ul');
-            const outputElem = elem.querySelector('output');
+        scope.querySelectorAll('.dropdown').forEach(labelElem => {
+            const inputElem = labelElem.querySelector('input');
+            const listElem = labelElem.querySelector('ul');
+            const outputElem = labelElem.querySelector('output');
             if (listElem && outputElem) {
                 listElem.addEventListener('keydown', e => handleKeyNavigation(e, listElem));
 

@@ -220,6 +220,10 @@ body {
 									gap: var(--component-gap);
 								}
 
+								#wordWrap {
+									flex: 1;
+								}
+
 								#coordinates {
 									flex: 1;
 								}
@@ -570,7 +574,12 @@ body {
 										background-color: rgb(from var(--shades-em-darker) r g b / var(--opacity-low));
 									}
 
-									> td:not(:first-child) {
+									> th {
+										text-align: start;
+										font-weight: normal;
+									}
+
+									> td {
 										text-align: center;
 									}
 								}
@@ -677,6 +686,7 @@ body {
 
 						&:focus {
 							z-index: 1;
+							outline: 1px solid var(--shades-darker) !important;
 							box-shadow: 0 0 calc((3/4) * var(--padding)) var(--shades-medium);
 						}
 					}
@@ -795,6 +805,7 @@ body {
 								align-items: center;
 								position: relative;
 								padding: 0;
+								outline: none !important;
 								border: none;
 								background: radial-gradient(circle at 1.5em, transparent calc(1.5em - 0.125em), var(--button-bg) 0, var(--button-bg) 100%);
 								border-radius: 999px;
@@ -868,6 +879,12 @@ body {
 										opacity var(--anim-duration-text-opacity-show) var(--delay-text-show-opacity),
 										color var(--anim-duration-icon-in) var(--delay-icon-in-bg);
 									}
+								}
+
+								&:focus {
+									z-index: 1;
+									outline: 1px solid var(--shades-medium) !important;
+									box-shadow: 0 0 calc((3/4) * var(--padding)) var(--shades-lighter);
 								}
 							}
 						}
@@ -980,6 +997,7 @@ body {
 						background: none;
 						border: none;
 						border-radius: 50%;
+						outline: none !important;
 						padding: 0;
 						--nestBtn-shadow-direction: 1;
 						animation: bounce-in-top 1.5s 0.5s both;
@@ -991,6 +1009,12 @@ body {
 							color: black;
 
 							> div:hover { scale: unset; }
+						}
+
+						&:focus {
+							box-shadow: 0 0 calc((3/4) * var(--padding)) var(--shades-lighter);
+							
+							> div { outline: 1px solid var(--shades-medium) !important; }
 						}
 					
 						> div {
@@ -1164,6 +1188,7 @@ body {
 									width: 2rem;
 									padding: 0;
 									border: none;
+									outline: none !important;
 									border-radius: 50%;
 									background-color: transparent;
 									background-position: center;
@@ -1182,6 +1207,13 @@ body {
 
 									&:hover {
 										filter: invert(0.8832);
+									}
+
+									&:focus {
+										z-index: 1;
+										outline: 1px solid var(--shades-medium) !important;
+										box-shadow: 0 0 calc((3/4) * var(--padding)) var(--shades-medium);
+										background-size: calc(100% - 8px);
 									}
 								}
 							}

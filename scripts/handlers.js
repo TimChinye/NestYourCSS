@@ -26,9 +26,12 @@ document.body.addEventListener('mousemove', (e) => {
       mainContent.style.background = mainContentBackgroundString(horizValue);
 
     if (window.isNesting) {
+      // Offset is needed since containing box has been changed from root to mainSettings (or some other element)
+      const [ offsetX, offsetY ] = [(mainSettings.scrollLeft - mainSettings.lastElementChild.clientHeight / 2), (mainSettings.scrollTop - (mainSettings.lastElementChild.clientHeight / 2))];
+
       const nestedMenuButtons = mainSettings.lastElementChild;
-      nestedMenuButtons.style.setProperty('--cursor-x-pos', e.clientX + 'px');
-      nestedMenuButtons.style.setProperty('--cursor-y-pos', e.clientY + 'px');
+      nestedMenuButtons.style.setProperty('--cursor-x-pos', (e.clientX + offsetX) + 'px');
+      nestedMenuButtons.style.setProperty('--cursor-y-pos', (e.clientY + offsetY) + 'px');
     }
     else {
       if (e.target === splashTextElem) attemptSplashTextUpdate();
@@ -158,26 +161,4 @@ function setupDragAndDrop(editor) {
           alert("Only .css files or text are allowed!");
       }
   });
-}
-
-function updateCoordinateDisplay(editor) {
-  let { row, column } = editor.getCursorPosition();
-
-  let cursorText = "";
-  switch (window.coordDisplayMode ??= 3) {
-    case 0:
-      cursorText = ` | Ln ${++row}, Col ${column}`;
-      break;
-    case 1:
-      cursorText = ` | Ln ${++row}`;
-      break;
-    case 2:
-      cursorText = ` | Col ${column}`;
-      break;
-    case 3:
-    default:
-      cursorText = "";
-  }
-
-  editor.container.previousElementSibling.firstElementChild.setAttribute('cursor', cursorText);
 }

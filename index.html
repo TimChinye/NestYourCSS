@@ -63,7 +63,7 @@
               <label id="samples-label">Samples</label>
               <div>
                 <label id="samples" class="dropdown">
-                  <input type="checkbox" tabindex="0" />
+                  <input type="checkbox" />
                   <output role="button" aria-haspopup="listbox" aria-controls="samples-listbox" aria-labelledby="samples-label" aria-activedescendant="samples-option-1">Unnested Showcase</output>
                   <ul hidden id="samples-listbox" role="listbox" aria-labelledby="samples-label">
                     <li id="samples-option-1" tabindex="-1" value="unnestedShowcase" role="option" aria-selected="true">Unnested Showcase</li>
@@ -81,7 +81,7 @@
             <li>
               <label id="external-css-label">
                 External CSS
-                <p>(press enter to inject)</p>
+                <p>(press enter to inject & save)</p>
               </label>
               <div>
                 <label id="externalCss" class="combobox">
@@ -107,7 +107,7 @@
               <label id="font-label">Font</label>
               <div>
                 <label id="typefaces" class="dropdown">
-                  <input type="checkbox" tabindex="0" />
+                  <input type="checkbox" />
                   <output role="button" aria-haspopup="listbox" aria-controls="typefaces-listbox" aria-labelledby="font-label" aria-activedescendant="typefaces-option-2">Fira Code</output>
                   <ul hidden id="typefaces-listbox" role="listbox" aria-labelledby="font-label">
                     <li id="typefaces-option-1" tabindex="-1" role="option">DejaVu Mono</li>
@@ -118,7 +118,7 @@
                   </ul>
                 </label>
                 <label id="fontsizes" class="dropdown">
-                  <input type="checkbox" tabindex="0" />
+                  <input type="checkbox" />
                   <output role="button" aria-haspopup="listbox" aria-controls="fontsizes-listbox" aria-label="Font Size" aria-activedescendant="fontsizes-option-4">1.25rem</output>
                   <ul hidden id="fontsizes-listbox" role="listbox" aria-label="Font Size">
                     <li id="fontsizes-option-1" tabindex="-1" role="option">0.5rem</li>
@@ -155,13 +155,23 @@
               </div>
             </li>
             <li>
+              <label id="word-wrap-label">Word Wrap</label>
+              <div>
+                <label id="wordWrap" class="checkbox">
+                  <input type="checkbox" role="switch" aria-labelledby="word-wrap-label" />
+                  <span aria-hidden="true">Off</span>
+                  <span aria-hidden="true">On</span>
+                </label>
+              </div>
+            </li>
+            <li>
               <label id="coordinates-group-label">Coordinates</label>
               <div>
                 <label id="coordinates" class="radio-group" role="radiogroup" aria-labelledby="coordinates-group-label">
-                  <label>Both<input type="radio" name="coordinates" role="radio" /></label>
+                  <label>None<input type="radio" name="coordinates" role="radio" /></label>
                   <label>Line<input type="radio" name="coordinates" role="radio" /></label>
-                  <label>Col<input type="radio" name="coordinates" role="radio" /></label>
-                  <label>None<input type="radio" name="coordinates" role="radio" checked /></label>
+                  <label>Col<input type="radio" name="coordinates" role="radio" checked /></label>
+                  <label>Both<input type="radio" name="coordinates" role="radio" /></label>
                 </label>
               </div>
             </li>
@@ -193,9 +203,9 @@
           </ul>
         </section>
         <section>
-          <h2>Errors</h2>
-          <div>
-            <table id="errors" aria-label="Input CSS parsing errors">
+          <h2 id="error-table">Errors</h2>
+          <div aria-live="polite">
+            <table id="errors" aria-labelledby="error-table">
               <colgroup>
                 <col>
                 <col span="2">
@@ -318,7 +328,7 @@
             <span class="orb2" aria-hidden="true"></span>
             <span class="orb3" aria-hidden="true"></span>
           
-            <div onclick="nestCode(true);"></div>
+            <div onclick="typeof nestCode !== 'undefined' && nestCode(true);"></div>
           </button>
           <div id="codeEditor">
             <div class="editor" id="inputEditor"></div>
@@ -375,11 +385,11 @@
         <p id="splittingText" data-text="Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that reflects your HTML structure document, making your CSS code more intuitive and easier to manage."></p>
         <hgroup id="nestingText" aria-hidden="true">
           <p><a href="#" tabindex="-1">Click anywhere to...</a></p>
-          <h1><a href="#" tabindex="-1">Nest Your CSS</a></h1>
+          <h1><a href="#">Nest Your CSS</a></h1>
         </hgroup>
         <!-- combined: Mechanics of Nesting -->
         <h2 id="strechingText" class="optimize" aria-label="Mechanics of Nesting">Mechanics of Nesting</h2>
-        <a id="nycssLogoGroup" href="#" aria-label="Go to top of page">
+        <a id="nycssLogoGroup" href="#" tabindex="-1" aria-label="Go to top of page">
           <img id="nycssLogo" class="optimize" hidden src="./assets/images/nycss-logo.webp" alt="Complete NYCSS Logo (with the CSS Badge inside a Bird's nest)"/>
           <img id="nycssBadge" class="optimize main-animation" src="./assets/images/nycss-badge.webp" alt="The badge from NYCSS Logo"/>
           <img id="nycssNest" class="optimize" src="./assets/images/nycss-nest.webp" alt="The nest from NYCSS Logo"/>

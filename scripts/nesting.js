@@ -1,4 +1,76 @@
-function nestCode(onClick = false) {
+/**
+ * Updates the error table based on Ace Editor annotations.
+ * This function is accessible to screen reader and keyboard users.
+ *
+ * @param {Array} annotations The array of error objects from Ace.
+ * @param {HTMLTableSectionElement} tableBodyElem The <tbody> element of the error table.
+ * @param {ace.Editor} inputEditorInstance The editor to navigate on click/enter.
+ * @param {ace.Editor} outputEditorInstance The editor to display a generic message in.
+ */
+function updateAccessibleErrorTable(annotations, tableBodyElem, inputEditorInstance, outputEditorInstance) {
+    // 1. Clear the previous contents of the table body.
+    tableBodyElem.innerHTML = '';
+  
+    if (annotations.length === 0) {
+      // --- POSITIVE FEEDBACK: Announce that errors are gone ---
+      outputEditorInstance.getSession().setValue('/* CSS is valid! */');
+      
+      // Create a single, reassuring row for screen reader users.
+      const successRow = tableBodyElem.insertRow();
+      const successCell = successRow.insertCell();
+      successCell.textContent = "No errors found.";
+      successCell.colSpan = 3; // Span across all columns.
+      
+      // No need to scroll into view if there are no errors.
+      return;
+    }
+  
+    // --- NEGATIVE FEEDBACK: Announce errors exist and populate the table ---
+    outputEditorInstance.getSession().setValue('/* Your input CSS contains errors. See table below. */');
+  
+    // 2. Loop through annotations and create an ACCESSIBLE row for each.
+    annotations.forEach(({ column, row, text }) => {
+      const errorRow = tableBodyElem.insertRow();
+      
+      // 3. MAKE IT KEYBOARD ACCESSIBLE:
+      // Allow the row to be focused and make it act like a button.
+      errorRow.tabIndex = 0;
+      errorRow.role = 'button'; // Explicitly define it as a button for screen readers.
+  
+      const handleGoToLine = () => inputEditorInstance.gotoLine(row, column - 1, true);
+  
+      errorRow.onclick = handleGoToLine;
+      errorRow.onkeydown = (event) => {
+        // Trigger the action on Enter or Space, just like a real button.
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault(); // Prevent space from scrolling the page
+          handleGoToLine();
+        }
+      };
+      
+      // 4. MAKE IT SEMANTIC: Use <th> for the error message (the row header).
+      const headerCell = document.createElement('th');
+      headerCell.scope = 'row';
+      headerCell.textContent = text;
+      errorRow.appendChild(headerCell);
+  
+      // Use <td> for the other data cells.
+      const rowCell = errorRow.insertCell();
+      rowCell.textContent = row;
+  
+      const colCell = errorRow.insertCell();
+      colCell.textContent = column;
+    });
+  
+    // 5. Scroll the error section into view for sighted users.
+    tableBodyElem.closest('section').scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'nearest'
+    });
+  }
+  
+  function nestCode(onClick = false) {
     if (!inputEditorInstance || nestBtn.hasAttribute('disabled')) return;
 
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));
@@ -20,19 +92,12 @@ function nestCode(onClick = false) {
 		outputEditorInstance.getSession().setValue('/* Your input CSS contains errors */');
 		console.log('Code Errors:', annotations);
 		
-        tableBodyElem.innerHTML = '';
-
-		annotations.forEach(({ column, row, text }) => {
-            const errorRow = tableBodyElem.insertRow();
-            errorRow.onclick = () => inputEditorInstance.gotoLine(row);
-            [text, row, column].forEach(content => errorRow.insertCell().textContent = content);
-        });
-
-        tableBodyElem.closest('section').scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            inline: 'nearest'
-        });
+        updateAccessibleErrorTable(
+          annotations,
+          tableBodyElem,
+          inputEditorInstance,
+          outputEditorInstance
+        );
 	}
 };
 

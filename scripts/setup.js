@@ -5,8 +5,8 @@ async function setupEditors() {
   await waitForVar('LanguageProvider');
   const provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
 
-  inputEditorInstance = initEditor("inputEditor", sample || '/* Your input CSS should go here */');
-  outputEditorInstance = initEditor("outputEditor", '/* Your output CSS will appear here */');
+  inputEditorInstance = initEditor("inputEditor", "The editor to input CSS code that will be minified/nested/denested.", sample || '/* Your input CSS should go here */');
+  outputEditorInstance = initEditor("outputEditor", "The editor that outputs the CSS code that will be minified/nested/denested.", '/* Your output CSS will appear here */');
 
   // Auto Nest
   let codeChanged = false;
@@ -29,22 +29,83 @@ async function setupEditors() {
     }
   });
 
-  function initEditor(editorId, value) {
+  /**
+   * Initializes an Ace editor
+   * 
+   * @param {string} editorId The DOM ID of the element to turn into an editor.
+   * @param {string} labelDescription The DOM ID of the <label> element for the editor.
+   * @param {string} value The initial code/text to place in the editor.
+   * @returns {ace.Editor} The configured Ace editor instance.
+   */
+  function initEditor(editorId, labelDescription, value) {
     const editor = ace.edit(editorId, {
+      // --- Accessibility & Usability Options ---
       mode: "ace/mode/css",
-      showPrintMargin: false
+      showPrintMargin: false,
     });
-
-    editor.setValue(value, -1);
-    provider.registerEditor(editor);
+  
+    // --- Core Accessibility: Focus Management ---
+  
+    // 1. Allow tabbing out of the editor
+    // By default, Tab inserts a tab character. We override this.
+    // Returning 'false' tells Ace to let the browser handle the event.
+    editor.commands.addCommand({
+      name: "tabOutForward",
+      bindKey: { win: "Tab", mac: "Tab" },
+      exec: () => false, // Let the browser handle focus change
+    });
+  
+    editor.commands.addCommand({
+      name: "tabOutBack",
+      bindKey: { win: "Shift-Tab", mac: "Shift-Tab" },
+      exec: () => false, // Let the browser handle focus change
+    });
+  
+    // 2. Use Escape to blur the editor (exit typing mode)
+    editor.commands.addCommand({
+      name: "blurEditor",
+      bindKey: { win: "Esc", mac: "Esc" },
+      exec: (editor) => editor.blur(),
+    });
+    
+    // 3. Provide an alternate way to indent/outdent
+    // Since Tab is for navigation, we need a new keybinding for indentation.
+    // Ctrl+] and Ctrl+[ is a common and intuitive convention.
+    editor.commands.addCommand({
+      name: "indentWithCtrl",
+      bindKey: { win: "Ctrl-]", mac: "Command-]" },
+      exec: (editor) => editor.indent(),
+    });
+    
+    editor.commands.addCommand({
+      name: "outdentWithCtrl",
+      bindKey: { win: "Ctrl-[", mac: "Command-[" },
+      exec: (editor) => editor.blockOutdent(),
+    });
+  
+    // --- Core Accessibility: Screen Reader Support (ARIA) ---
+  
+    // 1. Get the actual <textarea> that Ace uses internally.
+    const textarea = editor.textInput.getElement();
+    textarea.setAttribute("aria-labelledby", labelDescription);
+  
+  
+    // --- Your Original Functionality (Preserved) ---
+    editor.setValue(value, -1); // -1 moves cursor to the start
     editor.setAnimatedScroll(true);
-
+  
+    // This is a clever trick for custom styling, keeping it.
     editor.renderer.on('afterRender', () => {
-        editor.container.getElementsByClassName('ace_scrollbar-h')[0].style.setProperty('--gutter-width', editor.container.getElementsByClassName('ace_gutter')[0].style.width);
+      const gutter = editor.container.querySelector('.ace_gutter');
+      const scrollbarH = editor.container.querySelector('.ace_scrollbar-h');
+      if (gutter && scrollbarH) {
+        scrollbarH.style.setProperty('--gutter-width', gutter.style.width);
+      }
     });
 
     editor.session.selection.on('changeCursor', () => updateCoordinateDisplay(editor));
-    
+  
+    provider.registerEditor(editor);
     return editor;
   }
 
@@ -157,9 +218,11 @@ async function setupEditors() {
   // Shadow editor creation
   const shadowWrapperElement = document.createElement("div");
   shadowWrapperElement.id = "shadowEditorsWrapper";
+  shadowWrapperElement.inert = true;
+  shadowWrapperElement.ariaHidden = true;
   inputEditorElem.parentElement.after(shadowWrapperElement);
 
-  const shadowEditors = Array.from({ length: shadowCount }, (_, i) => {
+  const shadowEditors = Array.from({ length: shadowCount }, () => {
     const shadowEditorGroup = document.createElement("div");
     shadowEditorGroup.classList.add('editorGroup');
 
@@ -293,3 +356,26 @@ document.addEventListener('DOMContentLoaded', () => {
     splitTextForAnimation(element);
   });
 });
+
+function updateCoordinateDisplay(editor) {
+  let { row, column } = editor.getCursorPosition();
+
+  let cursorText = "";
+  switch (window.coordDisplayMode ??= 3) {
+    case 0:
+      cursorText = ` | Ln ${++row}, Col ${column}`;
+      break;
+    case 1:
+      cursorText = ` | Ln ${++row}`;
+      break;
+    case 2:
+      cursorText = ` | Col ${column}`;
+      break;
+    case 3:
+    default:
+      cursorText = "";
+  }
+
+  editor.container.previousElementSibling.firstElementChild.setAttribute('cursor', cursorText);
+}
+

@@ -199,9 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
         switch (config.type) {
             case 'dropdown': {
                 const outputElem = elem.querySelector('output');
-                value = elem.querySelector(`[value="${value}"]`)?.textContent || value;
+                const inputElem = elem.querySelector(`[value="${value}"]`);
+                value = inputElem?.textContent || value;
                 if (outputElem) {
                     outputElem.innerHTML = value;
+                    outputElem.previousElementSibling.focus();
                 }
                 break;
             }
@@ -209,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  const outputElem = elem.querySelector('output div[contenteditable]');
                  if (outputElem) {
                     outputElem.innerHTML = value;
+                    outputElem.focus();
                  }
                  break;
             }
@@ -275,11 +278,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
   
+    function handleCombo(inputElem, close = false) {
+        const labelElem = inputElem.closest('label[id]');
+        const id = labelElem.id;
+        const isTextInput = inputElem.hasAttribute('contenteditable');
+        const value = isTextInput ? inputElem.textContent.trim() : inputElem.textContent;
+        
+        inputElem.setAttribute('aria-selected', 'true');
+  
+        // When a dropdown item is clicked, update the text input's value
+        if (!isTextInput) {
+             labelElem.querySelector('div[contenteditable]').textContent = value;
+        }
+  
+        updateAndCommit(id, value, false, inputElem);
+  
+        if (close) {
+            labelElem.control.checked = false;
+        }
+    }
+  
     function handleKeyNavigation(e, listElem) {
         const items = Array.from(listElem.querySelectorAll('[role="option"]'));
         if (items.length === 0) return;
     
         const activeIndex = items.findIndex(item => item === document.activeElement);
+        const labelElem = listElem.closest('label');
     
         let nextIndex = -1;
     
@@ -297,10 +321,8 @@ document.addEventListener('DOMContentLoaded', () => {
             nextIndex = items.length - 1;
         } else if (e.key === 'Escape') {
             e.preventDefault();
-            const labelElem = listElem.closest('label');
             if (labelElem) {
                 labelElem.control.checked = false;
-                labelElem.querySelector('output').focus();
             }
         } else if (e.key === ' ' || e.key === 'Enter') {
             e.preventDefault();
@@ -314,27 +336,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     
-        if (nextIndex !== -1) {
-            items[nextIndex].focus();
-            listElem.closest('label').querySelector('output').setAttribute('aria-activedescendant', items[nextIndex].id);
-        }
-    }
-  
-    function handleCombo(inputElem, close = false) {
-        const labelElem = inputElem.closest('label[id]');
-        const id = labelElem.id;
-        const isTextInput = inputElem.hasAttribute('contenteditable');
-        const value = isTextInput ? inputElem.textContent.trim() : inputElem.textContent;
-  
-        // When a dropdown item is clicked, update the text input's value
-        if (!isTextInput) {
-             labelElem.querySelector('div[contenteditable]').textContent = value;
-        }
-  
-        updateAndCommit(id, value, false, inputElem);
-  
-        if (close) {
-            labelElem.control.checked = false;
+        if (nextIndex >= 0) {
+            const item = items[nextIndex];
+            item.focus();
+            listElem.closest('label').querySelector('output')?.setAttribute('aria-activedescendant', item.id);
+
+            const prevSelectedInputElem = item.parentElement.querySelector('[aria-selected="true"]');
+            prevSelectedInputElem.removeAttribute('aria-selected');
+            item.setAttribute('aria-selected', 'true');
         }
     }
   
@@ -427,8 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         }
     }
-  
-  
+
     /* ==========================================================================
        5. INITIALIZATION
        ========================================================================== */
@@ -436,43 +444,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function attachEventListeners(scope = document) {
         // Dropdowns
         scope.querySelectorAll('.dropdown').forEach(elem => {
+            const inputElem = elem.querySelector('input');
             const listElem = elem.querySelector('ul');
             const outputElem = elem.querySelector('output');
             if (listElem && outputElem) {
                 listElem.addEventListener('keydown', e => handleKeyNavigation(e, listElem));
-                outputElem.addEventListener('keydown', e => {
-                if (e.code === 'Space' || e.code === 'Enter') {
-                    e.preventDefault();
-                    elem.control.checked = !elem.control.checked;
-                    if (elem.control.checked) {
+
+                const openDropdown = () => {
+                    if (inputElem.checked) {
                         setTimeout(() => {
-                            const firstItem = listElem.querySelector('[role="option"]');
-                            if (firstItem) {
-                                firstItem.focus();
-                                    outputElem.setAttribute('aria-activedescendant', firstItem.id);
-                                }
-                            }, 0);
-                        }
-                    }
-                });
-                outputElem.addEventListener('click', () => {
-                    elem.control.checked = !elem.control.checked;
-                    if (elem.control.checked) {
-                        setTimeout(() => {
-                            const firstItem = listElem.querySelector('[role="option"]');
-                            if (firstItem) {
-                                firstItem.focus();
-                                outputElem.setAttribute('aria-activedescendant', firstItem.id);
+                            const selectedItem = listElem.querySelector('[aria-selected="true"]');
+                            if (selectedItem) {
+                                selectedItem.focus();
+                                outputElem.setAttribute('aria-activedescendant', selectedItem.id);
                             }
                         }, 0);
                     }
-                });
+                };
+
+                inputElem.addEventListener('change', () => openDropdown(true));
+                inputElem.addEventListener('focus', () => openDropdown(true));
             }
         });
   
         scope.querySelectorAll('.dropdown [role="option"]').forEach(elem => {
             elem.addEventListener('click', () => handleSelect(elem, true));
-            // elem.addEventListener('keydown', e => (e.code === 'Space' || e.code === 'Enter') && (e.preventDefault(), handleSelect(elem, true)));
         });
   
         // Combo Box (Dropdown List)
@@ -485,7 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
         scope.querySelectorAll('.combobox [role="option"]').forEach(elem => {
             elem.addEventListener('click', () => handleCombo(elem, true));
-            // elem.addEventListener('keydown', e => (e.code === 'Space' || e.code === 'Enter') && (e.preventDefault(), handleCombo(elem, true)));
         });
   
         // Combo Box (Text Input)
@@ -529,9 +524,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // Checkboxes
         scope.querySelectorAll('.checkbox [role="switch"]').forEach(elem => {
             elem.addEventListener('change', () => handleCheckbox(elem));
+            elem.parentElement.addEventListener('keydown', e => {
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    elem.checked = !elem.checked;
+                    handleCheckbox(elem);
+                }
+            });
         });
   
         // Radios
+        scope.querySelectorAll('.radio-group').forEach(elem => {
+            elem.addEventListener('keydown', e => {
+                const radios = Array.from(elem.querySelectorAll('[type="radio"]'));
+                const currentIndex = radios.findIndex(radio => radio.checked);
+                let nextIndex;
+
+                if (e.key === 'ArrowRight') {
+                    nextIndex = (currentIndex + 1) % radios.length;
+                } else if (e.key === 'ArrowLeft') {
+                    nextIndex = (currentIndex - 1 + radios.length) % radios.length;
+                }
+
+                if (nextIndex !== undefined) {
+                    radios[nextIndex].checked = true;
+                    handleRadio(radios[nextIndex]);
+                }
+            });
+        });
+
         scope.querySelectorAll('.radio-group [role="radio"]').forEach(elem => {
             elem.addEventListener('change', () => handleRadio(elem));
             if (elem.name === 'mode') {

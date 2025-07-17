@@ -131,6 +131,7 @@ body {
 				flex-direction: column;
 				contain: paint inline-size;
 				gap: var(--padding);
+				padding-bottom: calc((3/4) * var(--padding));
 				overflow: hidden auto;
 				transition: margin-right 2s, min-width 2s;
 
@@ -164,6 +165,7 @@ body {
 						--component-background: color-mix(in srgb, var(--shades-black), var(--shades-darkest));
 						--component-background-selected: linear-gradient(to right, var(--shades-m-darker), var(--shades-em-darker));
 						--component-box-shadow-selected: inset 0 calc(1rem / 16) oklch(100% none none / var(--opacity-low));
+						--component-box-shadow-focused: 0 0 1.5em var(--shades-medium);
 						--component-text: color-mix(in srgb, var(--shades-darker), var(--shades-medium));
 						--component-text-hover: var(--shades-medium);
 						gap: var(--component-gap);
@@ -256,49 +258,49 @@ body {
 										appearance: none;
 										position: absolute;
 										margin: 0;
+									}
 									
-										&:checked {
-											+ output {
-												border-radius: 1rem 1rem 0 0;
-											}
-									
-											~ ul {
-												position: absolute;
-												z-index: 999;
-												top: 100%;
-												width: 100%;
-												display: flex;
-												margin: 0;
-												margin-top: 0.25rem;
-												padding: 1em;
-												gap: 0.5em;
-												flex-direction: column;
-												background: var(--component-background);
-												border-bottom-left-radius: 1rem;
-												border-bottom-right-radius: 1rem;
-												box-shadow: 0px 10px 10px 2.5px rgb(from var(--shades-black) r g b / 0.5);
+									&:focus-within > input:checked {
+										+ output {
+											border-radius: 1rem 1rem 0 0;
+										}
+								
+										~ ul {
+											position: absolute;
+											z-index: 999;
+											top: 100%;
+											width: 100%;
+											display: flex;
+											margin: 0;
+											margin-top: 0.25rem;
+											padding: 1em;
+											gap: 0.5em;
+											flex-direction: column;
+											background: var(--component-background);
+											border-bottom-left-radius: 1rem;
+											border-bottom-right-radius: 1rem;
+											box-shadow: 0px 10px 10px 2.5px rgb(from var(--shades-black) r g b / 0.5);
 
-												> li {
-													overflow: hidden;
-													text-overflow: ellipsis;
+											> li {
+												overflow: hidden;
+												text-overflow: ellipsis;
+												outline: none !important;
 
+												&:hover {
+													color: var(--component-text-hover);
+													cursor: pointer;
+												}
+										
+												&:focus {
+													color: var(--component-text-hover);
+												}
+
+												&:disabled {
+													color: rgb(from var(--component-text) r g b / 0.5);
+													cursor: not-allowed;
+	
 													&:hover {
-														color: var(--component-text-hover);
-														cursor: pointer;
-													}
-											
-													&:focus {
-														color: var(--component-text-hover);
-														outline: none;
-													}
-
-													&:disabled {
-														color: rgb(from var(--component-text) r g b / 0.5);
-														cursor: not-allowed;
-		
-														&:hover {
-															color: inherit;
-														}
+														color: inherit;
 													}
 												}
 											}
@@ -306,6 +308,7 @@ body {
 									}
 									
 									> output {
+										outline: none !important;
 										cursor: pointer;
 										white-space: nowrap;
 										text-overflow: ellipsis;
@@ -320,26 +323,25 @@ body {
 										}
 									}
 									
-									&:has(:focus, :focus-visible, :active) output {
-										outline: none;
-										box-shadow: 0 0 2em var(--shades-black);
-									}
-								}
+									/* Component Specific */
 
-								.combobox { 
-									> output {
-										
+									&.dropdown:has(:is(input, ul > li):focus) > output {
+										z-index: 1;
+										box-shadow: var(--component-box-shadow-focused);
+									}
+
+									&.combobox > output {
 										&&:hover > div:empty::before {
 											color: var(--shades-darker);
 										}
 
-										div {
+										> div {
 											cursor: auto;
 											overflow: hidden;
 											text-overflow: ellipsis;
+											outline: none !important;
 											
 											&:focus {
-												outline: none;
 												overflow-x: scroll;
 												scrollbar-width: none;
 												text-overflow: clip;
@@ -356,6 +358,11 @@ body {
 													color: var(--shades-m-darker);
 												}
 											}
+										}
+									
+										&:has(> div[role="textbox"]:focus) {
+											z-index: 1;
+											box-shadow: var(--component-box-shadow-focused);
 										}
 									}
 								}
@@ -375,15 +382,16 @@ body {
 										color: var(--component-text-hover);
 									}
 								
-									:focus, :has(:focus) {
-										outline: none;
-										box-shadow: 0 0 2em var(--shades-black);
+									&:has(span[role="textbox"]:focus) {
+										z-index: 1;
+										box-shadow: var(--component-box-shadow-focused);
 									}
 
 									> output > span {
 										cursor: auto;
 										display: inline-block;
 										padding-right: 2ch;
+										outline: none !important;
 
 										+ div {
 											position: absolute;
@@ -403,6 +411,7 @@ body {
 								}
 
 								.checkbox {
+									outline: none !important;
 									user-select: none;
 									position: relative;
 									display: flex;
@@ -426,9 +435,9 @@ body {
 										left: 50%;
 									}
 									
-									&:has(:focus, :focus-visible) {
-										outline: none;
-										box-shadow: 0 0 2em var(--shades-black);
+									&:has(input:focus) {
+										z-index: 1;
+										box-shadow: var(--component-box-shadow-focused);
 									}
 
 									> input {
@@ -457,6 +466,7 @@ body {
 									gap: var(--component-gap);
 
 									> label {
+										outline: none !important;
 										flex: 1;
 										cursor: pointer;
 										padding: 1rem 1.75ch;
@@ -487,9 +497,9 @@ body {
 											color: var(--component-text-hover);
 										}
 										
-										&:has(:focus, :focus-visible) {
-											outline: none;
-											box-shadow: 0 0 2em var(--shades-black);
+										&:has(> input:focus) {
+											z-index: 1;
+											box-shadow: var(--component-box-shadow-focused);
 										}
 
 										> input {
@@ -607,6 +617,8 @@ body {
 					margin: 0;
 				
 					> a {
+						height: calc(100% - 4px);
+						outline: none !important;
 						display: grid;
 						--icon-size: 4rem;
 						grid: var(--icon-size) / var(--icon-size);
@@ -619,7 +631,7 @@ body {
 						&:nth-of-type(1) > figure { clip-path: url(#iconGithub); }
 						&:nth-of-type(2) > figure { clip-path: url(#iconHistory); }
 						&:nth-of-type(3) > figure { clip-path: url(#iconSettings); }
-						&:nth-of-type(4) > figure { clip-path: url(#iconBug); }
+						&:nth-of-type(4) > figure { clip-path: url(#iconBug); margin-top: -2px; }
 						&:nth-of-type(5) > figure { clip-path: url(#iconShareYourMind); }
 						
 						> * {
@@ -661,6 +673,11 @@ body {
 							:is(:is(body.hidden, #siteWrapper > main.nesting:not(:hover)) &, &.hidden).inner-cursor::after {
 								animation-play-state: paused;
 							}
+						}
+
+						&:focus {
+							z-index: 1;
+							box-shadow: 0 0 calc((3/4) * var(--padding)) var(--shades-medium);
 						}
 					}
 				}

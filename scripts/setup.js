@@ -90,16 +90,37 @@ async function setupEditors() {
     textarea.setAttribute("aria-labelledby", labelDescription);
   
   
-    // --- Your Original Functionality (Preserved) ---
     editor.setValue(value, -1); // -1 moves cursor to the start
     editor.setAnimatedScroll(true);
   
-    // This is a clever trick for custom styling, keeping it.
+    let tabIndexSet = false;
+    let lastGutterWidth = null;
+    const scrollbars = editor.container.querySelectorAll('.ace_scrollbar');
     editor.renderer.on('afterRender', () => {
+      // --- Task 1: Make scrollbars non-focusable (a one-time operation) ---
+      if (scrollbars[0].getAttribute('tabindex') !== '-1') {
+        if (scrollbars.length > 0) {
+          scrollbars.forEach(sb => {
+            sb.setAttribute('tabindex', '-1');
+          });
+          tabIndexSet = true;
+        }
+      }
+    
+      // --- Task 2: Sync gutter width for styling (an optimized operation) ---
       const gutter = editor.container.querySelector('.ace_gutter');
       const scrollbarH = editor.container.querySelector('.ace_scrollbar-h');
+    
+      // Only proceed if both elements exist.
       if (gutter && scrollbarH) {
-        scrollbarH.style.setProperty('--gutter-width', gutter.style.width);
+        const currentGutterWidth = gutter.style.width;
+        
+        // CRITICAL: Only update the CSS property if the width has actually changed.
+        // This prevents style recalculations on every single key press.
+        if (currentGutterWidth !== lastGutterWidth) {
+          scrollbarH.style.setProperty('--gutter-width', currentGutterWidth);
+          lastGutterWidth = currentGutterWidth; // Update our state.
+        }
       }
     });
 

@@ -620,6 +620,7 @@ body {
 				}
 
 				> menu {
+					cursor: not-allowed;
 					display: inline-flex;
 					padding: 0 4ch;
 					justify-content: space-evenly;
@@ -761,6 +762,7 @@ body {
 						}
 	
 						> menu {
+							cursor: not-allowed;
 							display: inline-flex;
 							--primary-colour: var(--shades-darker);
 							--secondary-colour: color-mix(in srgb, var(--shades-lightest), var(--primary-colour) 50%);

@@ -87,7 +87,8 @@ async function setupEditors() {
   
     // 1. Get the actual <textarea> that Ace uses internally.
     const textarea = editor.textInput.getElement();
-    textarea.setAttribute("aria-labelledby", labelDescription);
+    textarea.setAttribute("aria-label", labelDescription);
+    // textarea.id = editorId + 'Textarea-' + getRandomNumbers();
   
   
     editor.setValue(value, -1); // -1 moves cursor to the start
@@ -370,6 +371,26 @@ async function setupEditors() {
 
 setupEditors();
 
+/**
+ * Splits the text content of elements into individual <span>s for animation.
+ * It makes the result accessible by setting an aria-label on the parent
+ * and hiding the individual letter spans from screen readers.
+ *
+ * @param {HTMLElement} element - The CSS selector for the target elements.
+ */
+function splitTextForAnimation(element) {
+    const originalText = element.textContent.trim();
+    element.setAttribute('aria-label', originalText);
+    element.innerHTML = '';
+    
+    originalText.split('').forEach((char, index) => {
+      const span = document.createElement('span');
+      span.setAttribute('aria-hidden', 'true');
+      span.textContent = (char === ' ') ? '\u00A0' : char; // Use non-breaking space
+      element.appendChild(span);
+    });
+}
+
 toggleBtn.addEventListener('click', () => {
   if (typeof nestCode === 'undefined') return;
 
@@ -380,7 +401,7 @@ toggleBtn.addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-  const elements = document.querySelectorAll('#strechingText, #visibleText > u > strong');
+  const elements = document.querySelectorAll('#strechingText, #visibleText > u > b');
 
   elements.forEach(element => {
     splitTextForAnimation(element);
@@ -409,3 +430,18 @@ function updateCoordinateDisplay(editor) {
   editor.container.previousElementSibling.firstElementChild.setAttribute('cursor', cursorText);
 }
 
+function adjustInputWidth(displayElem) {
+  // Create a temporary span to measure the text width
+  const tempSpan = document.createElement('span');
+  tempSpan.style.visibility = 'hidden';
+  tempSpan.style.whiteSpace = 'pre';
+  tempSpan.style.font = window.getComputedStyle(displayElem).font;
+  tempSpan.textContent = displayElem.value || displayElem.placeholder || '0';
+  
+  document.body.appendChild(tempSpan);
+  const width = tempSpan.getBoundingClientRect().width;
+  document.body.removeChild(tempSpan);
+  
+  // Add some padding to the calculated width
+  displayElem.style.width = `calc(3ch + ${width}px)`;
+}

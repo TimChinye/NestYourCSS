@@ -15,7 +15,7 @@
   <link href="./styles/properties.css" rel="stylesheet">
   <link href="./styles/keyframes.css" rel="stylesheet">
   <link href="./styles/editor.css" rel="stylesheet">
-  <link href="./styles/fonts.css" rel="stylesheet preload">
+  <link href="./styles/fonts.css" rel="stylesheet">
   <link href="./styles/main.css" rel="stylesheet">
 </head>
 <body>
@@ -63,10 +63,10 @@
           <h2>Input</h2>
           <ul>
             <li>
-              <label id="samples-label">Samples</label>
+              <span id="samples-label">Samples</span>
               <div>
-                <label id="samples" class="dropdown">
-                  <input type="checkbox" />
+                <label id="samples" class="dropdown" for="samples-checkbox">
+                  <input type="checkbox" id="samples-checkbox" />
                   <output role="button" aria-haspopup="listbox" aria-controls="samples-listbox" aria-labelledby="samples-label" aria-activedescendant="samples-option-1">Unnested Showcase</output>
                   <ul hidden id="samples-listbox" role="listbox" aria-labelledby="samples-label">
                     <li id="samples-option-1" tabindex="-1" value="unnestedShowcase" role="option" aria-selected="true">Unnested Showcase</li>
@@ -82,15 +82,15 @@
               </div>
             </li>
             <li>
-              <label id="external-css-label">
+              <span id="external-css-label">
                 External CSS
                 <p>(press enter to inject & save)</p>
-              </label>
+              </span>
               <div>
-                <label id="externalCss" class="combobox">
-                  <input type="checkbox" tabindex="-1" aria-hidden="true" />
+                <label id="externalCss" class="combobox" for="external-css-checkbox">
+                  <input type="checkbox" id="external-css-checkbox" tabindex="-1" aria-hidden="true" />
                   <output aria-activedescendant="">
-                    <div role="textbox" contenteditable="true" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox"></div>
+                    <div role="textbox" contenteditable="true" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox" id="external-css-input" name="external-css-input"></div>
                   </output>
                   <ul hidden id="external-css-listbox" role="listbox" aria-labelledby="external-css-label">
                     <!-- Pre-populated/recent items will be managed by JS -->
@@ -107,10 +107,10 @@
           <h2>Editor</h2>
           <ul>
             <li>
-              <label id="font-label">Font</label>
+              <span id="font-label">Font</span>
               <div>
-                <label id="typefaces" class="dropdown">
-                  <input type="checkbox" />
+                <label id="typefaces" class="dropdown" for="typefaces-checkbox">
+                  <input type="checkbox" id="typefaces-checkbox" />
                   <output role="button" aria-haspopup="listbox" aria-controls="typefaces-listbox" aria-labelledby="font-label" aria-activedescendant="typefaces-option-2">Fira Code</output>
                   <ul hidden id="typefaces-listbox" role="listbox" aria-labelledby="font-label">
                     <li id="typefaces-option-1" tabindex="-1" role="option">DejaVu Mono</li>
@@ -120,8 +120,8 @@
                     <li id="typefaces-option-5" tabindex="-1" role="option">PT Sans</li>
                   </ul>
                 </label>
-                <label id="fontsizes" class="dropdown">
-                  <input type="checkbox" />
+                <label id="fontsizes" class="dropdown" for="fontsizes-checkbox">
+                  <input type="checkbox" id="fontsizes-checkbox" />
                   <output role="button" aria-haspopup="listbox" aria-controls="fontsizes-listbox" aria-label="Font Size" aria-activedescendant="fontsizes-option-4">1.25rem</output>
                   <ul hidden id="fontsizes-listbox" role="listbox" aria-label="Font Size">
                     <li id="fontsizes-option-1" tabindex="-1" role="option">0.5rem</li>
@@ -138,17 +138,18 @@
               </div>
             </li>
             <li>
-              <label id="indentation-type-label">Indentation</label>
+              <span id="indentation-type-label">Indentation</span>
               <div>
-                <label id="indentationType" class="checkbox">
-                  <input type="checkbox" checked role="switch" aria-labelledby="indentation-type-label" />
+                <label id="indentationType" class="checkbox" for="indentation-type-checkbox">
+                  <input type="checkbox" id="indentation-type-checkbox" checked role="switch" aria-labelledby="indentation-type-label" />
                   <span aria-hidden="true">Soft</span>
                   <span aria-hidden="true">Hard</span>
                 </label>
-                <label id="indentationSize" class="number">
+
+                <label id="indentationSize" class="number" for="indentation-size-input">
                   <span id="indentation-size-label">Size:</span>
                   <output>
-                    <span role="textbox" contenteditable="true" inputmode="numeric" aria-labelledby="indentation-size-label">4</span>
+                    <input type="text" inputmode="numeric" aria-labelledby="indentation-size-label" id="indentation-size-input" value="4">
                     <div>
                       <svg role="button" aria-label="Increase indentation size" fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 19h18a1.002 1.002 0 0 0 .823-1.569l-9-13c-.373-.539-1.271-.539-1.645 0l-9 13A.999.999 0 0 0 3 19z"></path></svg>
                       <svg role="button" aria-label="Decrease indentation size" fill="#484848" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path></svg>
@@ -158,23 +159,23 @@
               </div>
             </li>
             <li>
-              <label id="word-wrap-label">Word Wrap</label>
+              <span id="word-wrap-label">Word Wrap</span>
               <div>
-                <label id="wordWrap" class="checkbox">
-                  <input type="checkbox" role="switch" aria-labelledby="word-wrap-label" />
+                <label id="wordWrap" class="checkbox" for="word-wrap-checkbox">
+                  <input type="checkbox" role="switch" aria-labelledby="word-wrap-label" id="word-wrap-checkbox" />
                   <span aria-hidden="true">Off</span>
                   <span aria-hidden="true">On</span>
                 </label>
               </div>
             </li>
             <li>
-              <label id="coordinates-group-label">Coordinates</label>
+              <span id="coordinates-group-label">Coordinates</span>
               <div>
                 <label id="coordinates" class="radio-group" role="radiogroup" aria-labelledby="coordinates-group-label">
-                  <label>None<input type="radio" name="coordinates" role="radio" /></label>
-                  <label>Line<input type="radio" name="coordinates" role="radio" /></label>
-                  <label>Col<input type="radio" name="coordinates" role="radio" checked /></label>
-                  <label>Both<input type="radio" name="coordinates" role="radio" /></label>
+                  <label>None<input type="radio" name="coordinates" role="radio" id="coordinates-none" /></label>
+                  <label>Line<input type="radio" name="coordinates" role="radio" id="coordinates-line" /></label>
+                  <label>Col<input type="radio" name="coordinates" role="radio" id="coordinates-col" checked /></label>
+                  <label>Both<input type="radio" name="coordinates" role="radio" id="coordinates-both" /></label>
                 </label>
               </div>
             </li>
@@ -184,20 +185,20 @@
           <h2>Functionality</h2>
           <ul>
             <li>
-              <label id="mode-group-label">Mode</label>
+              <span id="mode-group-label">Mode</span>
               <div>
                 <label id="mode" class="radio-group" role="radiogroup" aria-labelledby="mode-group-label">
-                  <label>Minify<input type="radio" name="mode" role="radio" /></label>
-                  <label>Nest<input type="radio" name="mode" role="radio" checked /></label>
-                  <label>Unnest<input type="radio" name="mode" role="radio" /></label>
+                  <label>Minify<input type="radio" name="mode" role="radio" id="mode-minify" /></label>
+                  <label>Nest<input type="radio" name="mode" role="radio" id="mode-nest" checked /></label>
+                  <label>Unnest<input type="radio" name="mode" role="radio" id="mode-unnest" /></label>
                 </label>
               </div>
             </li>
             <li>
-              <label id="auto-label">Auto</label>
+              <span id="auto-label">Auto</span>
               <div>
-                <label id="auto" class="checkbox">
-                  <input type="checkbox" checked role="switch" aria-labelledby="auto-label" />
+                <label id="auto" class="checkbox" for="auto-checkbox">
+                  <input type="checkbox" checked role="switch" aria-labelledby="auto-label" id="auto-checkbox" />
                   <span aria-hidden="true">Off</span>
                   <span aria-hidden="true">On</span>
                 </label>
@@ -228,7 +229,7 @@
           </div>
         </section>
         <menu>
-          <a id="githubBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
+          <a id="githubBtn" href="https://github.com/TimChinye/NestYourCSS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
             <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconGithub" clipPathUnits="objectBoundingBox">
@@ -238,7 +239,7 @@
               </svg>
             </figure>
           </a>
-          <a id="historyBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)" style="pointer-events: none; opacity: 0.5;">
+          <a id="historyBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconHistory" clipPathUnits="objectBoundingBox">
@@ -247,7 +248,7 @@
               </svg>
             </figure>
           </a>
-          <a id="userSettingsBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)" style="pointer-events: none; opacity: 0.5;">
+          <a id="userSettingsBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconSettings" clipPathUnits="objectBoundingBox">
@@ -256,7 +257,7 @@
               </svg>
             </figure>
           </a>
-          <a id="reportBugBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
+          <a id="reportBugBtn" href="https://github.com/TimChinye/NestYourCSS/issues" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconBug" clipPathUnits="objectBoundingBox">
@@ -265,7 +266,7 @@
               </svg>
             </figure>
           </a>
-          <a id="feedbackBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)" style="pointer-events: none; opacity: 0.5;">
+          <a id="feedbackBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconShareYourMind" clipPathUnits="objectBoundingBox">
@@ -284,31 +285,31 @@
               <h1>Nest Your CSS!</h1>
             </hgroup>
             <menu>
-              <a id="githubBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
+              <a id="githubBtn" href="https://github.com/TimChinye/NestYourCSS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#githubIconSymbol"></use>
                 </svg>
                 <span>Contribute</span>
               </a>
-              <a id="historyBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)" style="pointer-events: none; opacity: 0.5;">
+              <a id="historyBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#historyIconSymbol"></use>
                 </svg>
                 <span>Nesting History</span>
               </a>
-              <a id="userSettingsBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)" style="pointer-events: none; opacity: 0.5;">
+              <a id="userSettingsBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#userSettingsIconSymbol"></use>
                 </svg>
                 <span>User Settings</span>
               </a>
-              <a id="reportBugBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
+              <a id="reportBugBtn" href="https://github.com/TimChinye/NestYourCSS/issues" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#reportBugIconSymbol"></use>
                 </svg>
                 <span>Report a Bug</span>
               </a>
-              <a id="feedbackBtn" href="https://github.com/Redacted/Redacted/" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)" style="pointer-events: none; opacity: 0.5;">
+              <a id="feedbackBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#feedbackIconSymbol"></use>
                 </svg>
@@ -353,7 +354,7 @@
       </section>
       <section id="improvedCodeReadability" class="optimize">
         <p id="backgroundText"><span>Improved</span><span>Code</span><span>Readability</span></p>
-        <p id="visibleText">Nesting makes your code easier to read and understand for both yourself and <u><strong>other developers</u></strong>. It allows you to write cleaner, easier-to-read nested selectors, making code much <u><strong>easier to maintain</u></strong> and increase development productivity.</p>
+        <p id="visibleText">Nesting makes your code easier to read and understand for both yourself and <u><b role="group">other developers</b></u>. It allows you to write cleaner, easier-to-read nested selectors, making code much <u><b role="group">easier to maintain</b></u> and increase development productivity.</p>
       </section>
       <section id="groupingStylesTogether" class="optimize">
         <p id="groupedText" data-text="Grouping&#x0A;Styles&#x0A;Together">Grouping<br>Styles<br>Together</p>
@@ -383,12 +384,12 @@
         </div>
       </section>
       <section id="mechanicsOfNesting" aria-labelledby="strechingText">
-        <a id="backToStart" class="optimize" hidden href="#" aria-label="Back to start of page"></a>
+        <a id="backToStart" class="optimize" href="#" aria-label="Back to start of page"></a>
         <img id="nyssCursor" class="optimize" src="../assets/images/nycss-cursor.webp" aria-hidden="true" alt="Three curved 'NEST YOUR CSS' on the edge of a translucent circle, spinning endlessly, and constantly follows theh user's cursor">
         <p id="splittingText" data-text="Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that reflects your HTML structure document, making your CSS code more intuitive and easier to manage."></p>
         <hgroup id="nestingText" aria-hidden="true">
           <p><a href="#" tabindex="-1">Click anywhere to...</a></p>
-          <h1><a href="#">Nest Your CSS</a></h1>
+          <h1><a href="#" tabindex="-1">Nest Your CSS</a></h1>
         </hgroup>
         <!-- combined: Mechanics of Nesting -->
         <h2 id="strechingText" class="optimize" aria-label="Mechanics of Nesting">Mechanics of Nesting</h2>

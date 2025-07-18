@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             type: 'combobox',
             defaultValue: '',
             recentCount: 5, // How many recent entries to keep
-            action: (value, isInitialLoad, elem) => {
+            action: (value, isInitialLoad, inputElem) => {
                 if (!value || isInitialLoad) return;
   
                 fetch(value).then((response) => {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         inputEditorInstance.setValue(cssContent, -1);
                     }
                     // Add to recent list
-                    const ulElem = elem.closest('label').querySelector('ul');
+                    const ulElem = inputElem.closest('label').querySelector('ul');
                     const existingLi = Array.from(ulElem.children).find(li => li.textContent === value);
 
                     if (!existingLi) {
@@ -280,9 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             }
             case 'number': {
-                const displayElem = elem.querySelector('span[role="textbox"]');
+                const displayElem = elem.querySelector('[type="text"]');
                 if (displayElem) {
-                    displayElem.textContent = value;
+                    displayElem.value = value;
+                    adjustInputWidth(displayElem);
                 }
                 break;
             }
@@ -291,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             }
             case 'radio-group': {
-                const radioButtons = elem.querySelectorAll('input[type="radio"]');
+                const radioButtons = elem.querySelectorAll('[type="radio"]');
                 if (radioButtons[value]) {
                     radioButtons[value].checked = true;
                 }
@@ -420,24 +421,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
+    
     function handleNumber(inputElem, event) {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
-        const displayElem = labelElem.querySelector('span[role="textbox"]');
+        const displayElem = labelElem.querySelector('[type="text"]');
   
         function updateNumber(updateDirection) {
-            let currentValue = +displayElem.textContent;
-            if (updateDirection) {
-                currentValue++;
-            } else if (currentValue > 0) { // Assuming 0 is the minimum
-                currentValue--;
-            }
+            let currentValue = +displayElem.value;
+
+            
+            if (updateDirection) currentValue++;
+            else currentValue--;
+
+            if (currentValue < 0) currentValue = 0;
+            else if (currentValue > 99999) currentValue = 99999;
+            
             updateAndCommit(id, currentValue);
         }
   
         switch (event.type) {
-            case 'input': // From contenteditable span
-                updateAndCommit(id, +inputElem.textContent.replace(/(\D)+/g, ''));
+            case 'input':
+                updateAndCommit(id, +inputElem.value.replace(/(\D)+/g, ''));
                 break;
             
             case 'click': // From stepper arrows
@@ -445,10 +450,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
   
             case 'keydown': {
-                if (inputElem.hasAttribute('contenteditable')) { // Number display
-                    if (event.key === 'ArrowUp') { event.preventDefault(); updateNumber(true); }
-                    if (event.key === 'ArrowDown') { event.preventDefault(); updateNumber(false); }
-                }
+                if (event.key === 'ArrowUp') { event.preventDefault(); updateNumber(true); }
+                if (event.key === 'ArrowDown') { event.preventDefault(); updateNumber(false); }
                 break;
             }
   
@@ -483,7 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleRadio(inputElem) {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
-        const radioIndex = Array.from(labelElem.querySelectorAll('input[type="radio"]')).indexOf(inputElem);
+        const radioIndex = Array.from(labelElem.querySelectorAll('[type="radio"]')).indexOf(inputElem);
         updateAndCommit(id, radioIndex);
     }
   
@@ -491,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleModeClick(inputElem) {
         if (!(window.processAuto ?? true)) {
              const labelElem = inputElem.closest('label[id]');
-             const radioIndex = Array.from(labelElem.querySelectorAll('input[type="radio"]')).indexOf(inputElem);
+             const radioIndex = Array.from(labelElem.querySelectorAll('[type="radio"]')).indexOf(inputElem);
              if (radioIndex == window.processMode && typeof nestCode === 'function') {
                 nestCode();
              }
@@ -577,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         // Number Display
-        scope.querySelectorAll('.number [role="textbox"]').forEach(elem => {
+        scope.querySelectorAll('.number [type="text"]').forEach(elem => {
             elem.addEventListener('input', e => handleNumber(elem, e));
             elem.addEventListener('keydown', e => handleNumber(elem, e));
         });
@@ -649,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
         // 4. Global listener to close dropdowns when clicking outside
         document.addEventListener('click', (e) => {
-            document.querySelectorAll('.dropdown > input[type="checkbox"], .combobox > input[type="checkbox"]').forEach(chk => {
+            document.querySelectorAll('.dropdown > [type="checkbox"], .combobox > [type="checkbox"]').forEach(chk => {
                 if (chk.checked && !chk.parentElement.contains(e.target)) {
                     chk.checked = false;
                 }

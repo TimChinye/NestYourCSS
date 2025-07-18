@@ -123,21 +123,18 @@ function waitElementTransitionEnd(element, fallbackDurationMs) {
 }
 
 /**
- * Splits the text content of elements into individual <span>s for animation.
- * It makes the result accessible by setting an aria-label on the parent
- * and hiding the individual letter spans from screen readers.
- *
- * @param {HTMLElement} element - The CSS selector for the target elements.
+ * Generates a string of 10 cryptographically secure random numbers.
+ * 
+ * This function creates a Uint8Array of length 10, fills it with cryptographically
+ * secure random values using window.crypto.getRandomValues(), and returns them
+ * joined as a string.
+ * 
+ * @function getRandomNumbers
+ * @returns {string} A string containing 10 random numbers (0-255) joined together.
+ * @throws {Error} If the crypto API is not available in the current environment.
  */
-function splitTextForAnimation(element) {
-    const originalText = element.textContent.trim();
-    element.setAttribute('aria-label', originalText);
-    element.innerHTML = '';
-    
-    originalText.split('').forEach((char, index) => {
-      const span = document.createElement('span');
-      span.setAttribute('aria-hidden', 'true');
-      span.textContent = (char === ' ') ? '\u00A0' : char; // Use non-breaking space
-      element.appendChild(span);
-    });
+function getRandomNumbers() {
+  const typedArray = new Uint8Array(10);
+  const randomValues = window.crypto.getRandomValues(typedArray);
+  return randomValues.join('');
 }

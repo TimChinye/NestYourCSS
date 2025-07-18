@@ -2066,6 +2066,8 @@ body {
 		overflow: hidden;
 	
 		&:focus {
+			height: auto;
+			width: auto;
 			left: 50%;
 			translate: -50%;
 			padding: 1rem 2rem;

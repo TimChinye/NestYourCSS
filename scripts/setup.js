@@ -370,6 +370,15 @@ async function setupEditors() {
 
 setupEditors();
 
+toggleBtn.addEventListener('click', () => {
+  if (typeof nestCode === 'undefined') return;
+
+  nestCode(true);
+  
+  if (!nestBtn.hasAttribute('disabled'))
+    toggleBtn.textContent = (window.isNesting) ? 'Start Nesting' : 'Visit Homepage';
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   const elements = document.querySelectorAll('#strechingText, #visibleText > u > strong');
 

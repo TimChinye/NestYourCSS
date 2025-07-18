@@ -2056,6 +2056,31 @@ body {
 			}
 		}
 	}
+
+
+	> .skip-to-section {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	
+		&:focus {
+			left: 50%;
+			translate: -50%;
+			width: auto;
+			height: auto;
+			padding: 0.5em 1em;
+			background-color: #000;
+			color: #fff;
+			z-index: 9999;
+			text-decoration: none;
+		}
+
+		a&:has(~ #siteWrapper > main.nesting) {
+			display: none;
+		}
+	}
 }
 
 /* 1235 x 1125 - Breaking point between mobile & desktop */

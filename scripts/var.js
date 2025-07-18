@@ -11,4 +11,6 @@ const lineNumbers = document.getElementById('lineNumbers');
 const errorTable = document.getElementById('errors');
 const nestBtn = document.getElementById('nestBtn');
 const codeEditorElem = document.getElementById('codeEditor');
+const textSideElem = document.getElementById('textSide');
 const editorSideElem = document.getElementById('editorSide');
+const toggleBtn = document.getElementById('nestingToggleBtn');

@@ -24,6 +24,7 @@ async function handleNestingChange(isCurrentlyNesting) {
   // Update the 'inert' attribute on the views for accessibility
   mainSettings.toggleAttribute('inert', !window.isNesting);
   sectionsWrapperElement.toggleAttribute('inert', window.isNesting);
+  textSideElem.toggleAttribute('inert', window.isNesting);
   
   // Update the Lenis scroller target (whole to page => nesting settings section)
   updateLenisTarget();

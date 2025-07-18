@@ -70,7 +70,7 @@ function updateAccessibleErrorTable(annotations, tableBodyElem, inputEditorInsta
     });
   }
   
-  function nestCode(onClick = false) {
+function nestCode(onClick = false) {
     if (!inputEditorInstance || nestBtn.hasAttribute('disabled')) return;
 
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));

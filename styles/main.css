@@ -652,7 +652,7 @@ body {
 						> figure {
 							margin: 0;
 							container-type: size;
-							background: rgb(from white r g b / 0.25);
+							background: rgb(from var(--shades-white) r g b / 0.25);
 							
 							> svg {
 								contain: size;
@@ -675,7 +675,7 @@ body {
 								height: 75cqh;
 								width: 75cqw;
 								filter: blur(1rem);
-								background-color: white;
+								background-color: var(--shades-white);
 								animation: blink 3s infinite alternate-reverse;
 							}
 
@@ -1006,7 +1006,7 @@ body {
 						&:disabled {
 							cursor: not-allowed;
 							filter: brightness(0.5);
-							color: black;
+							color: var(--shades-black);
 
 							> div:hover { scale: unset; }
 						}
@@ -1387,7 +1387,7 @@ body {
 						
 						.repeat {
 							pointer-events: none;
-							mask-image: linear-gradient(#0000, #000F 75%);
+							mask-image: linear-gradient(transparent, var(--shades-black) 75%);
 							position: relative;
 							padding: 3lh 0 0.04lh;
 
@@ -1396,7 +1396,7 @@ body {
 								inset: 0;
 								z-index: -1;
 								position: absolute;
-								color: #FFFFFF80;
+								color: rgb(from var(--shades-white) r g b / 0.5);
 								animation: repeatText 2s linear infinite;
 								animation-composition: add;
 							}
@@ -1656,7 +1656,7 @@ body {
 								transition: 0.125s;
 					
 								&:hover {
-									color: white;
+									color: var(--shades-white);
 								}
 							}
 						}
@@ -1846,7 +1846,7 @@ body {
 						
 						&::before,
 						&::after {
-							color: white;
+							color: var(--shades-white);
 							content: attr(data-text);
 							position: absolute;
 							inset: 0;
@@ -2068,11 +2068,13 @@ body {
 		&:focus {
 			left: 50%;
 			translate: -50%;
-			width: auto;
-			height: auto;
-			padding: 0.5em 1em;
-			background-color: #000;
-			color: #fff;
+			padding: 1rem 2rem;
+			background-color: rgb(from var(--shades-black) r g b / 0.5);
+			outline: none !important;
+			border: 0.125rem solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
+			border-top: none;
+			border-radius: 0 0 0.5rem 0.5rem;
+			color: var(--shades-white);
 			z-index: 9999;
 			text-decoration: none;
 		}

@@ -336,39 +336,41 @@ body {
 										box-shadow: var(--component-box-shadow-focused);
 									}
 
-									&.combobox > output {
-										&&:hover > div:empty::before {
-											color: var(--shades-darker);
-										}
-
-										> div {
-											cursor: auto;
-											overflow: hidden;
-											text-overflow: ellipsis;
-											outline: none !important;
-											
-											&:focus {
-												overflow-x: scroll;
-												scrollbar-width: none;
-												text-overflow: clip;
-											}
-
-											&:not(:focus):empty {
-												align-content: center;
-												font-size: 75%;
-												padding: 0.25em 0;
-
-												&::before {
-													pointer-events: none;
-													content: attr(placeholder);
-													color: var(--shades-m-darker);
-												}
-											}
-										}
-									
-										&:has(> div[role="textbox"]:focus) {
+									&.combobox {
+										&:has(:is(input, output > div, ul > li):focus) > output {
 											z-index: 1;
 											box-shadow: var(--component-box-shadow-focused);
+										}
+
+										> output {
+											&&:hover > div:empty::before {
+												color: var(--shades-darker);
+											}
+
+											> div {
+												cursor: auto;
+												overflow: hidden;
+												text-overflow: ellipsis;
+												outline: none !important;
+												
+												&:focus {
+													overflow-x: scroll;
+													scrollbar-width: none;
+													text-overflow: clip;
+												}
+
+												&:not(:focus):empty {
+													align-content: center;
+													font-size: 75%;
+													padding: 0.25em 0;
+
+													&::before {
+														pointer-events: none;
+														content: attr(placeholder);
+														color: var(--shades-m-darker);
+													}
+												}
+											}
 										}
 									}
 								}
@@ -393,10 +395,10 @@ body {
 										box-shadow: var(--component-box-shadow-focused);
 									}
 
-									> output > :is(span, [type="text"]) {
+									> output > input {
 										cursor: auto;
 										display: inline-block;
-										padding-right: 2ch;
+										margin-right: 1ch;
 										outline: none !important;
 
 										~ div {

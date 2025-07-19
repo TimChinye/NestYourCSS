@@ -443,5 +443,165 @@ function adjustInputWidth(displayElem) {
   document.body.removeChild(tempSpan);
   
   // Add some padding to the calculated width
-  displayElem.style.width = `calc(3ch + ${width}px)`;
+  displayElem.style.width = `calc(1ch + ${width}px)`;
+}
+
+/**
+ * Checks if an element is visible and part of the DOM.
+ * @param {HTMLElement} el The element to check.
+ * @returns {boolean}
+ */
+function isElementVisible(el) {
+  // A basic check for elements hidden with `display: none` or `visibility: hidden`.
+  // It also checks if the element or its parent is collapsed.
+  return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+}
+
+/**
+ * Checks if a single element is focusable according to a robust set of rules.
+ * @param {HTMLElement} el The element to check.
+ * @returns {boolean}
+ */
+function isElementFocusable(el) {
+  // Step 1: The element must not be disabled, inert, or have a negative tabindex.
+  // Using `el.inert` is the modern and correct way to check for the inert state.
+  if (el.disabled || el.closest('[inert]') || el.tabIndex < 0) {
+    return false;
+  }
+
+  // Step 2: The element must be visible.
+  // Assumes a robust `isElementVisible` function is available that checks for
+  // `display: none`, `visibility: hidden`, and disconnected elements.
+  if (!isElementVisible(el)) {
+    return false;
+  }
+
+  const nodeName = el.nodeName.toLowerCase();
+
+  // Step 3: Handle natively focusable elements and specific attribute-based rules.
+  // This is the most common path for interactive elements.
+  switch (nodeName) {
+    case 'a':
+    case 'area':
+      // Anchors and areas are focusable if they have an `href`.
+      return el.hasAttribute('href');
+    
+    case 'input':
+      // Special handling for radio button groups: only one can be focusable.
+      if (el.type === 'radio' && el.name) {
+        const group = el.ownerDocument.querySelectorAll(`input[type="radio"][name="${el.name}"]`);
+        const checked = Array.from(group).find(r => r.checked);
+        // The focusable radio is the one that's checked, or the first one if none are.
+        return checked ? el === checked : el === group[0];
+      }
+      // All other input types are focusable by default.
+      return true;
+
+    case 'select':
+    case 'textarea':
+    case 'button':
+    case 'iframe':
+      // These elements are always focusable by default.
+      return true;
+
+    case 'audio':
+    case 'video':
+      // Media elements are focusable only if they have the `controls` attribute.
+      return el.hasAttribute('controls');
+  }
+
+  // Step 4: Handle contenteditable elements.
+  // `el.isContentEditable` correctly reflects the computed (inherited) state.
+  if (el.isContentEditable) {
+    return true;
+  }
+  
+  // Step 5: Final fallback. Any other element is focusable only if it has a `tabindex`.
+  // This correctly handles `<div tabindex="0">` and also the `<summary>` element,
+  // which is given a default `tabIndex` of 0 by the browser.
+  return el.tabIndex >= 0;
+}
+
+/**
+ * Finds all focusable elements within a given root, including inside Shadow DOMs,
+ * and sorts them according to the browser's tabbing order.
+ * @param {HTMLElement | ShadowRoot} root The element or shadow root to search within.
+ * @returns {HTMLElement[]} A sorted array of focusable elements.
+ */
+function getAllFocusableElements(root = document.body) {
+  const focusableCandidates = [];
+  const walker = document.createTreeWalker(
+    root,
+    NodeFilter.SHOW_ELEMENT,
+    { acceptNode: () => NodeFilter.FILTER_ACCEPT },
+    false
+  );
+
+  let node = walker.firstChild();
+  while (node) {
+    // Search inside shadow roots recursively
+    if (node.shadowRoot) {
+      focusableCandidates.push(...getAllFocusableElements(node.shadowRoot));
+    }
+    focusableCandidates.push(node);
+    node = walker.nextNode();
+  }
+
+  // Filter the candidates using our robust checker
+  const focusableElements = focusableCandidates.filter(isElementFocusable);
+  
+  // Sort the elements to respect `tabindex`
+  return focusableElements.sort((a, b) => {
+    const tabIndexA = a.tabIndex || 0;
+    const tabIndexB = b.tabIndex || 0;
+
+    if (tabIndexA === tabIndexB) {
+      // When tabindexes are equal, sort by document position.
+      // `compareDocumentPosition` is a bitmask, so we check for the FOLLOWING bit.
+      return (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1;
+    }
+    
+    // Elements with a positive tabindex come before elements with tabindex="0"
+    if (tabIndexA > 0 && tabIndexB <= 0) return -1;
+    if (tabIndexA <= 0 && tabIndexB > 0) return 1;
+
+    // Sort by tabindex value
+    return tabIndexA - tabIndexB;
+  });
+}
+
+/**
+ * Moves focus to the previous focusable element on the page.
+ */
+function focusPreviousElement() {
+  const allFocusable = getAllFocusableElements();
+  if (allFocusable.length === 0) return;
+
+  const currentElement = document.activeElement.shadowRoot 
+    ? document.activeElement.shadowRoot.activeElement 
+    : document.activeElement;
+
+  const currentIndex = allFocusable.indexOf(currentElement);
+  
+  const previousIndex = (currentIndex - 1 + allFocusable.length) % allFocusable.length;
+  
+  allFocusable[previousIndex].focus();
+}
+
+/**
+ * Moves focus to the next focusable element on the page.
+ */
+function focusNextElement() {
+  const allFocusable = getAllFocusableElements();
+  if (allFocusable.length === 0) return;
+
+  const currentElement = document.activeElement.shadowRoot 
+    ? document.activeElement.shadowRoot.activeElement 
+    : document.activeElement;
+
+  const currentIndex = allFocusable.indexOf(currentElement);
+  
+  const nextIndex = (currentIndex + 1) % allFocusable.length;
+  
+  allFocusable[nextIndex].focus();
 }

@@ -20,7 +20,7 @@
 </head>
 <body>
   <button class="skip-to-section" id="nestingToggleBtn">Start Nesting</button>
-  <a class="skip-to-section" href="#reducingBoilerplateCode">Learn why we should nest our code.</a>
+  <a class="skip-to-section" href="#reducingBoilerplateCode" onkeydown="if (event.key === ' ' || event.keyCode === 32) event.preventDefault() , this.click();">Learn why we should nest our code.</a>
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-543TRXJR" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <svg hidden xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -57,7 +57,8 @@
   </svg>
 
   <div id="siteWrapper">
-    <main> <!-- <main class="nesting"> -->
+    <main>
+    <!-- <main class="nesting"> -->
       <aside id="mainSettings" inert>
         <section>
           <h2>Input</h2>
@@ -87,10 +88,10 @@
                 <p>(press enter to inject & save)</p>
               </span>
               <div>
-                <label id="externalCss" class="combobox" for="external-css-checkbox">
-                  <input type="checkbox" id="external-css-checkbox" tabindex="-1" aria-hidden="true" />
+                <label id="externalCss" class="combobox" for="external-css-checkbox" role="combobox"  aria-haspopup="listbox"  aria-expanded="false"  aria-owns="external-css-listbox">
+                  <input type="checkbox" id="external-css-checkbox" />
                   <output aria-activedescendant="">
-                    <div role="textbox" contenteditable="true" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox" id="external-css-input" name="external-css-input"></div>
+                    <div role="textbox" contenteditable="true" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox" id="external-css-input" name="external-css-input" tabindex="-1"></div>
                   </output>
                   <ul hidden id="external-css-listbox" role="listbox" aria-labelledby="external-css-label">
                     <!-- Pre-populated/recent items will be managed by JS -->

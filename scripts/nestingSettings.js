@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         inputEditorInstance.setValue(cssContent, -1);
                     }
                     // Add to recent list
-                    const ulElem = inputElem.closest('label').querySelector('ul');
+                    const ulElem = inputElem.closest('label[id]').querySelector('ul');
                     const existingLi = Array.from(ulElem.children).find(li => li.textContent === value);
 
                     if (!existingLi) {
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Make it robust: Only remove the attribute if a previously selected item exists
         if (prevSelectedItem) {
-        prevSelectedItem.removeAttribute('aria-selected');
+            prevSelectedItem.removeAttribute('aria-selected');
         }
     
         // Set the new item as selected
@@ -261,22 +261,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const listElem = elem.querySelector('ul');
                 const liItems = Array.from(listElem.children);
                 const getItemByText = (elem) => elem.textContent.trim() === value;
-                const inputElem = elem.querySelector(`[value="${value}"]`) || liItems.find(getItemByText);
-                let outputElem = elem.querySelector('output div[contenteditable]');
-                let focusableElem = outputElem;
+                const inputElem = elem.querySelector(`[value="${value}"]`) || liItems.find(getItemByText) || liItems[0];
+                let outputElem = elem.querySelector('output > div[role="textbox"]');
 
                 if (config.type == 'dropdown') {
                     outputElem = elem.querySelector('output');
-                    focusableElem = outputElem.previousElementSibling;
                     value = inputElem.textContent;
                 }
 
                 if (outputElem && inputElem) {
                     outputElem.innerHTML = value;
-                    focusableElem.focus();
-
                     updateAriaSelection(inputElem, outputElem);
                 }
+
                 break;
             }
             case 'number': {
@@ -305,11 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (settings[id] === value && !isInitialLoad) {
             // For radio buttons, clicking the same one should still trigger the action
             const config = settingsConfig[id];
-            if (config.type === 'radio-group' && id === 'mode' && !(window.processAuto ?? true)) {
-                 // Special case from original code
-            } else {
-                return; // No change
-            }
+            if (config.type === 'number' || (config.type === 'radio-group' && id === 'mode' && !(window.processAuto ?? true)));
+            else return; // No change
         }
         
         settings[id] = value;
@@ -351,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
         // When a dropdown item is clicked, update the text input's value
         if (!isTextInput) {
-             labelElem.querySelector('div[contenteditable]').textContent = value;
+             labelElem.querySelector('output > div[role="textbox"]').textContent = value;
         }
   
         updateAndCommit(id, value, false, inputElem);
@@ -362,7 +356,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     function handleKeyNavigation(e, listElem) {
-        let labelElem = listElem.closest('label');
+        const labelElem = listElem.closest('label[id]');
+        const inputElem = labelElem.querySelector('input');
+        const outputElem = labelElem.classList.contains('dropdown') ? labelElem.querySelector('output') : labelElem.querySelector('output > div[role="textbox"]');
 
         const items = Array.from(listElem.querySelectorAll('[role="option"]'));
         if (items.length === 0) return;
@@ -376,7 +372,9 @@ document.addEventListener('DOMContentLoaded', () => {
             nextIndex = activeIndex >= 0 ? (activeIndex + 1) % items.length : 0;
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
-            nextIndex = activeIndex > 0 ? (activeIndex - 1) : items.length - 1;
+
+            if (activeIndex == 0) return outputElem.focus();
+            else nextIndex = activeIndex - 1;
         } else if (e.key === 'Home') {
             e.preventDefault();
             nextIndex = 0;
@@ -386,10 +384,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (e.key === 'Escape') {
             e.preventDefault();
             if (labelElem) labelElem.control.checked = false;
-        } else if (e.key === ' ' || e.key === 'Enter') {
+        } else if (e.key === ' ' || e.keyCode === 32 || e.key === 'Enter') {
             e.preventDefault();
             if (activeIndex >= 0) {
                 const item = items[activeIndex];
+                if (inputElem.checked) inputElem.checked = 0;
                 if (labelElem.classList.contains('dropdown')) {
                     handleSelect(item, true);
                 } else if (labelElem.classList.contains('combobox')) {
@@ -401,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (nextIndex >= 0) {
             const item = items[nextIndex];
             item.focus();
-            listElem.closest('label').querySelector('output')?.setAttribute('aria-activedescendant', item.id);
+            outputElem.setAttribute('aria-activedescendant', item.id);
 
             const prevSelectedInputElem = item.parentElement.querySelector('[aria-selected="true"]');
             prevSelectedInputElem.removeAttribute('aria-selected');
@@ -429,7 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
         function updateNumber(updateDirection) {
             let currentValue = +displayElem.value;
-
             
             if (updateDirection) currentValue++;
             else currentValue--;
@@ -442,7 +440,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
         switch (event.type) {
             case 'input':
-                updateAndCommit(id, +inputElem.value.replace(/(\D)+/g, ''));
+                let displayNum = Math.max(0, Math.min(+displayElem.value || 0, 99999));
+                event.preventDefault(); updateAndCommit(id, displayNum);
+
                 break;
             
             case 'click': // From stepper arrows
@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateNumber(updateDirection);
                     activeHold.timerDelay = setTimeout(() => {
                         activeHold.interval = setInterval(() => updateNumber(updateDirection), 50);
-                    }, 300);
+                    }, 500);
                 }, 400);
                 break;
             }
@@ -506,28 +506,44 @@ document.addEventListener('DOMContentLoaded', () => {
        ========================================================================== */
   
     function attachEventListeners(scope = document) {
+        const openDropdown = (outputElem, e) => {
+            const labelElem = outputElem.closest('label[id]');
+            const inputElem = labelElem.querySelector('input');
+            const listElem = labelElem.querySelector('ul');
+
+            // If menu is supposed to be open, and isn't being triggered from the inside.
+            if (listElem.contains(e?.relatedTarget)) {
+                if (inputElem.checked) {
+                    inputElem.checked = 0;
+                    console.log(e?.relatedTarget);
+                    focusPreviousElement();
+                }
+                
+            }
+            else if (inputElem.checked) {
+                setTimeout(() => {
+                    const selectedItem = listElem.querySelector('[aria-selected="true"]') || listElem.children[0];
+                    if (selectedItem) {
+                        if (labelElem.classList.contains('dropdown')) selectedItem.focus();
+                        else if (labelElem.classList.contains('combobox')) labelElem.querySelector('output > div[role="textbox"]').focus();
+
+                        outputElem.setAttribute('aria-activedescendant', selectedItem.id);
+                    }
+                }, 0);
+            }
+        };
+
         // Dropdowns
         scope.querySelectorAll('.dropdown').forEach(labelElem => {
             const inputElem = labelElem.querySelector('input');
             const listElem = labelElem.querySelector('ul');
             const outputElem = labelElem.querySelector('output');
-            if (listElem && outputElem) {
-                listElem.addEventListener('keydown', e => handleKeyNavigation(e, listElem));
 
-                const openDropdown = () => {
-                    if (inputElem.checked) {
-                        setTimeout(() => {
-                            const selectedItem = listElem.querySelector('[aria-selected="true"]');
-                            if (selectedItem) {
-                                selectedItem.focus();
-                                outputElem.setAttribute('aria-activedescendant', selectedItem.id);
-                            }
-                        }, 0);
-                    }
-                };
+            if (inputElem && listElem && outputElem) {
+                listElem.addEventListener('keydown', (e) => handleKeyNavigation(e, listElem));
 
-                inputElem.addEventListener('change', () => openDropdown(true));
-                inputElem.addEventListener('focus', () => openDropdown(true));
+                inputElem.addEventListener('change', (e) => openDropdown(outputElem, e));
+                inputElem.addEventListener('focus', (e) => (e.preventDefault(), openDropdown(outputElem, e)));
             }
         });
   
@@ -536,10 +552,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         // Combo Box (Dropdown List)
-        scope.querySelectorAll('.combobox').forEach(elem => {
-            const listElem = elem.querySelector('ul');
-            if (listElem) {
-                listElem.addEventListener('keydown', e => handleKeyNavigation(e, listElem));
+        scope.querySelectorAll('.combobox').forEach(labelElem => {
+            const listElem = labelElem.querySelector('ul');
+            const inputElem = labelElem.querySelector('input');
+            const outputElem = labelElem.querySelector('output > div[role="textbox"]');
+
+            if (inputElem && listElem && outputElem) {
+                listElem.addEventListener('keydown', (e) => handleKeyNavigation(e, listElem));
+
+                inputElem.addEventListener('change', (e) => openDropdown(outputElem, e));
+                inputElem.addEventListener('focus', (e) => (e.preventDefault(), openDropdown(outputElem, e)));
             }
         });
   
@@ -548,28 +570,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         // Combo Box (Text Input)
-        scope.querySelectorAll('.combobox [role="textbox"]').forEach(elem => {
-            elem.addEventListener('keydown', e => {
-                if (e.code === 'Enter') {
+        scope.querySelectorAll('.combobox [role="textbox"]').forEach(outputElem => {
+            outputElem.addEventListener('keydown', e => {
+                const labelElem = outputElem.closest('label[id]');
+                const inputElem = labelElem.querySelector('input');
+                const listElem = labelElem.querySelector('ul');
+
+                if (['ArrowUp', 'ArrowDown'].includes(e.key) && inputElem.checked) {
                     e.preventDefault();
-                    handleCombo(elem, true);
+
+                    const selectedItem = listElem.querySelector('[aria-selected="true"]') || listElem.children[0];
+                    if (selectedItem) {
+                        console.log('a');
+                        selectedItem.focus();
+
+                        outputElem.setAttribute('aria-activedescendant', selectedItem.id);
+                    }
+                }
+
+                if (e.key === ' ' || e.keyCode === 32) {
+                    inputElem.checked = 0;
+                    inputElem.focus();
+                }
+
+                if (e.code === 'Enter') {
+                    handleCombo(outputElem, true);
+                    inputElem.focus();
                 }
             });
-            elem.addEventListener('paste', e => {
+            outputElem.addEventListener('paste', e => {
                 e.preventDefault();
                 const text = (e.clipboardData || window.clipboardData).getData('text');
                 document.execCommand('insertText', false, text);
             });
-            elem.addEventListener('input', () => {
-                if (elem.innerText.includes('\n')) {
-                    elem.textContent = elem.textContent.replace(/\n/g, '');
+            outputElem.addEventListener('input', () => {
+                if (outputElem.innerText.includes('\n')) {
+                    outputElem.textContent = outputElem.textContent.replace(/\n/g, '');
                     const selection = window.getSelection();
-                    if (selection && elem.lastChild) {
-                        selection.collapse(elem.lastChild, elem.lastChild.length || 0);
+                    if (selection && outputElem.lastChild) {
+                        selection.collapse(outputElem.lastChild, outputElem.lastChild.length || 0);
                     }
                 }
             });
-            elem.addEventListener('blur', () => elem.scrollLeft = 0);
+            outputElem.addEventListener('blur', () => outputElem.scrollLeft = 0);
         });
   
         // Number Steppers
@@ -652,9 +695,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
         // 4. Global listener to close dropdowns when clicking outside
         document.addEventListener('click', (e) => {
-            document.querySelectorAll('.dropdown > [type="checkbox"], .combobox > [type="checkbox"]').forEach(chk => {
-                if (chk.checked && !chk.parentElement.contains(e.target)) {
-                    chk.checked = false;
+            document.querySelectorAll('.dropdown > [type="checkbox"], .combobox > [type="checkbox"]').forEach(checkboxElem => {
+                if (checkboxElem.checked && !checkboxElem.parentElement.contains(e.target)) {
+                    checkboxElem.checked = false;
                 }
             });
         });
@@ -662,6 +705,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 5. Unset the global initialization flag
         // setTimeout(() => window.appIsInitializing = false, 0);
         window.appIsInitializing = false;
+
+        nestCode(true);
     }
   
     initializeApp();

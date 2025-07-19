@@ -66,18 +66,18 @@
             <li>
               <span id="samples-label">Samples</span>
               <div>
-                <label id="samples" class="dropdown" for="samples-checkbox">
+                <label id="samples" class="dropdown" for="samples-checkbox" role="presentation">
                   <input type="checkbox" id="samples-checkbox" />
-                  <output role="button" aria-haspopup="listbox" aria-controls="samples-listbox" aria-labelledby="samples-label" aria-activedescendant="samples-option-1">Unnested Showcase</output>
+                  <output role="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="samples-listbox" aria-labelledby="samples-label" aria-activedescendant="samples-option-1">Unnested Showcase</output>
                   <ul hidden id="samples-listbox" role="listbox" aria-labelledby="samples-label">
-                    <li id="samples-option-1" tabindex="-1" value="unnestedShowcase" role="option" aria-selected="true">Unnested Showcase</li>
-                    <li id="samples-option-2" tabindex="-1" value="nestedShowcase" role="option">Nested Showcase</li>
-                    <li id="samples-option-3" tabindex="-1" value="complexSelectorGroups" role="option">Complex selector group</li>
-                    <li id="samples-option-4" tabindex="-1" value="escapedCharacters" role="option">Escaped characters</li>
-                    <li id="samples-option-5" tabindex="-1" value="unnestedNavbar" role="option">Unnested navbar</li>
-                    <li id="samples-option-6" tabindex="-1" value="aphellaLoginPage" role="option">Aphella Login</li>
-                    <li id="samples-option-7" tabindex="-1" value="aphellaDashboard" role="option">Aphella Dashboard</li>
-                    <li id="samples-option-8" tabindex="-1" value="amazonHomepage" role="option">Amazon Homepage</li>
+                    <li id="samples-option-1" role="option" tabindex="-1" value="unnestedShowcase" aria-selected="true">Unnested Showcase</li>
+                    <li id="samples-option-2" role="option" tabindex="-1" value="nestedShowcase">Nested Showcase</li>
+                    <li id="samples-option-3" role="option" tabindex="-1" value="complexSelectorGroups">Complex selector group</li>
+                    <li id="samples-option-4" role="option" tabindex="-1" value="escapedCharacters">Escaped characters</li>
+                    <li id="samples-option-5" role="option" tabindex="-1" value="unnestedNavbar">Unnested navbar</li>
+                    <li id="samples-option-6" role="option" tabindex="-1" value="aphellaLoginPage">Aphella Login</li>
+                    <li id="samples-option-7" role="option" tabindex="-1" value="aphellaDashboard">Aphella Dashboard</li>
+                    <li id="samples-option-8" role="option" tabindex="-1" value="amazonHomepage">Amazon Homepage</li>
                   </ul>
                 </label>
               </div>
@@ -88,16 +88,16 @@
                 <p>(press enter to inject & save)</p>
               </span>
               <div>
-                <label id="externalCss" class="combobox" for="external-css-checkbox" role="combobox"  aria-haspopup="listbox"  aria-expanded="false"  aria-owns="external-css-listbox">
+                <label id="externalCss" class="combobox" for="external-css-checkbox" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="external-css-listbox">
                   <input type="checkbox" id="external-css-checkbox" />
-                  <output aria-activedescendant="">
-                    <div role="textbox" contenteditable="true" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox" id="external-css-input" name="external-css-input" tabindex="-1"></div>
+                  <output>
+                    <div role="textbox" contenteditable="true" placeholder="https://corsproxy.io/?https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox" id="external-css-input" aria-activedescendant="" tabindex="-1"></div>
                   </output>
                   <ul hidden id="external-css-listbox" role="listbox" aria-labelledby="external-css-label">
                     <!-- Pre-populated/recent items will be managed by JS -->
-                    <li id="external-css-option-1" tabindex="-1" role="option">/styles/main.css</li>
-                    <li id="external-css-option-2" tabindex="-1" role="option">/styles/keyframes.css</li>
-                    <li id="external-css-option-3" tabindex="-1" role="option">/styles/editor.css</li>
+                    <li id="external-css-option-1" role="option" tabindex="-1">/styles/main.css</li>
+                    <li id="external-css-option-2" role="option" tabindex="-1">/styles/keyframes.css</li>
+                    <li id="external-css-option-3" role="option" tabindex="-1">/styles/editor.css</li>
                   </ul>
                 </label>
               </div>
@@ -110,30 +110,30 @@
             <li>
               <span id="font-label">Font</span>
               <div>
-                <label id="typefaces" class="dropdown" for="typefaces-checkbox">
+                <label id="typefaces" class="dropdown" for="typefaces-checkbox" role="presentation">
                   <input type="checkbox" id="typefaces-checkbox" />
-                  <output role="button" aria-haspopup="listbox" aria-controls="typefaces-listbox" aria-labelledby="font-label" aria-activedescendant="typefaces-option-2">Fira Code</output>
+                  <output role="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="typefaces-listbox" aria-labelledby="font-label" aria-activedescendant="typefaces-option-2">Fira Code</output>
                   <ul hidden id="typefaces-listbox" role="listbox" aria-labelledby="font-label">
-                    <li id="typefaces-option-1" tabindex="-1" role="option">DejaVu Mono</li>
-                    <li id="typefaces-option-2" tabindex="-1" role="option" aria-selected="true">Fira Code</li>
-                    <li id="typefaces-option-3" tabindex="-1" role="option">iA Writer Mono</li>
-                    <li id="typefaces-option-4" tabindex="-1" role="option">Jetbrains Mono</li>
-                    <li id="typefaces-option-5" tabindex="-1" role="option">PT Sans</li>
+                    <li id="typefaces-option-1" role="option" tabindex="-1">DejaVu Mono</li>
+                    <li id="typefaces-option-2" role="option" tabindex="-1" aria-selected="true">Fira Code</li>
+                    <li id="typefaces-option-3" role="option" tabindex="-1">iA Writer Mono</li>
+                    <li id="typefaces-option-4" role="option" tabindex="-1">Jetbrains Mono</li>
+                    <li id="typefaces-option-5" role="option" tabindex="-1">PT Sans</li>
                   </ul>
                 </label>
-                <label id="fontsizes" class="dropdown" for="fontsizes-checkbox">
+                <label id="fontsizes" class="dropdown" for="fontsizes-checkbox" role="presentation">
                   <input type="checkbox" id="fontsizes-checkbox" />
-                  <output role="button" aria-haspopup="listbox" aria-controls="fontsizes-listbox" aria-label="Font Size" aria-activedescendant="fontsizes-option-4">1.25rem</output>
+                  <output role="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="fontsizes-listbox" aria-label="Font Size" aria-activedescendant="fontsizes-option-4">1.25rem</output>
                   <ul hidden id="fontsizes-listbox" role="listbox" aria-label="Font Size">
-                    <li id="fontsizes-option-1" tabindex="-1" role="option">0.5rem</li>
-                    <li id="fontsizes-option-2" tabindex="-1" role="option">0.75rem</li>
-                    <li id="fontsizes-option-3" tabindex="-1" role="option">1rem</li>
-                    <li id="fontsizes-option-4" tabindex="-1" role="option" aria-selected="true">1.25rem</li>
-                    <li id="fontsizes-option-5" tabindex="-1" role="option">1.5rem</li>
-                    <li id="fontsizes-option-6" tabindex="-1" role="option">1.75rem</li>
-                    <li id="fontsizes-option-7" tabindex="-1" role="option">2rem</li>
-                    <li id="fontsizes-option-8" tabindex="-1" role="option">2.25rem</li>
-                    <li id="fontsizes-option-9" tabindex="-1" role="option">2.5rem</li>
+                    <li id="fontsizes-option-1" role="option" tabindex="-1">0.5rem</li>
+                    <li id="fontsizes-option-2" role="option" tabindex="-1">0.75rem</li>
+                    <li id="fontsizes-option-3" role="option" tabindex="-1">1rem</li>
+                    <li id="fontsizes-option-4" role="option" tabindex="-1" aria-selected="true">1.25rem</li>
+                    <li id="fontsizes-option-5" role="option" tabindex="-1">1.5rem</li>
+                    <li id="fontsizes-option-6" role="option" tabindex="-1">1.75rem</li>
+                    <li id="fontsizes-option-7" role="option" tabindex="-1">2rem</li>
+                    <li id="fontsizes-option-8" role="option" tabindex="-1">2.25rem</li>
+                    <li id="fontsizes-option-9" role="option" tabindex="-1">2.5rem</li>
                   </ul>
                 </label>
               </div>
@@ -230,7 +230,7 @@
           </div>
         </section>
         <menu>
-          <a id="githubBtn" href="https://github.com/TimChinye/NestYourCSS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
+          <a id="githubNestingBtn" href="https://github.com/TimChinye/NestYourCSS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
             <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconGithub" clipPathUnits="objectBoundingBox">
@@ -240,7 +240,7 @@
               </svg>
             </figure>
           </a>
-          <a id="historyBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)">
+          <a id="historyNestingBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconHistory" clipPathUnits="objectBoundingBox">
@@ -249,7 +249,7 @@
               </svg>
             </figure>
           </a>
-          <a id="userSettingsBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)">
+          <a id="userSettingsNestingBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconSettings" clipPathUnits="objectBoundingBox">
@@ -258,7 +258,7 @@
               </svg>
             </figure>
           </a>
-          <a id="reportBugBtn" href="https://github.com/TimChinye/NestYourCSS/issues" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
+          <a id="reportBugNestingBtn" href="https://github.com/TimChinye/NestYourCSS/issues" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconBug" clipPathUnits="objectBoundingBox">
@@ -267,7 +267,7 @@
               </svg>
             </figure>
           </a>
-          <a id="feedbackBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)">
+          <a id="feedbackNestingBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)">
               <figure class="inner-cursor" aria-hidden="true">
               <svg>
                 <clipPath id="iconShareYourMind" clipPathUnits="objectBoundingBox">
@@ -282,35 +282,36 @@
         <article id="textSide">
           <header>
             <hgroup>
-              <h3 id="splashText" aria-live="assertive">Feeling lost in the stylesheets?</h3>
+              <!-- I should removed this aria-live for accessibility reasons, but I personally just like it -->
               <h1>Nest Your CSS!</h1>
+              <h3 id="splashText" aria-live="assertive">Feeling lost in the stylesheets?</h3>
             </hgroup>
             <menu>
-              <a id="githubBtn" href="https://github.com/TimChinye/NestYourCSS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
+              <a id="githubHomeBtn" href="https://github.com/TimChinye/NestYourCSS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#githubIconSymbol"></use>
                 </svg>
                 <span>Contribute</span>
               </a>
-              <a id="historyBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)">
+              <a id="historyHomeBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="View Nesting History (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#historyIconSymbol"></use>
                 </svg>
                 <span>Nesting History</span>
               </a>
-              <a id="userSettingsBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)">
+              <a id="userSettingsHomeBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="User Settings (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#userSettingsIconSymbol"></use>
                 </svg>
                 <span>User Settings</span>
               </a>
-              <a id="reportBugBtn" href="https://github.com/TimChinye/NestYourCSS/issues" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
+              <a id="reportBugHomeBtn" href="https://github.com/TimChinye/NestYourCSS/issues" target="_blank" rel="noopener noreferrer" aria-label="Report a Bug (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#reportBugIconSymbol"></use>
                 </svg>
                 <span>Report a Bug</span>
               </a>
-              <a id="feedbackBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)">
+              <a id="feedbackHomeBtn" aria-disabled="true" target="_blank" rel="noopener noreferrer" aria-label="Share Your Mind (opens in new tab)">
                 <svg viewBox="0 0 96 96" aria-hidden="true">
                   <use href="#feedbackIconSymbol"></use>
                 </svg>

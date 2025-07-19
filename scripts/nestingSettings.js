@@ -511,25 +511,55 @@ document.addEventListener('DOMContentLoaded', () => {
             const inputElem = labelElem.querySelector('input');
             const listElem = labelElem.querySelector('ul');
 
-            // If menu is supposed to be open, and isn't being triggered from the inside.
-            if (listElem.contains(e?.relatedTarget)) {
+            if (e.type == 'change') {
                 if (inputElem.checked) {
-                    inputElem.checked = 0;
-                    console.log(e?.relatedTarget);
-                    focusPreviousElement();
+                    // console.log('c-on');
+                    setTimeout(() => {
+                        const selectedItem = listElem.querySelector('[aria-selected="true"]') || listElem.children[0];
+                        if (selectedItem) {
+                            if (labelElem.classList.contains('dropdown')) selectedItem.focus();
+                            else if (labelElem.classList.contains('combobox')) labelElem.querySelector('output > div[role="textbox"]').focus();
+                            
+                            outputElem.setAttribute('aria-activedescendant', selectedItem.id);
+                        }
+                    }, 0);
+                } else {
+                    // console.log('c-off');
                 }
-                
-            }
-            else if (inputElem.checked) {
-                setTimeout(() => {
-                    const selectedItem = listElem.querySelector('[aria-selected="true"]') || listElem.children[0];
-                    if (selectedItem) {
-                        if (labelElem.classList.contains('dropdown')) selectedItem.focus();
-                        else if (labelElem.classList.contains('combobox')) labelElem.querySelector('output > div[role="textbox"]').focus();
+            } else {
+                const oldFocusedElem = e?.relatedTarget;
+                const oldLabelElem = oldFocusedElem?.closest('label[id]');
+                const oldInputElem = oldLabelElem?.querySelector('input');
+                const oldListElem = oldLabelElem?.querySelector('ul');
 
-                        outputElem.setAttribute('aria-activedescendant', selectedItem.id);
+                if (inputElem.checked) {
+                    // console.log('i-on');
+
+                    if (oldFocusedElem && oldInputElem && oldListElem) {
+                        if (oldListElem.contains(oldFocusedElem) && oldInputElem.checked) {
+                            oldInputElem.checked = 0;
+                            focusPreviousElement();
+                        }
+                    } else {
+                        // console.log("testA");
                     }
-                }, 0);
+                }
+                else {
+                    // console.log('i-off');
+
+                    if (oldFocusedElem && oldInputElem && oldListElem) {
+                        if (oldListElem.contains(oldFocusedElem) && oldInputElem.checked) oldInputElem.checked = 0;
+                    } else {
+                        // console.log("testB");
+                    }
+                }
+                // if (listElem.contains(e?.relatedTarget)) {
+                //     if (inputElem.checked) {
+                //         inputElem.checked = 0;
+                //         focusPreviousElement();
+                //     }
+                    
+                // }
             }
         };
 
@@ -542,12 +572,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (inputElem && listElem && outputElem) {
                 listElem.addEventListener('keydown', (e) => handleKeyNavigation(e, listElem));
 
-                inputElem.addEventListener('change', (e) => openDropdown(outputElem, e));
+                inputElem.addEventListener('change', (e) => (openDropdown(outputElem, e)));
                 inputElem.addEventListener('focus', (e) => (e.preventDefault(), openDropdown(outputElem, e)));
             }
         });
   
         scope.querySelectorAll('.dropdown [role="option"]').forEach(elem => {
+            const labelElem = elem.closest('label[id]');
+            const inputElem = labelElem.querySelector('input');
+            const listElem = labelElem.querySelector('ul');
+            const outputElem = labelElem.querySelector('output');
+
             elem.addEventListener('click', () => handleSelect(elem, true));
         });
   
@@ -560,12 +595,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (inputElem && listElem && outputElem) {
                 listElem.addEventListener('keydown', (e) => handleKeyNavigation(e, listElem));
 
-                inputElem.addEventListener('change', (e) => openDropdown(outputElem, e));
+                inputElem.addEventListener('change', (e) => (openDropdown(outputElem, e)));
                 inputElem.addEventListener('focus', (e) => (e.preventDefault(), openDropdown(outputElem, e)));
             }
         });
   
         scope.querySelectorAll('.combobox [role="option"]').forEach(elem => {
+            const labelElem = elem.closest('label[id]');
+            const inputElem = labelElem.querySelector('input');
+            const listElem = labelElem.querySelector('ul');
+            const outputElem = labelElem.querySelector('output > div[role="textbox"]');
+
             elem.addEventListener('click', () => handleCombo(elem, true));
         });
   
@@ -581,7 +621,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const selectedItem = listElem.querySelector('[aria-selected="true"]') || listElem.children[0];
                     if (selectedItem) {
-                        console.log('a');
                         selectedItem.focus();
 
                         outputElem.setAttribute('aria-activedescendant', selectedItem.id);

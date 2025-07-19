@@ -3,6 +3,11 @@
 ## Next up:
 - Add all the aria-* stuff
 
+The button/trigger is missing aria-expanded="true/false" to announce its state.
+
+Inaccessible Visual Content:
+The "mini editor" (#miniEditor) is visually clever but inaccessible. A screen reader will read the content literally: "Nesting helps you to group {TAB} related styles...". The visual representation of code structure is completely lost. To make this accessible, you could either provide a proper code block with real indentation or add an aria-describedby that points to a hidden span with a plain-text description of the concept.
+
 ## To-do now, before [release]:
 - Add accessibility features (Tab to start nesting immediately / Skip to Main Content) including alt/title text
 - Add SEO features

@@ -325,19 +325,15 @@ document.addEventListener('DOMContentLoaded', () => {
        4. GENERIC EVENT HANDLERS
        ========================================================================== */
        
-    function handleSelect(inputElem, close = false) {
+    function handleSelect(inputElem) {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
         const value = inputElem.getAttribute('value') || inputElem.textContent;
   
-        updateAndCommit(id, value);
-  
-        if (close) {
-            labelElem.control.checked = false;
-        }
+        updateAndCommit(id, value, false, inputElem);
     }
   
-    function handleCombo(inputElem, close = false) {
+    function handleCombo(inputElem) {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
         const isTextInput = inputElem.hasAttribute('contenteditable');
@@ -349,10 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
   
         updateAndCommit(id, value, false, inputElem);
-  
-        if (close) {
-            labelElem.control.checked = false;
-        }
     }
   
     function handleKeyNavigation(e, listElem) {
@@ -387,12 +379,13 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (e.key === ' ' || e.keyCode === 32 || e.key === 'Enter') {
             e.preventDefault();
             if (activeIndex >= 0) {
-                const item = items[activeIndex];
                 if (inputElem.checked) inputElem.checked = 0;
+
+                const item = items[activeIndex];
                 if (labelElem.classList.contains('dropdown')) {
-                    handleSelect(item, true);
+                    handleSelect(item);
                 } else if (labelElem.classList.contains('combobox')) {
-                    handleCombo(item, true);
+                    handleCombo(item);
                 }
             }
         }
@@ -507,59 +500,56 @@ document.addEventListener('DOMContentLoaded', () => {
   
     function attachEventListeners(scope = document) {
         const openDropdown = (outputElem, e) => {
-            const labelElem = outputElem.closest('label[id]');
-            const inputElem = labelElem.querySelector('input');
-            const listElem = labelElem.querySelector('ul');
+            const labelElem = outputElem?.closest('label[id]');
+            const inputElem = labelElem?.querySelector('input');
+            const listElem = labelElem?.querySelector('ul');
+
+            if (!outputElem || !labelElem || !inputElem || !listElem) return;
 
             if (e.type == 'change') {
-                if (inputElem.checked) {
-                    // console.log('c-on');
-                    setTimeout(() => {
-                        const selectedItem = listElem.querySelector('[aria-selected="true"]') || listElem.children[0];
-                        if (selectedItem) {
-                            if (labelElem.classList.contains('dropdown')) selectedItem.focus();
-                            else if (labelElem.classList.contains('combobox')) labelElem.querySelector('output > div[role="textbox"]').focus();
-                            
-                            outputElem.setAttribute('aria-activedescendant', selectedItem.id);
-                        }
-                    }, 0);
-                } else {
-                    // console.log('c-off');
+                const isOpened = inputElem.checked;
+                const isDropdown = labelElem.classList.contains('dropdown');
+                const isCombobox = labelElem.classList.contains('combobox');
+
+                if (isDropdown) outputElem.setAttribute('aria-expanded', isOpened);
+                else if (isCombobox) labelElem.setAttribute('aria-expanded', isOpened);
+
+                if (isOpened) {
+                    const selectedItem = listElem.querySelector('[aria-selected="true"]') || listElem.children[0];
+                    if (selectedItem) {
+                        if (isDropdown) selectedItem.focus();
+                        else if (isCombobox) outputElem.focus();
+                        
+                        outputElem.setAttribute('aria-activedescendant', selectedItem.id);
+                    }
                 }
             } else {
                 const oldFocusedElem = e?.relatedTarget;
                 const oldLabelElem = oldFocusedElem?.closest('label[id]');
                 const oldInputElem = oldLabelElem?.querySelector('input');
-                const oldListElem = oldLabelElem?.querySelector('ul');
 
-                if (inputElem.checked) {
-                    // console.log('i-on');
+                if (!oldInputElem && inputElem.checked) inputElem.checked = 0;
+            }
+        };
 
-                    if (oldFocusedElem && oldInputElem && oldListElem) {
-                        if (oldListElem.contains(oldFocusedElem) && oldInputElem.checked) {
-                            oldInputElem.checked = 0;
-                            focusPreviousElement();
-                        }
-                    } else {
-                        // console.log("testA");
+        const closeDropdown = (getLabelElem, e) => {
+            if (!e.relatedTarget) return;
+
+            const oldInput = getLabelElem(e.target)?.querySelector('input');
+            const newLabel = getLabelElem(e.relatedTarget);
+
+            if (!oldInput) return;
+
+            // If user tabs away to a different component
+            if (!newLabel?.contains(oldInput) && oldInput.checked) oldInput.checked = 0;
+            else if (newLabel?.contains(oldInput) && !oldInput.checked);
+            else {
+                setTimeout(() => {
+                    if (oldInput.checked && oldInput == e.relatedTarget) {
+                        oldInput.checked = 0;
+                        focusPreviousElement();
                     }
-                }
-                else {
-                    // console.log('i-off');
-
-                    if (oldFocusedElem && oldInputElem && oldListElem) {
-                        if (oldListElem.contains(oldFocusedElem) && oldInputElem.checked) oldInputElem.checked = 0;
-                    } else {
-                        // console.log("testB");
-                    }
-                }
-                // if (listElem.contains(e?.relatedTarget)) {
-                //     if (inputElem.checked) {
-                //         inputElem.checked = 0;
-                //         focusPreviousElement();
-                //     }
-                    
-                // }
+                }, 0);
             }
         };
 
@@ -578,12 +568,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         scope.querySelectorAll('.dropdown [role="option"]').forEach(elem => {
-            const labelElem = elem.closest('label[id]');
-            const inputElem = labelElem.querySelector('input');
-            const listElem = labelElem.querySelector('ul');
-            const outputElem = labelElem.querySelector('output');
+            const getLabelElem = (elem) => elem?.closest('label[id]');
 
-            elem.addEventListener('click', () => handleSelect(elem, true));
+            elem.addEventListener('click', () => handleSelect(elem));
+            elem.addEventListener('blur', (e) => closeDropdown(getLabelElem, e));
         });
   
         // Combo Box (Dropdown List)
@@ -601,12 +589,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         scope.querySelectorAll('.combobox [role="option"]').forEach(elem => {
-            const labelElem = elem.closest('label[id]');
-            const inputElem = labelElem.querySelector('input');
-            const listElem = labelElem.querySelector('ul');
-            const outputElem = labelElem.querySelector('output > div[role="textbox"]');
+            const getLabelElem = (elem) => elem?.closest('label[id]');
 
-            elem.addEventListener('click', () => handleCombo(elem, true));
+            elem.addEventListener('click', () => handleCombo(elem));
+            elem.addEventListener('blur', (e) => closeDropdown(getLabelElem, e));
         });
   
         // Combo Box (Text Input)
@@ -633,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (e.code === 'Enter') {
-                    handleCombo(outputElem, true);
+                    handleCombo(outputElem);
                     inputElem.focus();
                 }
             });
@@ -651,7 +637,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
-            outputElem.addEventListener('blur', () => outputElem.scrollLeft = 0);
+
+            const getLabelElem = (elem) => elem?.closest('label[id]');
+            outputElem.addEventListener('blur', (e) => (outputElem.scrollLeft = 0, closeDropdown(getLabelElem, e)));
         });
   
         // Number Steppers

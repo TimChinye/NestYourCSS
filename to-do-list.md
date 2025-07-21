@@ -1,13 +1,9 @@
 # To-do List
 
 ## Next up:
-- Add all the aria-* stuff
-
-Inaccessible Visual Content:
-The "mini editor" (#miniEditor) is visually clever but inaccessible. A screen reader will read the content literally: "Nesting helps you to group {TAB} related styles...". The visual representation of code structure is completely lost. To make this accessible, you could either provide a proper code block with real indentation or add an aria-describedby that points to a hidden span with a plain-text description of the concept.
+- Add SEO features
 
 ## To-do now, before [release]:
-- Add SEO features
 - Optimise for lighthouse
 - "Disable" history, settings, and share feedback
 - Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)

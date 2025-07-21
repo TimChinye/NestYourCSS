@@ -730,10 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         // 5. Unset the global initialization flag
-        // setTimeout(() => window.appIsInitializing = false, 0);
         window.appIsInitializing = false;
-
-        nestCode(true);
     }
   
     initializeApp();

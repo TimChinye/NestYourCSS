@@ -19,7 +19,7 @@ async function handleNestingChange(isCurrentlyNesting) {
 
   // Disable the button immediately to prevent spam-clicking during the transition
   nestBtn.disabled = true;
-
+  document.title = 'Nest Your CSS - ' + (window.isNesting ? 'Editor' : 'Homepage');
 
   // Update the 'inert' attribute on the views for accessibility
   mainSettings.toggleAttribute('inert', !window.isNesting);

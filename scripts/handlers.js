@@ -1,4 +1,4 @@
-mainContent.querySelectorAll('menu > button').forEach((btn) => {
+mainContent.querySelectorAll('nav > button').forEach((btn) => {
 	['transitionrun', 'transitionstart', 'transitioncancel', 'transitionend'].forEach(event => btn.lastElementChild.addEventListener(event, repositionButtonBG));
 
 	function repositionButtonBG(e) {
@@ -29,9 +29,9 @@ document.body.addEventListener('mousemove', (e) => {
       // Offset is needed since containing box has been changed from root to mainSettings (or some other element)
       const [ offsetX, offsetY ] = [(mainSettings.scrollLeft - mainSettings.lastElementChild.clientHeight / 2), (mainSettings.scrollTop - (mainSettings.lastElementChild.clientHeight / 2))];
 
-      const nestedMenuButtons = mainSettings.lastElementChild;
-      nestedMenuButtons.style.setProperty('--cursor-x-pos', (e.clientX + offsetX) + 'px');
-      nestedMenuButtons.style.setProperty('--cursor-y-pos', (e.clientY + offsetY) + 'px');
+      const nestedNavButtons = mainSettings.lastElementChild;
+      nestedNavButtons.style.setProperty('--cursor-x-pos', (e.clientX + offsetX) + 'px');
+      nestedNavButtons.style.setProperty('--cursor-y-pos', (e.clientY + offsetY) + 'px');
     }
     else {
       if (e.target === splashTextElem) attemptSplashTextUpdate();
@@ -53,7 +53,7 @@ document.addEventListener('visibilitychange', () => document.body.classList.togg
 
 const elements = [
   '#nestBtn',
-  '#mainSettings > menu > button > figure.inner-cursor',
+  '#mainSettings > nav > button > figure.inner-cursor',
   '#repeatingText span.repeat',
   '#changingText s',
   '#groupedText',

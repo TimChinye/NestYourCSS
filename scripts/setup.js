@@ -269,7 +269,7 @@ async function setupEditors() {
     const baseShadowOpacity = 0.5;
     const baseShadowBlur = 2;
     const maxWidth = inputEditorElem.offsetWidth * 2;
-    let baseShadowWidth = inputEditorElem.offsetWidth / 4;
+    let baseShadowWidth = inputEditorElem.offsetWidth / 3;
     let shadowWidthDiff = baseShadowWidth / 15;
     let previousShadowTranslation = 0;
 

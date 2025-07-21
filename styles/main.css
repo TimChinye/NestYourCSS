@@ -1,5 +1,5 @@
 @starting-style {
-	#mainContent > #textSide > header :is(menu > button, hgroup > :is(h1, h3)),
+	#mainContent > #textSide > header :is(nav > button, hgroup > :is(h1, h3)),
 	#mainContent > #textSide > figure > :is(figcaption, figcaption + div),
 	#mainContent > #editorSide > #codeEditor .editorWrapper {
 		opacity: 0;
@@ -635,7 +635,7 @@ body {
 					}
 				}
 
-				> menu {
+				> nav {
 					display: inline-flex;
 					padding: 0 4ch;
 					justify-content: space-evenly;
@@ -756,20 +756,12 @@ body {
 						font-size: clamp(0.5rem, 16px, 1.125rem);
 	
 						> hgroup {
+							display: flex;
+							flex-direction: column-reverse;
 							color: rgb(from var(--shades-white) r g b / var(--opacity-high));
 							font-family: 'Poppins', 'Calibri', sans-serif;
 	
 							> * { margin: 0; }
-	
-							> h3 {
-								line-height: 125%;
-								font-weight: 200;
-								font-size: 3em;
-								height: 2lh;
-								width: 24ch;
-								transition: opacity 3s 3s;
-								transform: translateZ(0);
-							}
 
 							> h1 {
 								display: inline-block;
@@ -783,9 +775,19 @@ body {
 									color: var(--shades-white);
 								}
 							}
+	
+							> h3 {
+								line-height: 125%;
+								font-weight: 200;
+								font-size: 3em;
+								height: 2lh;
+								width: 24ch;
+								transition: opacity 3s 3s;
+								transform: translateZ(0);
+							}
 						}
 	
-						> menu {
+						> nav {
 							display: inline-flex;
 							--primary-colour: var(--shades-darker);
 							--secondary-colour: color-mix(in srgb, var(--shades-lightest), var(--primary-colour) 50%);

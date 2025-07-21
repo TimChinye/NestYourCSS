@@ -1,11 +1,9 @@
 # To-do List
 
 ## Next up:
-- Add SEO features
+- Optimise for lighthouse
 
 ## To-do now, before [release]:
-- Optimise for lighthouse
-- "Disable" history, settings, and share feedback
 - Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)
 
 ## List of (potential) stuff to add to the site, after release:

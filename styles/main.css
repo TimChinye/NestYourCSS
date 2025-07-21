@@ -1674,7 +1674,7 @@ body {
 							translate: -3lh;
 						}
 						
-						strong {
+						b {
 							font-size: 1.25em;
 							/* line-height: inherit; */
 							transition: color 0.5s;
@@ -1747,7 +1747,6 @@ body {
 						position: relative;
 						margin-left: auto;
 						margin-right: 7.5vw;
-						display: flex;
 						font-family: 'Fira Code', monospace;
 						font-size: 2em;
 						line-height: 1em;
@@ -1770,43 +1769,61 @@ body {
 							}
 						}
 						
-						> #lineNumbers {
-							width: 2ch;
-							opacity: 0.25;
-							font-family: inherit;
-							text-align: right;
+						> .visually-hidden {
+							border: 0;
+							clip: rect(0 0 0 0);
+							height: 1px;
+							margin: -1px;
+							overflow: hidden;
+							padding: 0;
+							position: absolute;
+							width: 1px;
+							white-space: nowrap; /* 1 */
+							word-wrap: normal; /* 2 */
 						}
-					
-						> pre {
-							opacity: 0.75;
-							font-family: inherit;
-							letter-spacing: 0.2em;
-							margin: 0;
-							--maxLines: 20;
-							--activeLine: 1;
-							--intensityPos: 100%;
-							
-							> div {
-								padding-right: 5ch;
+
+						> .visual-presentation {
+							display: flex;
+							gap: 3ch;
+
+							> #lineNumbers {
+								width: 2ch;
+								opacity: 0.25;
+								font-family: inherit;
+								text-align: right;
+							}
+						
+							> pre {
+								opacity: 0.75;
+								font-family: inherit;
+								letter-spacing: 0.2em;
+								margin: 0;
+								--maxLines: 20;
+								--activeLine: 1;
+								--intensityPos: 100%;
 								
-								&:first-child {
-									position: relative;
-					
-									&::before {
-										position: absolute;
-										content: '';
-										top: 0;
-										right: 0;
-										height: 100%;
-										width: calc(100% + 5ch);
-										background: linear-gradient(to right, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) calc(var(--intensityPos) - 20%), rgb(from var(--pri-colour-darker) r g b / var(--opacity-medium)) var(--intensityPos), rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) calc(var(--intensityPos) + 20%), transparent);
-										z-index: -1;
-										translate: 0 calc((clamp(1, var(--activeLine), var(--maxLines)) - 1) * 1lh);
-										transition: 0.5s ease;
+								> code > div {
+									padding-right: 5ch;
+									
+									&:first-child {
+										position: relative;
+						
+										&::before {
+											position: absolute;
+											content: '';
+											top: 0;
+											right: 0;
+											height: 100%;
+											width: calc(100% + 5ch);
+											background: linear-gradient(to right, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) calc(var(--intensityPos) - 20%), rgb(from var(--pri-colour-darker) r g b / var(--opacity-medium)) var(--intensityPos), rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) calc(var(--intensityPos) + 20%), transparent);
+											z-index: -1;
+											translate: 0 calc((clamp(1, var(--activeLine), var(--maxLines)) - 1) * 1lh);
+											transition: 0.5s ease;
+										}
 									}
+								
+									span { display: inline-block; }
 								}
-							
-								span { display: inline-block; }
 							}
 						}
 					}

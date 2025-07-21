@@ -360,29 +360,39 @@
       </section>
       <section id="groupingStylesTogether" class="optimize">
         <p id="groupedText" data-text="Grouping&#x0A;Styles&#x0A;Together">Grouping<br>Styles<br>Together</p>
-        <div id="miniEditor" aria-label="A paragraph in the form of nested CSS code">
-          <div id="lineNumbers" aria-hidden="true"></div>
-          <pre>
-            Nesting helps you to group
-
-            {TAB} related styles.
-
-            And write CSS in
-
-            {TAB} a nested hierarchy.
-
-            This means
-
-            {TAB} you don't have to
-
-            {TAB} {TAB} {BOLD} repeat the entire selector {/BOLD} again
-
-            {TAB} {TAB} when styling
-
-            {TAB} {TAB} {TAB} specific child elements
-
-            {TAB} {TAB} {TAB} or pseudo-selectors.
-          </pre>
+        <div id="miniEditor" role="group" aria-label="Code example explaining CSS nesting" aria-describedby="cssNestingDescription">
+          <div id="cssNestingDescription" class="visually-hidden">
+            Nesting helps you to group related styles and write CSS in a nested hierarchy. 
+            This means you don't have to repeat the entire selector again when styling 
+            specific child elements or pseudo-selectors.
+          </div>
+                  
+          <div class="visual-presentation" aria-hidden="true">
+            <div id="lineNumbers" aria-hidden="true"></div>
+            <pre>
+              <code id="nycssCodeExample">
+                Nesting helps you to group
+    
+                {TAB} related styles.
+    
+                And write CSS in
+    
+                {TAB} a nested hierarchy.
+    
+                This means
+    
+                {TAB} you don't have to
+    
+                {TAB} {TAB} {BOLD} repeat the entire selector {/BOLD} again
+    
+                {TAB} {TAB} when styling
+    
+                {TAB} {TAB} {TAB} specific child elements
+    
+                {TAB} {TAB} {TAB} or pseudo-selectors.
+              </code>
+            </pre>
+          </div>
         </div>
       </section>
       <section id="mechanicsOfNesting" aria-labelledby="strechingText">

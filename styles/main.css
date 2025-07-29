@@ -960,7 +960,8 @@ body {
 							transition: 0.25s, opacity 3s 1s;
 	
 							> picture {
-								height: 250px;
+								width: 17.637rem;
+								aspect-ratio: 1 / 1;
 								transition: filter 0.25s;
 
 								> * {
@@ -973,12 +974,12 @@ body {
 									&.adsbygoogle:not([data-ad-status="filled"]) {
 										display: none;
 
-										& + img {
+										& ~ img {
 											display: block;
 										}
 									}
 
-									& + img {
+									& ~ img {
 										display: none;
 									}
 								}

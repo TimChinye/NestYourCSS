@@ -278,6 +278,7 @@ async function setupEditors() {
     let shadowWidthDiff = baseShadowWidth / 15;
     let previousShadowTranslation = 0;
 
+    console.log(shadowHeightDiff, baseShadowOpacity, baseShadowBlur, maxWidth, baseShadowWidth, shadowWidthDiff, previousShadowTranslation);
 
     // if (((2 * baseShadowWidth) + (shadowWidthDiff / 7.5)) > maxWidth + 50) { /* The first part simplifies to 32/15 */
     if (((32 / 15) * baseShadowWidth) > maxWidth) {

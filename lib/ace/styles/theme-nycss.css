@@ -25,11 +25,17 @@
 .ace-nycss .ace_gutter {
   background: transparent;
   color: var(--window-text-colour);
+  width: 3.19rem !important;
+}
+
+.ace-nycss .ace_layer {
+  width: inherit !important;
 }
 
 .ace-nycss .ace_gutter-cell {
-  padding-right: 32px;
-
+  padding-left: 1.08rem;
+  padding-right: 1.81rem;
+  
   > span:first-child {
     translate: 4px;
   }
@@ -46,6 +52,7 @@
 
 .ace-nycss .ace_scroller {
   background-color: transparent;
+  left: 3.19rem !important;
 }
 
 .ace-nycss .ace_paren {  /*  {  }  */
@@ -172,17 +179,21 @@
 .ace_scrollbar {
   --track-colour: var(--background-colour);
   --thumbnail-colour: var(--sec-colour-darker);
-  --scrollbar-padding: 4px;
-  --scrollbar-margin: 8px;
-  --scrollbar-width: 12px;
-
+  --scrollbar-padding: 0.227rem;
+  --scrollbar-margin: 0.454rem;
+  --scrollbar-width: 0.68rem;
   align-self: flex-end;
   margin: var(--scrollbar-margin);
 
   &.ace_scrollbar-v {
     bottom: calc(var(--scrollbar-width) + (var(--scrollbar-margin) / 2)) !important;
     height: calc(100% - (2 * var(--scrollbar-margin)) - var(--scrollbar-width)) !important;
+    width: 1.13rem !important;
     z-index: 7;
+    
+    > .ace_scrollbar-inner {
+      width: inherit !important;
+    }
   }
 
   &.ace_scrollbar-h {

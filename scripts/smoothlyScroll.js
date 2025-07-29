@@ -19,7 +19,6 @@ async function handleNestingChange(isCurrentlyNesting) {
 
   // Disable the button immediately to prevent spam-clicking during the transition
   nestBtn.disabled = true;
-  document.title = 'Nest Your CSS - ' + (window.isNesting ? 'Editor' : 'Homepage');
 
   // Update the 'inert' attribute on the views for accessibility
   mainSettings.toggleAttribute('inert', !window.isNesting);
@@ -33,6 +32,11 @@ async function handleNestingChange(isCurrentlyNesting) {
   let animatingElem = window.isNesting ? codeEditorElem : editorSideElem;
   await waitElementTransitionEnd(animatingElem, 3000);
   nestBtn.disabled = false;
+
+  // Update UI state (Editor <-> Homepage)
+  document.title = 'Nest Your CSS - ' + (window.isNesting ? 'Editor' : 'Homepage');
+  nestBtn.setAttribute('aria-label', window.isNesting ? "View Homepage" : "Start Nesting");
+  toggleBtn.textContent = (window.isNesting) ? 'Start Nesting' : 'Visit Homepage';
 }
 
 const observer = new MutationObserver(() => {

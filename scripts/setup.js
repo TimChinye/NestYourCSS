@@ -8,6 +8,8 @@ async function setupEditors() {
   inputEditorInstance = initEditor("inputEditor", "The editor to input CSS code that will be minified/nested/denested.", sample || '/* Your input CSS should go here */');
   outputEditorInstance = initEditor("outputEditor", "The editor that outputs the CSS code that will be minified/nested/denested.", '/* Your output CSS will appear here */');
 
+  if (!(inputEditorInstance && outputEditorInstance)) return;
+
   // Auto Nest
   let codeChanged = false;
   let isProcessing = false;
@@ -38,6 +40,7 @@ async function setupEditors() {
    * @returns {ace.Editor} The configured Ace editor instance.
    */
   function initEditor(editorId, labelDescription, value) {
+    if (!document.getElementById(editorId)) return;
     const editor = ace.edit(editorId, {
       // --- Accessibility & Usability Options ---
       mode: "ace/mode/css",
@@ -395,9 +398,6 @@ toggleBtn.addEventListener('click', () => {
   if (typeof nestCode === 'undefined') return;
 
   nestCode(true);
-  
-  if (!nestBtn.hasAttribute('disabled'))
-    toggleBtn.textContent = (window.isNesting) ? 'Start Nesting' : 'Visit Homepage';
 });
 
 document.addEventListener('DOMContentLoaded', () => {

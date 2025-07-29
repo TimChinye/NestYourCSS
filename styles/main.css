@@ -776,7 +776,7 @@ body {
 								}
 							}
 	
-							> h3 {
+							> p {
 								line-height: 125%;
 								font-weight: 200;
 								font-size: 3em;
@@ -1532,7 +1532,7 @@ body {
 								padding-top: 1lh;
 
 								&:first-child {
-									text-shadow: 0 0lh;
+									text-shadow: 0 0.5lh;
 									animation: showText linear forwards 1ms;
 									animation-timeline: view();
 									animation-range-start: cover calc(min(50dvh, 800px) - 1lh);

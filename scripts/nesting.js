@@ -71,16 +71,16 @@ function updateAccessibleErrorTable(annotations, tableBodyElem, inputEditorInsta
   }
   
 function nestCode(onClick = false) {
-    if (!inputEditorInstance || nestBtn.hasAttribute('disabled')) return;
+    if (nestBtn.hasAttribute('disabled')) return;
 
     mainElement.classList.toggle('nesting', !(onClick && window.isNesting));
 
-    nestBtn.setAttribute('aria-label', window.isNesting ? "View Homepage" : "Start Nesting");
-
     if (onClick) {
         if (window.isNesting) return;
-        scrollWrapper.scrollTo({ top: 0, behavior: 'smooth' });
+        else scrollWrapper.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    if (typeof outputEditorInstance === 'undefined' || !inputEditorInstance) return;
 
     let tableBodyElem = errorTable.tBodies[0];
 	const annotations = inputEditorInstance.getSession().getAnnotations().filter((a) => a.type == 'error');

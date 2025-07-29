@@ -699,28 +699,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 0. Set the global initialization flag
         window.appIsInitializing = true;
   
-        await waitForVar('inputEditorInstance');
-        await waitForVar('outputEditorInstance');
-  
         // 1. Load settings from storage or use defaults
         loadSettings();
-  
-        // 2. Apply settings to UI and execute initial actions
-        for (const id in settings) {
-            // Apply UI state without triggering saves or processing
-            applySetting(id, settings[id]);
-  
-            // Run the action logic for initial setup (e.g., set font size)
-            const config = settingsConfig[id];
-            if (config.action) {
-                config.action(settings[id], true); // Pass true for isInitialLoad
-            }
-        }
         
-        // 3. Attach all event listeners
+        // 2. Attach all event listeners
         attachEventListeners();
   
-        // 4. Global listener to close dropdowns when clicking outside
+        // 3. Global listener to close dropdowns when clicking outside
         document.addEventListener('click', (e) => {
             document.querySelectorAll('.dropdown > [type="checkbox"], .combobox > [type="checkbox"]').forEach(checkboxElem => {
                 if (checkboxElem.checked && !checkboxElem.parentElement.contains(e.target)) {
@@ -729,8 +714,23 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
   
+        // 4. Apply settings to UI and execute initial actions
+        const waitForEditors = [waitForVar('inputEditorInstance'), waitForVar('outputEditorInstance')];
+        for (const id in settings) {
+            // Apply UI state without triggering saves or processing
+            applySetting(id, settings[id]);
+  
+            // Run the action logic for initial setup (e.g., set font size)
+            const config = settingsConfig[id];
+            if (config.action) {
+                Promise.all(waitForEditors).then(() => {
+                    config.action(settings[id], true); // Pass true for isInitialLoad
+                });
+            }
+        }
+  
         // 5. Unset the global initialization flag
-        window.appIsInitializing = false;
+        Promise.all(waitForEditors).then(() => window.appIsInitializing = false);
     }
   
     initializeApp();

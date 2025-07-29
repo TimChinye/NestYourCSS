@@ -2,8 +2,10 @@ async function setupEditors() {
   await waitForVar('cssSamples');
   let sample = cssSamples[window.cssSample] ?? cssSamples["unnestedShowcase"];
 
+  const workerDirectoryUrl = new URL("lib/ace-linters/", window.location.origin);
+
   await waitForVar('LanguageProvider');
-  const provider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
+  const languageProvider = LanguageProvider.fromCdn(workerDirectoryUrl.href);
 
   inputEditorInstance = initEditor("inputEditor", "The editor to input CSS code that will be minified/nested/denested.", sample || '/* Your input CSS should go here */');
   outputEditorInstance = initEditor("outputEditor", "The editor that outputs the CSS code that will be minified/nested/denested.", '/* Your output CSS will appear here */');
@@ -44,9 +46,9 @@ async function setupEditors() {
     const editor = ace.edit(editorId, {
       // --- Accessibility & Usability Options ---
       mode: "ace/mode/css",
-      showPrintMargin: false,
+      theme: "ace/theme/nycss"
     });
-  
+
     // --- Core Accessibility: Focus Management ---
   
     // 1. Allow tabbing out of the editor
@@ -130,7 +132,7 @@ async function setupEditors() {
 
     editor.session.selection.on('changeCursor', () => updateCoordinateDisplay(editor));
   
-    provider.registerEditor(editor);
+    languageProvider.registerEditor(editor);
     return editor;
   }
 

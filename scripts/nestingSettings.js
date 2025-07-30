@@ -734,4 +734,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     initializeApp();
-  });
+});

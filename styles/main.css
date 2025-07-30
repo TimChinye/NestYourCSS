@@ -1,3 +1,5 @@
+/* The actual main CSS file for this website */
+
 @starting-style {
 	#mainContent > #textSide > header :is(nav > button, hgroup > :is(h1, h3)),
 	#mainContent > #textSide > figure > :is(figcaption, figcaption + div),
@@ -15,7 +17,6 @@
 		background-color: transparent;
 	}
 }
-/* The actual main CSS file for this website */
 
 :root {
     font-size: clamp(0px, 1.5dvh, 24px);
@@ -719,7 +720,7 @@ body {
 			}
 
 			> #mainContent {
-				--background: url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
+				--background: url("https://ucarecdn.com/380d4e4c-268c-4913-8c92-e049c44234ec/-/preview/189x189/") 0 0.1dvh / 5dvh repeat,
 				linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
 				linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) 50%, transparent) 0 0 / 100dvw 100dvh,
 				var(--shades-black);

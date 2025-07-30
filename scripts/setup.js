@@ -2,10 +2,8 @@ async function setupEditors() {
   await waitForVar('cssSamples');
   let sample = cssSamples[window.cssSample] ?? cssSamples["unnestedShowcase"];
 
-  const workerDirectoryUrl = new URL("lib/ace-linters/", window.location.origin);
-
   await waitForVar('LanguageProvider');
-  const languageProvider = LanguageProvider.fromCdn(workerDirectoryUrl.href);
+  const languageProvider = LanguageProvider.fromCdn("https://www.unpkg.com/ace-linters@1.2.3/build/");
 
   inputEditorInstance = initEditor("inputEditor", "The editor to input CSS code that will be minified/nested/denested.", sample || '/* Your input CSS should go here */');
   outputEditorInstance = initEditor("outputEditor", "The editor that outputs the CSS code that will be minified/nested/denested.", '/* Your output CSS will appear here */');
@@ -16,7 +14,7 @@ async function setupEditors() {
   let codeChanged = false;
   let isProcessing = false;
 
-  inputEditorInstance.getSession().on('change', () => ((typeof window.appIsInitializing !== 'undefined' && !window.appIsInitializing) && (window.processAuto ?? true)) && (codeChanged = true));
+  inputEditorInstance.getSession().on('change', () => ((typeof window.appIsInitializing !== 'undefined' && !window.appIsInitializing) && (window.processAuto ?? true)) && (codeChanged = true)); 
 
   inputEditorInstance.getSession().on('changeAnnotation', () => {
     if ((!window.appIsInitializing) && (window.processAuto ?? true) && !isProcessing) {
@@ -43,6 +41,7 @@ async function setupEditors() {
    */
   function initEditor(editorId, labelDescription, value) {
     if (!document.getElementById(editorId)) return;
+
     const editor = ace.edit(editorId, {
       // --- Accessibility & Usability Options ---
       mode: "ace/mode/css",
@@ -277,8 +276,6 @@ async function setupEditors() {
     let baseShadowWidth = inputEditorElem.offsetWidth / 3;
     let shadowWidthDiff = baseShadowWidth / 15;
     let previousShadowTranslation = 0;
-
-    console.log(shadowHeightDiff, baseShadowOpacity, baseShadowBlur, maxWidth, baseShadowWidth, shadowWidthDiff, previousShadowTranslation);
 
     // if (((2 * baseShadowWidth) + (shadowWidthDiff / 7.5)) > maxWidth + 50) { /* The first part simplifies to 32/15 */
     if (((32 / 15) * baseShadowWidth) > maxWidth) {

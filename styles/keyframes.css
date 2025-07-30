@@ -169,8 +169,8 @@
 }
 
 @keyframes moveLeft {
-	from { translate: calc(var(--align-left) + var(--code-editor-width) - var(--single-editor-width)); }
-	to { translate: calc(0% + 0px); }
+	from { translate: calc(50% + (var(--gutter-real-width) / 2) - var(--padding)); } /* 0.125rem is the width of the editor's border */
+	to { translate: calc(0% - var(--padding)); }
 }
 
 @keyframes moveRight {

@@ -645,7 +645,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Number Steppers
         ['click', 'mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touchend'].forEach(type => {
             scope.querySelectorAll('.number [role="button"]').forEach(elem => {
-                elem.addEventListener(type, e => handleNumber(elem, e));
+                elem.addEventListener(type, e => handleNumber(elem, e), {passive: ['touchstart', 'touchend'].includes(type)});
             });
         });
         

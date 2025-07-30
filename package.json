@@ -1,0 +1,20 @@
+{
+  "name": "nest-your-css",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "gulp"
+  },
+  "devDependencies": {
+    "del": "^8.0.0",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-if": "^3.0.0",
+    "gulp-terser": "^2.1.0",
+    "gulp-useref": "^5.0.0"
+  },
+  "overrides": {
+    "clean-css": "^5.3.3"
+  }
+}  

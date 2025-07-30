@@ -18,5 +18,5 @@ function animateCursor() {
 
     // Loop this function for the next frame
     requestAnimationFrame(animateCursor);
-}
+};
 animateCursor();

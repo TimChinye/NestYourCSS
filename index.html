@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" hreflang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="google-adsense-account" content="ca-pub-9088468190661086">
-  <meta name="description" content="A tool to nest your CSS stylesheets, reducing boilerplate and improving readability.">
-  <meta name="keywords" content="CSS, nesting, boilerplate, code, readability, tool, generator, preprocessor, NestYourCSS, nycss, css, sass, scss, less, Tim Chinye, web development, frontend, front-end, developer, style, stylesheet, styles, styling, web, design, responsive, mobile, desktop, tablet, browser, chrome, firefox, safari, edge, opera, w3c, specification, standard, best, practice, free, online, github, open, source, community, project, portfolio, personal, Tim, Chinye, tim chinye, timchinye, Timchinye, TIMCHINYE, tIM cHINYE, nest, development">
-  <meta name="author" content="Tim Chinye">
-  <link rel="canonical" href="https://nestyourcss.com/">
-  <meta property="og:title" content="Nest Your CSS">
-  <meta property="og:description" content="A tool to nest your CSS stylesheets, reducing boilerplate and improving readability.">
+  <!-- Redacted HTML Content -->
   <meta property="og:image" content="https://nestyourcss.com/assets/images/nycss-logo.png">
   <meta property="og:url" content="https://nestyourcss.com/">
   <meta name="twitter:card" content="summary_large_image">
@@ -37,13 +29,17 @@
   }
   </script>
   
+  <!-- build:css styles/app.min.css -->
   <link href="./styles/ads-container.css" rel="stylesheet">
   <link href="./styles/properties.css" rel="stylesheet">
   <link href="./styles/keyframes.css" rel="stylesheet">
   <link href="./styles/fonts.css" rel="stylesheet">
   <link href="./styles/main.css" rel="stylesheet">
+  <!-- endbuild -->
   
+  <!-- build:css styles/editor.min.css -->
   <link href="./lib/ace/styles/theme-nycss.css" rel="stylesheet">
+  <!-- endbuild -->
 </head>
 <body itemscope itemtype="https://schema.org/WebPage">
   <button class="skip-to-section" id="nestingToggleBtn">Start Nesting</button>
@@ -440,20 +436,9 @@
     </article>
   </div>
   
-  <script src="./scripts/var.js" type="text/javascript" defer></script>
-  <script src="./scripts/main.js" type="text/javascript" defer></script>
-  <script src="./scripts/setup.js" type="text/javascript" defer></script>
-  <script src="./scripts/sample.js" type="text/javascript" defer></script>
-  <script src="./scripts/nesting.js" type="text/javascript" defer></script>
-  <script src="./scripts/handlers.js" type="text/javascript" defer></script>
-  <script src="./scripts/debugging.js" type="text/javascript" defer></script>
-  <script src="./scripts/minieditor.js" type="text/javascript" defer></script>
-  <script src="./scripts/splashtexts.js" type="text/javascript" defer></script>
-  <script src="./scripts/fallingbadge.js" type="text/javascript" defer></script>
-  <script src="./scripts/animateCursor.js" type="text/javascript" defer></script>
-  <script src="./scripts/smoothlyScroll.js" type="text/javascript" defer></script>
-  <script src="./scripts/nestingSettings.js" type="text/javascript" defer></script>
-  
+  <!--
+    Third-Party Libraries
+  -->
   <script src="./lib/lenis/lenis.min.js"></script>
   <script>window.Lenis = Lenis;</script>
   
@@ -461,14 +446,36 @@
   <script src="./lib/ace/scripts/mode-css.min.js"></script>
   <script src="./lib/ace/scripts/theme-nycss.min.js"></script>
   
-  <!-- <script src="./lib/ace/scripts/ace-diff.min.js"></script> -->
   <script src="./lib/ace/scripts/ext-searchbox.min.js"></script>
+  <!-- <script src="./lib/ace/scripts/ext-diff.min.js"></script> -->
   <!-- <script src="./lib/ace/scripts/ext-stickyscroll.js"></script> -->
   <!-- <script src="./lib/ace/scripts/ext-language_tools.min.js"></script> -->
   
   <script src="./lib/ace-linters/ace-linters.min.js"></script>
   <script>window.LanguageProvider = LanguageProvider;</script>
   
+  <!--
+    Application Code - To be bundled & minified
+  -->
+  <!-- build:js scripts/app.min.js -->
+  <script src="./scripts/var.js" type="text/javascript"></script>
+  <script src="./scripts/main.js" type="text/javascript"></script>
+  <script src="./scripts/setup.js" type="text/javascript"></script>
+  <script src="./scripts/sample.js" type="text/javascript"></script>
+  <script src="./scripts/nesting.js" type="text/javascript"></script>
+  <script src="./scripts/handlers.js" type="text/javascript"></script>
+  <script src="./scripts/debugging.js" type="text/javascript"></script>
+  <script src="./scripts/minieditor.js" type="text/javascript"></script>
+  <script src="./scripts/splashtexts.js" type="text/javascript"></script>
+  <script src="./scripts/fallingbadge.js" type="text/javascript"></script>
+  <script src="./scripts/animateCursor.js" type="text/javascript"></script>
+  <script src="./scripts/smoothlyScroll.js" type="text/javascript"></script>
+  <script src="./scripts/nestingSettings.js" type="text/javascript"></script>
+  <!-- endbuild -->
+  
+  <!--
+    Ad scripts
+  -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script>
   <script>document.querySelectorAll('.adsbygoogle').forEach(() => (adsbygoogle = window.adsbygoogle || []).push({}));</script>
 </body>

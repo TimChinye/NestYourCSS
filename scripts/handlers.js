@@ -8,7 +8,7 @@ mainContent.querySelectorAll('nav > button').forEach((btn) => {
 });
 
 const mainContentBackgroundString = (horizValue) => `
-url("../assets/images/nycss-bg-pattern.png") 0 0.1dvh / 5dvh repeat,
+url("https://ucarecdn.com/380d4e4c-268c-4913-8c92-e049c44234ec/-/preview/189x189/") 0 0.1dvh / 5dvh repeat,
 linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
 linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) ${horizValue}, transparent) 0 0 / 100dvw 100dvh,
 var(--shades-black)
@@ -94,7 +94,7 @@ function tabButtonHandler(e) {
             ">
 
               <pre style="
-              background: url(../assets/images/nycss-bg-pattern.png) 0 0.1dvh / 5dvh repeat, linear-gradient(to right, #121212, #092533);
+              background: url("https://ucarecdn.com/380d4e4c-268c-4913-8c92-e049c44234ec/-/preview/189x189/") 0 0.1dvh / 5dvh repeat, linear-gradient(to right, #121212, #092533);
                 margin: 0;
                 padding: 2rem;
                 overflow: auto;
@@ -161,4 +161,4 @@ function setupDragAndDrop(editor) {
           alert("Only .css files or text are allowed!");
       }
   });
-}
+};

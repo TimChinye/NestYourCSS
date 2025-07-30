@@ -55,7 +55,7 @@ function safeStringify(obj) {
         }
         return value;
     });
-}
+};
 
 /**
  * Prevents chrome's console for logging references of arrays.
@@ -80,7 +80,7 @@ function isElementInViewport(el) {
         rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
         rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
-}
+};
 
 /**
  * Waits for a global variable to be defined.
@@ -96,7 +96,7 @@ function waitForVar(varName) {
         }
       }, 100);
     });
-}
+};
 
 /**
  * Waits for a CSS animation or transition to end, with a failsafe timeout.
@@ -106,7 +106,7 @@ function waitForVar(varName) {
  * @param {number} fallbackDurationMs The duration of the animation/transition for the failsafe timeout.
  * @returns {Promise<void>} A promise that resolves when the process is complete.
  */
-function waitElementTransitionEnd(element, fallbackDurationMs) {
+function waitElementTransitionEnd(element, fallbackDurationMs, event = 'animationend') {
   return new Promise(resolve => {
     let failsafeTimeoutId;
 
@@ -116,11 +116,11 @@ function waitElementTransitionEnd(element, fallbackDurationMs) {
       resolve();
     };
 
-    element.addEventListener('animationend', finalize, { once: true }); // 'once' cleans up
+    element.addEventListener(event, finalize, { once: true }); // 'once' cleans up
 
     failsafeTimeoutId = setTimeout(finalize, fallbackDurationMs + 50);
   });
-}
+};
 
 /**
  * Generates a string of 10 cryptographically secure random numbers.
@@ -137,4 +137,4 @@ function getRandomNumbers() {
   const typedArray = new Uint8Array(10);
   const randomValues = window.crypto.getRandomValues(typedArray);
   return randomValues.join('');
-}
+};

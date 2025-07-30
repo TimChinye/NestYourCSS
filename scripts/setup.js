@@ -388,7 +388,7 @@ async function setupEditors() {
     attributes: true, // We specifically care about attribute changes (like the 'class' attribute).
     attributeFilter: ['class'] // Optional: More efficient, only fire for class changes.
   });
-}
+};
 
 setupEditors();
 
@@ -446,7 +446,7 @@ function updateCoordinateDisplay(editor) {
   }
 
   editor.container.previousElementSibling.firstElementChild.setAttribute('cursor', cursorText);
-}
+};
 
 function adjustInputWidth(displayElem) {
   // Create a temporary span to measure the text width
@@ -462,7 +462,7 @@ function adjustInputWidth(displayElem) {
   
   // Add some padding to the calculated width
   displayElem.style.width = `calc(1ch + ${width}px)`;
-}
+};
 
 /**
  * Checks if an element is visible and part of the DOM.
@@ -473,7 +473,7 @@ function isElementVisible(el) {
   // A basic check for elements hidden with `display: none` or `visibility: hidden`.
   // It also checks if the element or its parent is collapsed.
   return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-}
+};
 
 /**
  * Checks if a single element is focusable according to a robust set of rules.
@@ -538,7 +538,7 @@ function isElementFocusable(el) {
   // This correctly handles `<div tabindex="0">` and also the `<summary>` element,
   // which is given a default `tabIndex` of 0 by the browser.
   return el.tabIndex >= 0;
-}
+};
 
 /**
  * Finds all focusable elements within a given root, including inside Shadow DOMs,
@@ -586,7 +586,7 @@ function getAllFocusableElements(root = document.body) {
     // Sort by tabindex value
     return tabIndexA - tabIndexB;
   });
-}
+};
 
 /**
  * Moves focus to the previous focusable element on the page.
@@ -604,7 +604,7 @@ function focusPreviousElement() {
   const previousIndex = (currentIndex - 1 + allFocusable.length) % allFocusable.length;
   
   allFocusable[previousIndex].focus();
-}
+};
 
 /**
  * Moves focus to the next focusable element on the page.
@@ -622,4 +622,4 @@ function focusNextElement() {
   const nextIndex = (currentIndex + 1) % allFocusable.length;
   
   allFocusable[nextIndex].focus();
-}
+};

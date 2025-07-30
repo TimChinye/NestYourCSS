@@ -2147,13 +2147,20 @@ body {
 		> #mainContent {
 			border-radius: 1rem;
 
-			#codeEditor {
-				max-width: 100%;
+			> #editorSide {
+				animation: none !important;
+				width: calc(var(--single-editor-width));
 				
-				> .editorWrapper {
-					max-width: inherit;
+				#codeEditor {
+					max-width: 100%;
+					justify-content: left;
+					
+					> .editorWrapper {
+						max-width: inherit;
+					}
 				}
 			}
+
 		}
 
 		> #mainSettings,
@@ -2163,17 +2170,20 @@ body {
 
 		&:not(.nesting) > #mainContent { && {
 			justify-content: center;
-
 			
 			#codeEditor {
 				margin: 0 auto;
-				animation: fadeIn 2s linear both;
+				/* animation: fadeIn 2s linear both; */
 
 				#inputEditorWrapper {
 					border: none;
 					border-radius: 1rem;
 					background: none;
 					padding: 0;
+				}
+
+				> #outputEditorWrapper > .editorGroup {
+					opacity: 0;
 				}
 			}
 		}}

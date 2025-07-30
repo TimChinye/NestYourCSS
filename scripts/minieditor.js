@@ -42,4 +42,4 @@ function updateActiveLine(cursorX, cursorY) {
   let padding = nycssCodeExample.parentElement.offsetLeft / miniEditor.offsetWidth;
   let horizontalRePos = ((1 - (padding * 2)) * horizontalPos) + padding;
   nycssCodeExample.parentElement.style.setProperty('--intensityPos', roundNumber(horizontalRePos * 100) + '%');
-}
+};

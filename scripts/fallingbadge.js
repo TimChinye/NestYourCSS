@@ -22,4 +22,4 @@ function updateLogoState() {
       if (cssBadge.className == 'main-animation') cssBadge.className = 'idle-animation';
     }, 1000);
   }
-}
+};

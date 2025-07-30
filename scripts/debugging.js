@@ -38,7 +38,7 @@ async function getEditorAnnotations(editorSession, cssToTest, sampleKeyForLog = 
             finalizeResolution(annotations);
         }, timeoutMs);
     });
-}
+};
 
 /**
  * Processes a given CSS string through convertToNestedCSS for a specified number of iterations.
@@ -127,7 +127,7 @@ async function runNestingIterations(initialCss, iterations, sampleKey = "customI
 
     if (!mute) console.log(`[${sampleKey}] Finished ${iterations} nesting iterations. Issue flags:`, issues);
     return { name: sampleKey, finalCss: currentCss, issues };
-}
+};
 
 /**
  * Processes a specific CSS sample from cssSamples by its name.
@@ -176,7 +176,7 @@ async function processAndShowSampleByName(sampleKey, iterations = 5, mute = fals
     console.log(`--- Final output for ${sampleKey} (after ${iterations} iterations) shown in output editor ---`);
 
     return result;
-}
+};
 
 /**
  * Processes a specific CSS sample from cssSamples by its numerical index.
@@ -194,7 +194,7 @@ async function processAndShowSampleByIndex(sampleIndex, iterations = 5, mute = f
     }
     const sampleKey = keys[sampleIndex];
     await processAndShowSampleByName(sampleKey, iterations, mute);
-}
+};
 
 /**
  * Processes all CSS samples in the cssSamples object sequentially.
@@ -319,7 +319,7 @@ async function processAllSamplesIteratively(iterations = 5, mute = false) {
     console.log("Results for all samples with potential issues:", Object.values(allResults).filter(sample => Object.values(sample.issues).some(Boolean)));
 
     return allResults;
-}
+};
 
 /*
 *

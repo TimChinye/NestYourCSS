@@ -68,7 +68,7 @@ function updateAccessibleErrorTable(annotations, tableBodyElem, inputEditorInsta
       block: 'nearest',
       inline: 'nearest'
     });
-  }
+};
   
 function nestCode(onClick = false) {
     if (nestBtn.hasAttribute('disabled')) return;
@@ -173,7 +173,7 @@ function minimizeCSS(cssProvided) {
     }
 
     return cssProvided;
-}
+};
 
 function splitCSS(cssProvided) {
     function hasNestableConstruct(declarationString) {
@@ -356,7 +356,7 @@ function splitCSS(cssProvided) {
     }
 
     return parsedCSS;
-}
+};
 
 function flattenCSS(cssProvided, prefix = '') {
     /**
@@ -924,7 +924,7 @@ function flattenCSS(cssProvided, prefix = '') {
     }
 
     return parsedCSS;
-}
+};
 
 function denestCSS(cssProvided) {
     let parsedCSS = [];
@@ -1147,7 +1147,7 @@ function denestCSS(cssProvided) {
 
     // Return the parsed CSS
     return beautifyCSS(parsedCSS);
-}
+};
 
 function renestCSS(cssProvided, withHtml) {
     // Define regular CSS at-rules
@@ -1695,7 +1695,7 @@ function renestCSS(cssProvided, withHtml) {
         // Return the parsed CSS
         return parsedCSS;
     }
-}
+};
 
 function beautifyCSS(cssProvided, indent = '') {
     // Initialize the parsed CSS string
@@ -1807,4 +1807,4 @@ function beautifyCSS(cssProvided, indent = '') {
 
     // Return the beautified CSS
     return parsedCSS;
-}
+};

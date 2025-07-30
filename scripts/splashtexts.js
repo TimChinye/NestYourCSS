@@ -45,8 +45,7 @@ function _scrambleSingleText(textToScramble) { // Or _OptimizedV2
         scrambledChars[i] = String.fromCharCode(newCharacterCode);
     }
     return scrambledChars.join('');
-}
-
+};
 
 // --- Animation State Object ---
 let animationState = {
@@ -166,7 +165,7 @@ function animationLoop(timestamp) {
         cancelAnimationFrame(animationState.animationFrameId);
         animationState.animationFrameId = null;
     }
-}
+};
 
 // --- Function to Start/Trigger the Animation ---
 function startSplashTextAnimation(originalText, newText) {
@@ -213,7 +212,7 @@ function startSplashTextAnimation(originalText, newText) {
 
     // Start the animation loop
     animationState.animationFrameId = requestAnimationFrame(animationLoop);
-}
+};
 
 // --- Event Listener ---
 function attemptSplashTextUpdate() {

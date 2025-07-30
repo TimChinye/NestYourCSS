@@ -1,6 +1,5 @@
 const scrollWrapper = document.getElementById('siteWrapper');
 const mainElement = scrollWrapper.querySelector('main');
-const sectionsWrapperElement = scrollWrapper.querySelector('main + article');
 const editorSection = document.getElementById('groupingStylesTogether');
 const mainSettings = document.getElementById('mainSettings');
 const mainContent = document.getElementById('mainContent');

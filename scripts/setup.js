@@ -129,6 +129,24 @@ async function setupEditors() {
       }
     });
 
+    // Fix tooltip offset
+    function getElementOffset(element) {
+        const de = document.documentElement;
+        const box = element.getBoundingClientRect();
+        const top = box.top + window.scrollY - de.clientTop;
+        const left = box.left + window.scrollX - de.clientLeft;
+
+        return { top: top, left: left };
+    }
+
+    ace.require('ace/tooltip').Tooltip.prototype.setPosition = function (x, y) {
+        y -= getElementOffset(this.$parentNode).top;
+        x -= getElementOffset(this.$parentNode).left;
+        this.getElement().style.position = "absolute";
+        this.getElement().style.left = x + "px";
+        this.getElement().style.top = y + "px";
+    };
+
     editor.session.selection.on('changeCursor', () => updateCoordinateDisplay(editor));
   
     languageProvider.registerEditor(editor);

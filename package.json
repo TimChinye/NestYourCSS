@@ -5,17 +5,22 @@
   "scripts": {
     "build": "gulp"
   },
+  "browserslist": [
+    "last 2 versions",
+    "not dead",
+    "> 0.5%"
+  ],
   "devDependencies": {
+    "browserslist": "^4.25.1",
     "del": "^8.0.0",
     "gulp": "^4.0.2",
-    "gulp-clean-css": "^4.3.0",
+    "gulp-footer": "^2.1.0",
     "gulp-htmlmin": "^5.0.1",
     "gulp-if": "^3.0.0",
     "gulp-sourcemaps": "^3.0.0",
     "gulp-terser": "^2.1.0",
-    "gulp-useref": "^5.0.0"
-  },
-  "overrides": {
-    "clean-css": "^5.3.3"
+    "gulp-useref": "^5.0.0",
+    "lightningcss": "^1.25.1",
+    "through2": "^4.0.2"
   }
 }  

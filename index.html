@@ -45,9 +45,10 @@
   <link href="./styles/main.css" rel="stylesheet">
   <!-- endbuild -->
   
-  <!-- build:css styles/editor.min.css -->
+  <!--
+    Custom Ace Editor Theme
+  -->
   <link href="./lib/ace/styles/theme-nycss.css" rel="stylesheet">
-  <!-- endbuild -->
 </head>
 <body itemscope itemtype="https://schema.org/WebPage">
   <button class="skip-to-section" id="nestingToggleBtn">Start Nesting</button>
@@ -436,9 +437,9 @@
         </hgroup>
         <h2 id="strechingText" class="optimize" aria-label="Mechanics of Nesting">Mechanics of Nesting</h2>
         <a id="nycssLogoGroup" href="#" tabindex="-1" aria-label="Go to top of page">
-          <img id="nycssLogo" loading="lazy" class="optimize" hidden alt="The official logo for NestYourCSS..." loading="lazy" width="256" height="210" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/1960e3cd-25ec-4ea4-9b3a-43ec1eea6545/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/1960e3cd-25ec-4ea4-9b3a-43ec1eea6545/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/1960e3cd-25ec-4ea4-9b3a-43ec1eea6545/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/1960e3cd-25ec-4ea4-9b3a-43ec1eea6545/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/1960e3cd-25ec-4ea4-9b3a-43ec1eea6545/-/resize/256x/-/format/auto/-/quality/smart/">
-          <img id="nycssBadge" loading="lazy" class="optimize main-animation" alt="The official CSS badge..." loading="lazy" width="256" height="210" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/3d9fcb4d-f9f6-47fd-80b3-5119744e8184/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/3d9fcb4d-f9f6-47fd-80b3-5119744e8184/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/3d9fcb4d-f9f6-47fd-80b3-5119744e8184/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/3d9fcb4d-f9f6-47fd-80b3-5119744e8184/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/3d9fcb4d-f9f6-47fd-80b3-5119744e8184/-/resize/256x/-/format/auto/-/quality/smart/">
-          <img id="nycssNest" loading="lazy" class="optimize" alt="A bird's nest..." loading="lazy" width="256" height="210" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/a21d5d0e-e413-40e1-9833-ec38bb4a3eb7/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/a21d5d0e-e413-40e1-9833-ec38bb4a3eb7/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/a21d5d0e-e413-40e1-9833-ec38bb4a3eb7/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/a21d5d0e-e413-40e1-9833-ec38bb4a3eb7/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/a21d5d0e-e413-40e1-9833-ec38bb4a3eb7/-/resize/256x/-/format/auto/-/quality/smart/">
+          <img id="nycssLogo" loading="lazy" class="optimize" hidden alt="The official logo for NestYourCSS..." loading="lazy" width="256" height="210" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/256x/-/format/auto/-/quality/smart/">
+          <img id="nycssBadge" loading="lazy" class="optimize main-animation" alt="The official CSS badge..." loading="lazy" width="256" height="210" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/256x/-/format/auto/-/quality/smart/">
+          <img id="nycssNest" loading="lazy" class="optimize" alt="A bird's nest..." loading="lazy" width="256" height="210" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/9c577dee-14bf-476e-86eb-9fd7a6ad9289/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/9c577dee-14bf-476e-86eb-9fd7a6ad9289/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/9c577dee-14bf-476e-86eb-9fd7a6ad9289/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/9c577dee-14bf-476e-86eb-9fd7a6ad9289/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/9c577dee-14bf-476e-86eb-9fd7a6ad9289/-/resize/256x/-/format/auto/-/quality/smart/">
         </a>
       </section>
     </article>

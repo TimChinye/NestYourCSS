@@ -5,6 +5,7 @@ const cleanCSS = require('gulp-clean-css');
 const terser = require('gulp-terser');
 const useref = require('gulp-useref');
 const gulpif = require('gulp-if');
+const sourcemaps = require('gulp-sourcemaps');
 
 // Clean the 'dist' directory before a build
 async function clean() {
@@ -23,10 +24,12 @@ function copyAssets() {
 // The main build task
 function build() {
   return src('index.html')
+    .pipe(sourcemaps.init())
     .pipe(useref())
     .pipe(gulpif('*.js', terser({ ecma: 2020  })))
     // .pipe(gulpif('*.css', cleanCSS({ level: 0 })))
     .pipe(gulpif('*.html', htmlmin({ collapseWhitespace: true, removeComments: true })))
+    .pipe(sourcemaps.write('.'))
     .pipe(dest('dist'));
 }
 

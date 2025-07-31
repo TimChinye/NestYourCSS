@@ -2029,6 +2029,8 @@ body {
 				
 						> img {
 							height: 16em;
+							width: auto;
+							aspect-ratio: 1 / 1;
 						}
 				
 						> img#nycssNest {

@@ -1704,7 +1704,7 @@ body {
 
 					> #groupedText {
 						position: absolute;
-						bottom: 25dvh;
+						bottom: 33%;
 						left: 10vw;
 						color: var(--shades-white);
 						margin: 0;
@@ -2273,12 +2273,6 @@ body {
 				> #visibleText {
 					top: 50%;
 					translate: 0 -25%;
-				}
-			}
-		
-			&#groupingStylesTogether {
-				> #groupedText {
-					bottom: 10%;
 				}
 			}
 		

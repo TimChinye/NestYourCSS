@@ -1270,27 +1270,34 @@ body {
 					> #editorSide {
 						animation: moveRight 2s cubic-bezier(1, 0, 0.5, 1) both;
 
-						> #codeEditor .editorWrapper {
-							transition: 1s 0.5s;
+						> #codeEditor {
+							> .editorWrapper {
+								transition: 1s 0.5s;
 							
-							&#inputEditorWrapper {
-								display: block;
-								padding: var(--padding);
-								padding-left: 0;
-								border-left: calc(1rem / 16) solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
-								border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
-								background-color: rgb(from var(--shades-white) r g b / 3%);
+								/* &#inputEditorWrapper { */
+								&:first-child {
+									display: block;
+									padding: var(--padding);
+									padding-left: 0;
+									border-left: calc(1rem / 16) solid rgb(from var(--shades-darker) r g b / var(--opacity-medium));
+									border-color: rgb(from var(--shades-darker) r g b / var(--opacity-low));
+									background-color: rgb(from var(--shades-white) r g b / 3%);
+	
+									&, > .editorGroup {
+										max-width: 100%;
+									}
+								}
 
-								&, > .editorGroup {
-									max-width: 100%;
+								/* &#outputEditorWrapper { */
+								&:last-child {
+									padding-block: var(--padding);
+									margin-right: -3.25rem;
+									width: 0;
+									opacity: 0;
 								}
 							}
-
-							&#outputEditorWrapper {
-								padding-block: var(--padding);
-								margin-right: -3.25rem;
-								width: 0;
-								opacity: 0;
+							
+							> :last-child {
 								display: none;
 							}
 						}

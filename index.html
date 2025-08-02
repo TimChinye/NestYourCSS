@@ -37,6 +37,9 @@
   }
   </script>
   
+  <!--
+    Application Styles - To be bundled & minified
+  -->
   <!-- build:css styles/app.min.css -->
   <link href="./styles/ads-container.css" rel="stylesheet">
   <link href="./styles/properties.css" rel="stylesheet">
@@ -46,7 +49,7 @@
   <!-- endbuild -->
   
   <!--
-    Custom Ace Editor Theme
+    Custom Ace Editor Theme Styles
   -->
   <link href="./lib/ace/styles/theme-nycss.css" rel="stylesheet">
 </head>
@@ -446,7 +449,7 @@
   </div>
   
   <!--
-    Third-Party Libraries
+    Third-Party Library Scripts
   -->
   <script src="./lib/lenis/lenis.min.js"></script>
   <script>window.Lenis = Lenis;</script>
@@ -464,7 +467,7 @@
   <script>window.LanguageProvider = LanguageProvider;</script>
   
   <!--
-    Application Code - To be bundled & minified
+    Application Scripts - To be bundled & minified
   -->
   <!-- build:js scripts/app.min.js -->
   <script src="./scripts/var.js" type="text/javascript" defer></script>
@@ -483,7 +486,7 @@
   <!-- endbuild -->
   
   <!--
-    Ad scripts
+    Ad Scripts
   -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9088468190661086" crossorigin="anonymous"></script>
   <script>document.querySelectorAll('.adsbygoogle').forEach(() => (adsbygoogle = window.adsbygoogle || []).push({}));</script>

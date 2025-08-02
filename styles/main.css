@@ -680,7 +680,7 @@ body {
 								}
 							}
 
-							:is(:is(body.hidden, #siteWrapper > main.nesting:not(:hover)) &, &.hidden).inner-cursor::after {
+							&.hidden.inner-cursor::after {
 								animation-play-state: paused;
 							}
 						}
@@ -1113,7 +1113,7 @@ body {
 						}
 					
 						/* Pause animations when hidden or main content is not hovered */
-						:is(:is(:is(body.hidden, #siteWrapper > main:not(:hover)) &), &.hidden) > span {
+						&.hidden > span {
 							animation-play-state: paused;
 						}
 					}
@@ -1437,7 +1437,7 @@ body {
 								animation-composition: add;
 							}
 
-							:is(:is(body.hidden, #siteWrapper:not(:hover)) &, &.hidden)::before {
+							&.hidden::before {
 								animation-play-state: paused;
 							}
 						}
@@ -1599,7 +1599,7 @@ body {
 								color: oklch(from var(--red-colour-medium) l c calc(h + 135)); /* oklch(0.75 0.13 150) */
 							}
                                 
-                            :is(:is(body.hidden, #siteWrapper:not(:hover)) &, &.hidden)::before {
+                            &.hidden::before {
                                 animation-play-state: paused;
                             }
 						}
@@ -1870,7 +1870,7 @@ body {
 
 						:is(:has(.hover-animation):has(> &):hover &) { will-change: transform; }
 
-						:is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
+						&.hidden {
 							animation-play-state: paused;
 						}
 					}
@@ -1918,7 +1918,7 @@ body {
 							transform-origin: right;
 						}
 
-                        :is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
+                        &.hidden {
 							&::before,
 							&::after {
 								animation-play-state: paused;
@@ -2066,7 +2066,7 @@ body {
 								animation-timeline: scroll(nearest), auto; /* convert to view() if possible */
 								animation-composition: add;
 
-								:is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
+								&.hidden {
 									animation-play-state: paused;
 								}
 							}
@@ -2076,7 +2076,7 @@ body {
 								--shadow-color: #1474B833; /* Taken directly from the CSS Logo */
 								--shadow-distance: 1.5em;
 
-								:is(:is(body.hidden, #siteWrapper:not(:hover)) &), &.hidden {
+								&.hidden {
 									animation-play-state: paused;
 								}
 							}

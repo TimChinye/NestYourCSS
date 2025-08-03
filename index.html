@@ -51,7 +51,8 @@
   <!--
     Custom Ace Editor Theme Styles
   -->
-  <link href="./lib/ace/styles/theme-nycss.css" rel="stylesheet">
+  <link rel="preload" href="./lib/ace/styles/theme-nycss.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="./lib/ace/styles/theme-nycss.css"></noscript>
 </head>
 <body itemscope itemtype="https://schema.org/WebPage">
   <button class="skip-to-section" id="nestingToggleBtn">Start Nesting</button>
@@ -451,20 +452,18 @@
   <!--
     Third-Party Library Scripts
   -->
-  <script src="./lib/lenis/lenis.min.js"></script>
-  <script>window.Lenis = Lenis;</script>
+  <script src="./lib/lenis/lenis.min.js" defer></script>
   
-  <script src="./lib/ace/scripts/ace.min.js"></script>
-  <script src="./lib/ace/scripts/mode-css.min.js"></script>
-  <script src="./lib/ace/scripts/theme-nycss.min.js"></script>
+  <script src="./lib/ace/scripts/ace.min.js" defer></script>
+  <script src="./lib/ace/scripts/mode-css.min.js" defer></script>
+  <script src="./lib/ace/scripts/theme-nycss.min.js" defer></script>
   
-  <script src="./lib/ace/scripts/ext-searchbox.min.js"></script>
+  <script src="./lib/ace/scripts/ext-searchbox.min.js" defer></script>
   <!-- <script src="./lib/ace/scripts/ext-diff.min.js"></script> -->
   <!-- <script src="./lib/ace/scripts/ext-stickyscroll.js"></script> -->
   <!-- <script src="./lib/ace/scripts/ext-language_tools.min.js"></script> -->
   
-  <script src="./lib/ace-linters/ace-linters.min.js"></script>
-  <script>window.LanguageProvider = LanguageProvider;</script>
+  <script src="./lib/ace-linters/ace-linters.min.js" defer></script>
   
   <!--
     Application Scripts - To be bundled & minified

@@ -9,6 +9,7 @@ const through = require('through2');
 const sourcemaps = require('gulp-sourcemaps');
 const lightningcss = require('lightningcss');
 const browserslist = require('browserslist');
+const replace = require('gulp-replace');
 
 // Clean the 'dist' directory before a build
 async function clean() {
@@ -78,6 +79,8 @@ function build() {
     .pipe(gulpif('*.js', footer(';')))
     .pipe(gulpif('*.js', terser({ ecma: 2020 })))
     .pipe(gulpif('*.css', reorderAndMinifyCss())) // Use our new custom function
+    .pipe(replace('<script src="scripts/app.min.js"></script>', '<script src="scripts/app.min.js" defer></script>'))
+    .pipe(replace('<link rel="stylesheet" href="styles/app.min.css">', `<link rel="preload" href="styles/app.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="styles/app.min.css"></noscript>`))
     .pipe(gulpif('*.html', htmlmin({ collapseWhitespace: true, removeComments: true })))
     .pipe(sourcemaps.write('.'))
     .pipe(dest('dist'));

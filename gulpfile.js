@@ -74,11 +74,10 @@ function reorderAndMinifyCss() {
 // The main build task, which remains almost the same!
 function build() {
   return src('index.html')
-    .pipe(sourcemaps.init())
-    .pipe(useref()) // This will process both JS and CSS build blocks
-    .pipe(gulpif('*.js', footer(';')))
+    .pipe(useref({}, () => sourcemaps.init({ loadMaps: true })))
+
     .pipe(gulpif('*.js', terser({ ecma: 2020 })))
-    .pipe(gulpif('*.css', reorderAndMinifyCss())) // Use our new custom function
+    .pipe(gulpif('*.css', reorderAndMinifyCss()))
     .pipe(replace('<script src="scripts/app.min.js"></script>', '<script src="scripts/app.min.js" defer></script>'))
     .pipe(replace('<link rel="stylesheet" href="styles/app.min.css">', `<link rel="preload" href="styles/app.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="styles/app.min.css"></noscript>`))
     .pipe(gulpif('*.html', htmlmin({ collapseWhitespace: true, removeComments: true })))

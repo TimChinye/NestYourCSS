@@ -16,6 +16,10 @@
 		opacity: 0;
 		background-color: transparent;
 	}
+
+	#outputEditorWrapper {
+		opacity: 0;
+	}
 }
 
 :root {
@@ -1142,18 +1146,19 @@ body {
 							width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
 							
 							&#inputEditorWrapper {
+								position: relative;
 								border-radius: 0 3rem 3rem 0;
 								transition: opacity 1s, border-color 1s, background-color 1s;
 								
 								> #shadowEditorsWrapper {
-									height: calc(100% + (var(--padding) * 2));
-									translate: 0 calc(-100% + var(--padding));
+									position: absolute;
+									inset: 0;
 
 									> .shadowEditorWrapper {
 										position: absolute;
 										overflow: hidden;
 										height: 100%;
-										translate: 1px;
+										transition: opacity 2s;
 									}
 
 									&, * {

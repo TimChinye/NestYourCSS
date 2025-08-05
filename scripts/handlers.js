@@ -1,10 +1,10 @@
 mainContent.querySelectorAll('nav > button').forEach((btn) => {
-	['transitionrun', 'transitionstart', 'transitioncancel', 'transitionend'].forEach(event => btn.lastElementChild.addEventListener(event, repositionButtonBG));
+  function repositionButtonBG(e) {
+    let { top, left } = e.target.getBoundingClientRect();
+    e.target.style.backgroundPosition = `top -${top}px left -${left}px`;
+  }
 
-	function repositionButtonBG(e) {
-		let { top, left } = e.target.getBoundingClientRect();
-		e.target.style.backgroundPosition = `top -${top}px left -${left}px`;
-	}
+  ['transitionrun', 'transitionstart', 'transitioncancel', 'transitionend'].forEach(event => btn.lastElementChild.addEventListener(event, repositionButtonBG));
 });
 
 const mainContentBackgroundString = (horizValue) => `
@@ -66,7 +66,7 @@ elements.flatMap(s => [...document.querySelectorAll(s)]).filter(Boolean).forEach
 
 scrollWrapper.addEventListener('scroll', (e) => requestAnimationFrame(() => (typeof updateLogoState !== 'undefined' && updateLogoState())));
 
-function tabButtonHandler(e) {
+window.tabButtonHandler = (e) => {
   let tabButton = e.currentTarget;
   let editor = (tabButton.closest('.editorWrapper')?.id.startsWith("input")) ? inputEditorInstance : outputEditorInstance;
 
@@ -127,7 +127,7 @@ function tabButtonHandler(e) {
   }
 };
 
-function setupDragAndDrop(editor) {
+window.setupDragAndDrop = (editor) => {
   // Handle drag events and prevent default behavior
   const handleDrag = (e) => {
       e.preventDefault();
@@ -162,3 +162,18 @@ function setupDragAndDrop(editor) {
       }
   });
 };
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const deferredScripts = [
+      initializeAceEditors,
+      initializeMiniEditor,
+      initializeSplashTextAnimator,
+      initializeFallingBadgeManager,
+      initializeSmoothCursor,
+      initializeSmoothScrollAndNestingController,
+      initializeDebuggingTools
+    ];
+    deferredScripts.forEach((dScript) => dScript());
+  }, 100);
+});

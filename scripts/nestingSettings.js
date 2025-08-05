@@ -250,6 +250,22 @@ document.addEventListener('DOMContentLoaded', () => {
         newSelectedItem.setAttribute('aria-selected', 'true');
     }
   
+    function adjustInputWidth(displayElem) {
+      // Create a temporary span to measure the text width
+      const tempSpan = document.createElement('span');
+      tempSpan.style.visibility = 'hidden';
+      tempSpan.style.whiteSpace = 'pre';
+      tempSpan.style.font = window.getComputedStyle(displayElem).font;
+      tempSpan.textContent = displayElem.value || displayElem.placeholder || '0';
+      
+      document.body.appendChild(tempSpan);
+      const width = tempSpan.getBoundingClientRect().width;
+      document.body.removeChild(tempSpan);
+      
+      // Add some padding to the calculated width
+      displayElem.style.width = `calc(1ch + ${width}px)`;
+    };
+  
     function applySetting(id, value) {
         const config = settingsConfig[id];
         const elem = document.getElementById(id);

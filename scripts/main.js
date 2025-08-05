@@ -8,14 +8,14 @@
 * @returns {Function} Returns the new debounced function.
 */
 let debounceDelays = {};
-const debounce = (func, wait) => {
-	return (...args) => {
-		if (!debounceDelays[func]) {
-			debounceDelays[func] = true;
-			func.apply(this, args);
-			setTimeout(() => requestAnimationFrame(() => debounceDelays[func] = false), wait);
-		}
-	};
+window.debounce = (func, wait) => {
+  return (...args) => {
+    if (!debounceDelays[func]) {
+      debounceDelays[func] = true;
+      func.apply(this, args);
+      setTimeout(() => requestAnimationFrame(() => debounceDelays[func] = false), wait);
+    }
+  };
 }
 
 /**
@@ -25,9 +25,9 @@ const debounce = (func, wait) => {
  * @param {number} [dp=2] The number of decimal points being rounded to.
  * @returns {number} The rounded number.
  */
-const roundNumber = (num, dp = 2) => {
-	let multiplier = Math.pow(10, dp);
-	return Math.floor(num * multiplier) / multiplier;
+window.roundNumber = (num, dp = 2) => {
+  let multiplier = Math.pow(10, dp);
+  return Math.floor(num * multiplier) / multiplier;
 };
 
 /**
@@ -36,7 +36,7 @@ const roundNumber = (num, dp = 2) => {
  * @param {any} obj The object to clone.
  * @returns {any} Returns the deep cloned object.
  */
-const clone = (obj) => JSON.parse(JSON.stringify(obj));
+window.clone = (obj) => JSON.parse(JSON.stringify(obj));
 
 /**
  * Converts a JavaScript value to a JSON string, but also avoids circular references.
@@ -44,7 +44,7 @@ const clone = (obj) => JSON.parse(JSON.stringify(obj));
  * @param {any} obj The value to convert.
  * @returns {string} Returns the JSON string.
  */
-function safeStringify(obj) {
+window.safeStringify = (obj) => {
     const seen = new WeakSet();
     return JSON.stringify(obj, (key, value) => {
         if (typeof value === "object" && value !== null) {
@@ -70,7 +70,7 @@ console.logNow = ((logFunc) => (...args) => logFunc(...args.map(arg => JSON.pars
  * @param {Element} el The element to check.
  * @returns {boolean} Returns `true` if the element is in the viewport, else `false`.
  */
-function isElementInViewport(el) {
+window.isElementInViewport = (el) => {
     if (!el) return false;
   
     const rect = el.getBoundingClientRect();
@@ -87,7 +87,7 @@ function isElementInViewport(el) {
  * @param {string} varName The name of the variable on the window object.
  * @returns {Promise<void>}
  */
-function waitForVar(varName) {
+window.waitForVar = (varName) => {
     return new Promise(resolve => {
       const checkInterval = setInterval(() => {
         if (typeof window[varName] !== 'undefined') {
@@ -106,7 +106,7 @@ function waitForVar(varName) {
  * @param {number} fallbackDurationMs The duration of the animation/transition for the failsafe timeout.
  * @returns {Promise<void>} A promise that resolves when the process is complete.
  */
-function waitElementTransitionEnd(element, fallbackDurationMs, event = 'animationend') {
+window.waitElementTransitionEnd = (element, fallbackDurationMs, event = 'animationend') => {
   return new Promise(resolve => {
     let failsafeTimeoutId;
 
@@ -133,7 +133,7 @@ function waitElementTransitionEnd(element, fallbackDurationMs, event = 'animatio
  * @returns {string} A string containing 10 random numbers (0-255) joined together.
  * @throws {Error} If the crypto API is not available in the current environment.
  */
-function getRandomNumbers() {
+window.getRandomNumbers = () => {
   const typedArray = new Uint8Array(10);
   const randomValues = window.crypto.getRandomValues(typedArray);
   return randomValues.join('');

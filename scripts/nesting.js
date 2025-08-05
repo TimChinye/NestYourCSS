@@ -1808,3 +1808,7 @@ function beautifyCSS(cssProvided, indent = '') {
     // Return the beautified CSS
     return parsedCSS;
 };
+
+function initializeGlobalVariables() {
+
+};

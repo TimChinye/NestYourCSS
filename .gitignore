@@ -3,5 +3,5 @@
 /dist
 /node_modules
 /package-lock.json
-/scoped-main.css
-/temp_scoped-main.css
+/styles/scoped-main.css
+/styles/temp-scoped-main.css

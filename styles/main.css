@@ -754,7 +754,7 @@ body {
 	
 					> header {
 						margin: 2rem 2rem 0 4rem;
-						font-size: clamp(0.5rem, 16px, 1.125rem);
+						font-size: clamp(0.5rem, 16px, 1.5rem);
 	
 						> hgroup {
 							display: flex;
@@ -1389,6 +1389,7 @@ body {
 				contain: size;
 				position: relative;
 				height: min(100dvh, 1600px);
+				font-size: clamp(0.5rem, 16px, 1.5rem);
 				
 				&#reducingBoilerplateCode {
 					> a {
@@ -1481,19 +1482,17 @@ body {
 							@supports (animation-range: normal) {
 								animation: swapText linear 1ms;
 								animation-timeline: view();
+								animation-range-start: cover -0.5lh;
 						
 								&:nth-child(1) {
-									animation-range-start: cover -0.5lh;
 									animation-range-end: contain calc(min(100dvh, 1600px) + -0.5lh);
 								}
 						
 								&:nth-child(2) {
-									animation-range-start: cover 0lh;
 									animation-range-end: contain calc(min(100dvh, 1600px) + 0lh);
 								}
 						
 								&:nth-child(3) {
-									animation-range-start: cover 0.5lh;
 									animation-range-end: contain calc(min(100dvh, 1600px) + 0.5lh);
 								}
 							}
@@ -1573,7 +1572,7 @@ body {
 						@supports (animation-range: normal) {
 							animation: slideDown linear both 1ms;
 							animation-timeline: view();
-							animation-range-start: cover;
+							animation-range-start: cover -20lh;
 							animation-range-end: contain 5lh;
 						}
 
@@ -1630,15 +1629,15 @@ body {
 						z-index: 1;
 						
 						span {
-							margin-left: -4ch;
+							translate: -4ch;
 							padding: 0 calc(1em / 10);
 							width: 100%;
 							color: rgb(from var(--shades-white) r g b / var(--opacity-low));
 							position: relative;
 							
 							&:first-child, &:last-child {
-								margin-left: 10ch;
 								text-align: right;
+								translate: 10ch;
 
 								&:last-child { color: rgb(from var(--shades-white) r g b / var(--opacity-high)) }
 							}
@@ -1677,7 +1676,7 @@ body {
 						@supports (animation-range: normal) {
 							animation: boostUp linear forwards 1ms, slideUp linear forwards 1ms;
 							animation-timeline: view(), view();
-							animation-range-start: cover, contain 3lh;
+							animation-range-start: cover -5lh, contain 3lh;
 							animation-range-end: contain 3lh, cover;
 						}
 

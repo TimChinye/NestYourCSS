@@ -74,7 +74,7 @@
 	to { translate: 0 -1lh; }
 }
 
-@keyframes swapText {
+@keyframes swapText { /* May be translatable - but will likely require a HTML restructuring */
 	from, to { padding-top: 0lh; }
 	30%, 70% { padding-top: 1lh; }
 }
@@ -90,23 +90,23 @@
 }
 
 @keyframes slideDown {
-	from { opacity: 0; padding-bottom: 20lh; }
-	to { opacity: 1; padding-bottom: 0; }
+	from { opacity: 0; translate: 0 -20lh; }
+	to { opacity: 1; translate: 0; }
 }
 
 @keyframes slideIn {
 	0% { color: transparent; }
-	50%, 75% { margin: 0; }
+	50%, 75% { translate: 0; }
 	62.5% { color: revert-layer; }
 }
 
 @keyframes boostUp {
-	0% { padding-top: 5lh; }
-	100% { padding-top: 0; }
+	0% { translate: 0 -5lh; }
+	100% { translate: 0; }
 }
 
 @keyframes slideUp {
-	to { padding-bottom: 32em; }
+	to { translate: 0 -32em; }
 }
 
 @keyframes changeCard {

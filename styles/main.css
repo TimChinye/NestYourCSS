@@ -144,7 +144,7 @@ body.scopeable {
     /* --- Main Site Wrapper Scope --- */
     
     @scope (#siteWrapper) {
-        :scope {
+        & {
             margin: 0 auto;
             width: clamp(0px, 100%, 3200px);
             height: 100dvh;
@@ -193,7 +193,7 @@ body.scopeable {
     /* --- Settings Panel Scope (Nesting Editor Settings) --- */
     
     @scope (#mainSettings) {
-        :scope {
+        & {
             flex: 0;
             height: 100%;
             min-width: 0;
@@ -232,7 +232,7 @@ body.scopeable {
     /* --- Settings Panel Scope (Settings Form Fields) --- */
     
     @scope (#mainSettings > section > ul) {
-        :scope {
+        & {
             list-style: none;
             margin: 0;
             padding: 0;
@@ -596,7 +596,7 @@ body.scopeable {
     /* --- Settings Panel Scope (Editor Errors Table) --- */
     
     @scope (#mainSettings > section > :has(table)) {
-        :scope {
+        & {
             overflow-y: scroll;
             max-height: 16rem;
             padding: calc(var(--padding) / 2);
@@ -694,7 +694,7 @@ body.scopeable {
     /* --- Settings Panel Scope (Nesting mode's Navbar) --- */
     
     @scope (#mainSettings > nav) {
-        :scope {
+        & {
             display: inline-flex;
             padding: 0 4ch;
             justify-content: space-evenly;
@@ -780,7 +780,7 @@ body.scopeable {
     /* --- Main Content Scope (Section With Fancy Background) --- */
     
     @scope (#mainContent) {
-        :scope {
+        & {
             --background: url("https://ucarecdn.com/380d4e4c-268c-4913-8c92-e049c44234ec/-/preview/189x189/") 0 0.1dvh / 5dvh repeat,
             linear-gradient(to right, rgb(from var(--shades-black) r g b / var(--opacity-medium)), rgb(from var(--pri-colour-em-darker) r g b / var(--opacity-medium))) 0 0 / 100dvw 100dvh,
             linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / var(--opacity-medium)) 50%, transparent) 0 0 / 100dvw 100dvh,
@@ -807,7 +807,7 @@ body.scopeable {
     /* --- Text Side Scope (On Homepage: Left Side Text) --- */
             
     @scope (#textSide) {
-        :scope {
+        & {
             width: 100%;
             height: 100%;
             display: flex;
@@ -828,7 +828,7 @@ body.scopeable {
     /* --- Text Side Scope (Site's Title & Scrambled Subtitle) --- */
     
     @scope (#textSide > header > hgroup) {
-        :scope {
+        & {
             display: flex;
             flex-direction: column-reverse;
             color: rgb(from var(--shades-white) r g b / var(--opacity-high));
@@ -864,7 +864,7 @@ body.scopeable {
     /* --- Text Side Scope (Homepage's Navbar) --- */
     
     @scope (#textSide > header > nav) {
-        :scope {
+        & {
             display: inline-flex;
             --primary-colour: var(--shades-darker);
             --secondary-colour: color-mix(in srgb, var(--shades-lightest), var(--primary-colour) 50%);
@@ -1004,7 +1004,7 @@ body.scopeable {
     /* --- Text Side Scope (Homepage's Ads Section) --- */
     
     @scope (#textSide > figure) {
-        :scope {
+        & {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -1083,7 +1083,7 @@ body.scopeable {
     /* --- Editor Side Scope (Homepage's Input Editor) --- */
     
     @scope (#editorSide) {
-        :scope {
+        & {
             container-type: inline-size;
             flex: none;
             max-width: 100%;
@@ -1130,136 +1130,138 @@ body.scopeable {
     /* --- Editor Side Scope (#editorSide > #codeEditor) --- */
     
     @scope (#codeEditor) {
-        .editorWrapper {
-            &:is(#inputEditorWrapper, #outputEditorWrapper):not(.shadowEditorWrapper) { && {
-                width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
-                
-                &#inputEditorWrapper {
-                    position: relative;
-                    border-radius: 0 3rem 3rem 0;
-                    transition: opacity 1s, border-color 1s, background-color 1s;
+        & {
+            .editorWrapper {
+                &:not(.shadowEditorWrapper):is(#inputEditorWrapper, #outputEditorWrapper):is(#inputEditorWrapper, #outputEditorWrapper):is(#inputEditorWrapper, #outputEditorWrapper) {
+                    width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
                     
-                    > #shadowEditorsWrapper {
-                        position: absolute;
-                        inset: 0;
-        
-                        > .shadowEditorWrapper {
+                    &#inputEditorWrapper {
+                        position: relative;
+                        border-radius: 0 3rem 3rem 0;
+                        transition: opacity 1s, border-color 1s, background-color 1s;
+                        
+                        > #shadowEditorsWrapper {
                             position: absolute;
-                            overflow: hidden;
-                            height: 100%;
-                            transition: opacity 2s;
-                        }
-        
-                        &, * {
-                            pointer-events: none;
+                            inset: 0;
+            
+                            > .shadowEditorWrapper {
+                                position: absolute;
+                                overflow: hidden;
+                                height: 100%;
+                                transition: opacity 2s;
+                            }
+            
+                            &, * {
+                                pointer-events: none;
+                            }
                         }
                     }
-                }
-        
-                &#outputEditorWrapper {
-                    transition: opacity 1s, display 1s;
-                    transition-behavior: allow-discrete;
-                }
-            }}
-        }
-        
-        .editorGroup {
-            transform-origin: left;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            width: auto;
-            aspect-ratio: var(--editor-width) / 7;
-    
-            &:has(button:active) {
-                --onClickValue1: 0.75;
-                --opacity-medium: var(--onClickValue2, unset);
-                animation: onClick 1s;
-            }
-    
-            &:has(#inputEditor.drag-hover) {
-                --opacity-medium: 0.75;
-            }
-        }
-        
-        .editorTab {
-            --background-colour: rgb(from var(--shades-black) r g b / var(--opacity-low));
-            --window-text-colour: rgb(from var(--shades-darker) r g b / var(--opacity-medium));
-            line-height: 100%;
-            color: rgb(from var(--shades-medium) r g b / 50%);
-            font-family: "Fira Code", monospace;
-            border: 0.125rem solid var(--window-text-colour);
-            border-radius: 1rem 1rem 0 0;
-            border-bottom: none;
-            background-color: var(--background-colour);
-            flex: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem;
             
-            
-            > .fileName {
-                font-size: 1rem;
-                align-content: center;
-    
-                &[cursor]::after {
-                    font-size: 0.75em;
-                    content: attr(cursor);
-                    color: var(--shades-m-darker);
+                    &#outputEditorWrapper {
+                        transition: opacity 1s, display 1s;
+                        transition-behavior: allow-discrete;
+                    }
                 }
             }
-    
-            > .tabButtons {
+            
+            .editorGroup {
+                transform-origin: left;
                 display: flex;
-                gap: 1em;
-    
-                > button {
-                    font-size: inherit;
-                    height: 2rem;
-                    width: 2rem;
-                    padding: 0;
-                    border: none;
-                    outline: none !important;
-                    border-radius: 50%;
-                    background-color: transparent;
-                    background-position: center;
-                    background-size: contain;
-                    background-repeat: no-repeat;
-                    /* I could've just editing the .svg files to make them gray, but this is the lazy approach */
-                    filter: invert(0.4431);
-                    opacity: var(--opacity-medium);
-                    cursor: pointer;
-                    transition: 0.1s;
-    
-                    &.tabCopyAll { background-image: url('../assets/images/icon-copy.svg') }
-                    &.tabOpenRaw { background-image: url('../assets/images/icon-open-external.svg') }
-                    &.tabInsertCSS { background-image: url('../assets/images/icon-add-file.svg') }
-                    &.tabDeleteAll { background-image: url('../assets/images/icon-erase.svg') }
-    
-                    &:hover {
-                        filter: invert(0.8832);
+                flex-direction: column;
+                height: 100%;
+                width: auto;
+                aspect-ratio: var(--editor-width) / 7;
+        
+                &:has(button:active) {
+                    --onClickValue1: 0.75;
+                    --opacity-medium: var(--onClickValue2, unset);
+                    animation: onClick 1s;
+                }
+        
+                &:has(#inputEditor.drag-hover) {
+                    --opacity-medium: 0.75;
+                }
+            }
+            
+            .editorTab {
+                --background-colour: rgb(from var(--shades-black) r g b / var(--opacity-low));
+                --window-text-colour: rgb(from var(--shades-darker) r g b / var(--opacity-medium));
+                line-height: 100%;
+                color: rgb(from var(--shades-medium) r g b / 50%);
+                font-family: "Fira Code", monospace;
+                border: 0.125rem solid var(--window-text-colour);
+                border-radius: 1rem 1rem 0 0;
+                border-bottom: none;
+                background-color: var(--background-colour);
+                flex: 0;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                padding: 0.75rem;
+                
+                
+                > .fileName {
+                    font-size: 1rem;
+                    align-content: center;
+        
+                    &[cursor]::after {
+                        font-size: 0.75em;
+                        content: attr(cursor);
+                        color: var(--shades-m-darker);
                     }
-    
-                    &:focus {
-                        z-index: 1;
-                        outline: 1px solid var(--shades-medium) !important;
-                        box-shadow: 0 0 calc((3/4) * var(--padding)) var(--shades-medium);
-                        background-size: calc(100% - 8px);
+                }
+        
+                > .tabButtons {
+                    display: flex;
+                    gap: 1em;
+        
+                    > button {
+                        font-size: inherit;
+                        height: 2rem;
+                        width: 2rem;
+                        padding: 0;
+                        border: none;
+                        outline: none !important;
+                        border-radius: 50%;
+                        background-color: transparent;
+                        background-position: center;
+                        background-size: contain;
+                        background-repeat: no-repeat;
+                        /* I could've just editing the .svg files to make them gray, but this is the lazy approach */
+                        filter: invert(0.4431);
+                        opacity: var(--opacity-medium);
+                        cursor: pointer;
+                        transition: 0.1s;
+        
+                        &.tabCopyAll { background-image: url('../assets/images/icon-copy.svg') }
+                        &.tabOpenRaw { background-image: url('../assets/images/icon-open-external.svg') }
+                        &.tabInsertCSS { background-image: url('../assets/images/icon-add-file.svg') }
+                        &.tabDeleteAll { background-image: url('../assets/images/icon-erase.svg') }
+        
+                        &:hover {
+                            filter: invert(0.8832);
+                        }
+        
+                        &:focus {
+                            z-index: 1;
+                            outline: 1px solid var(--shades-medium) !important;
+                            box-shadow: 0 0 calc((3/4) * var(--padding)) var(--shades-medium);
+                            background-size: calc(100% - 8px);
+                        }
                     }
                 }
             }
-        }
-        
-        .editor {
-            flex: 1;
+            
+            .editor {
+                flex: 1;
+            }
         }
     }
     
     /* --- Editor Side Scope (#editorSide > #nestBtn) --- */
     
     @scope (#nestBtn) {
-        :scope {
+        & {
             /* Container styles - positioning and animation */
             cursor: pointer;
             font-size: 0.75rem;
@@ -1359,7 +1361,7 @@ body.scopeable {
     /* --- State Scopes (Homepage State) --- */
     
     @scope (#siteWrapper > main:not(.nesting)) {
-        :scope #mainContent {
+        & #mainContent {
             gap: var(--padding);
             
             > #editorSide {
@@ -1401,7 +1403,7 @@ body.scopeable {
     /* --- State Scopes (Nesting / Editor State) --- */
     
     @scope (#siteWrapper:has(> main.nesting)) {
-        :scope > main {
+        & > main {
             height: 100dvh;
             transition: height 1s;
     
@@ -1476,7 +1478,7 @@ body.scopeable {
     /* --- Article Section Scopes --- */
     
     @scope (#reducingBoilerplateCode) {
-        :scope {
+        & {
             > a {
                 margin: 0;
                 position: absolute;
@@ -1601,7 +1603,7 @@ body.scopeable {
     }
     
     @scope (#easierMaintenance) {
-        :scope {
+        & {
             > #mergingText {
                 position: absolute;
                 top: calc(4em / 5);
@@ -1701,7 +1703,7 @@ body.scopeable {
     }
     
     @scope (#improvedCodeReadability) {
-        :scope {
+        & {
             > #backgroundText {
                 margin: 0;
                 color: var(--shades-white);
@@ -1796,7 +1798,7 @@ body.scopeable {
     }
     
     @scope (#groupingStylesTogether) {
-        :scope {
+        & {
             align-content: center;
     
             > #groupedText {
@@ -1932,7 +1934,7 @@ body.scopeable {
     }
     
     @scope (#mechanicsOfNesting) {
-        :scope {
+        & {
             contain: size layout;
             display: flex;
     
@@ -2212,7 +2214,7 @@ body.scopeable {
         @scope (#siteWrapper) {
             /* --- Main Section Scope --- */
 
-            :scope > main {
+            & > main {
                 > #mainContent {
                     border-radius: 1rem;
                 }
@@ -2239,7 +2241,7 @@ body.scopeable {
     
             /* --- Article Section Scopes --- */
         
-            :scope > article {
+            & > article {
                 font-size: clamp(1.1px, 1.15dvw, 22.5px);
         
                 > section {
@@ -2295,8 +2297,8 @@ body.scopeable {
     
             /* --- State Scopes (Homepage State) --- */
         
-            @scope (:scope > main:not(.nesting)) {
-                > #mainContent {
+            @scope (& > main:not(.nesting)) {
+                > #mainContent#mainContent {
                     justify-content: center;
                     
                     > #editorSide > #codeEditor {
@@ -2319,19 +2321,19 @@ body.scopeable {
     
             /* --- State Scopes (Nesting / Editor State) --- */
         
-            @scope (:scope > main.nesting) {
+            @scope (& > main.nesting) {
                 > #mainContent {
                     min-width: 100%;
                     transition: unset;
                     
-                    > #editorSide {
+                    > #editorSide#editorSide#editorSide {
                         /* 
                         * Remove the slide in animation, just make it fade out & fade in
                         * And make the editors stack on top of each other, aspect-ratio
                         * can be ignored - just fill the screen
                         */
     
-                        && > #codeEditor {
+                        > #codeEditor {
                             height: 100%;
                             width: 100%;
                             animation: none;

@@ -177,7 +177,3 @@ window.addEventListener('load', () => {
     deferredScripts.forEach((dScript) => dScript());
   }, 100);
 });
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.toggle('scopeable', supportsScope());
-});

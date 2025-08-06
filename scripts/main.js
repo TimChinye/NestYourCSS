@@ -138,3 +138,41 @@ window.getRandomNumbers = () => {
   const randomValues = window.crypto.getRandomValues(typedArray);
   return randomValues.join('');
 };
+
+/**
+ * Checks if the browser's CSS engine supports the `@scope` at-rule.
+ *
+ * @returns {boolean} `true` if the `@scope` at-rule is supported, otherwise `false`.
+ */
+function supportsScope() {
+  // Create a temporary <style> element
+  const style = document.createElement('style');
+  
+  // A flag to store the result
+  let isSupported = false;
+
+  // We must wrap this in a try...catch block
+  try {
+    // Append the element to the head to get a valid CSSStyleSheet object
+    document.head.appendChild(style);
+    
+    // Try to insert a valid @scope rule. If the browser doesn't
+    // understand "@scope", this line will throw a syntax error.
+    style.sheet.insertRule('@scope (html) { .test {} }', 0);
+    
+    // If we reach this line, it means no error was thrown, so @scope is supported.
+    isSupported = true;
+    
+  } catch (e) {
+    // An error was caught, so @scope is not supported.
+    isSupported = false;
+    
+  } finally {
+    // Clean up by removing the temporary <style> element from the head
+    if (style.parentNode) {
+      style.parentNode.removeChild(style);
+    }
+  }
+
+  return isSupported;
+}

@@ -53,7 +53,10 @@
   -->
   <link rel="preload" href="./lib/ace/styles/theme-nycss.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="./lib/ace/styles/theme-nycss.css"></noscript>
-
+  
+  <!--
+    Preloading Styles
+  -->
   <style>
     @layer base {
       html { background-color: #000; }
@@ -61,6 +64,11 @@
       section h1, article h1, nav h1, aside h1 { font-size: 1.5em; }
     }
   </style>
+
+  <!--
+    Preloading Fonts
+  -->
+  <link rel="preload" href="./assets/fonts/poppins-medium-latin.otf" as="font" type="font/otf" crossorigin>
 </head>
 <body itemscope itemtype="https://schema.org/WebPage">
   <button class="skip-to-section" id="nestingToggleBtn">Start Nesting</button>

@@ -1178,6 +1178,12 @@
                             display: flex;
                             justify-content: center;
                             width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
+                            transition: opacity 0.5s ease-out;
+
+                            &.loading {
+                                visibility: hidden;
+                                opacity: 0;
+                            }
         
                             /* moveLeft Animation Variables */
                             & {
@@ -2204,7 +2210,6 @@
                     
                     #codeEditor {
                         margin: 0 auto;
-                        /* animation: fadeIn 2s linear both; */
         
                         #inputEditorWrapper {
                             border: none;
@@ -3299,6 +3304,12 @@
                     display: flex;
                     justify-content: center;
                     width: calc((var(--code-editor-height) - var(--vertical-padding)) * (var(--editor-width) / 7));
+                    transition: opacity 0.5s ease-out;
+
+                    &.loading {
+                        visibility: hidden;
+                        opacity: 0;
+                    }
 
                     /* moveLeft Animation Variables */
                     & {

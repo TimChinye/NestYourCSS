@@ -1,5 +1,7 @@
 function initializeAceEditors() {
   window.setupEditors = async () => {
+    if (codeEditorElem) codeEditorElem.classList.add('loading');
+  
     await waitForVar('cssSamples');
     let sample = cssSamples[window.cssSample] ?? cssSamples["unnestedShowcase"];
   
@@ -9,13 +11,22 @@ function initializeAceEditors() {
     inputEditorInstance = initEditor("inputEditor", "The editor to input CSS code that will be minified/nested/denested.", sample || '/* Your input CSS should go here */');
     outputEditorInstance = initEditor("outputEditor", "The editor that outputs the CSS code that will be minified/nested/denested.", '/* Your output CSS will appear here */');
   
+    if (codeEditorElem && inputEditorInstance) {
+      inputEditorInstance.renderer.once('afterRender', () => {
+        // Wait for next paint cycle
+        setTimeout(() => {
+          codeEditorElem.classList.remove('loading');
+        }, 0);
+      });
+    }
+  
     if (!(inputEditorInstance && outputEditorInstance)) return;
   
     // Auto Nest
     let codeChanged = false;
     let isProcessing = false;
   
-    inputEditorInstance.getSession().on('change', () => ((typeof window.appIsInitializing !== 'undefined' && !window.appIsInitializing) && (window.processAuto ?? true)) && (codeChanged = true)); 
+    inputEditorInstance.getSession().on('change', () => ((typeof window.appIsInitializing !== 'undefined' && !window.appIsInitializing) && (window.processAuto ?? true)) && (codeChanged = true));
   
     inputEditorInstance.getSession().on('changeAnnotation', () => {
       if ((!window.appIsInitializing) && (window.processAuto ?? true) && !isProcessing) {
@@ -38,44 +49,35 @@ function initializeAceEditors() {
      * @param {string} editorId The DOM ID of the element to turn into an editor.
      * @param {string} labelDescription The DOM ID of the <label> element for the editor.
      * @param {string} value The initial code/text to place in the editor.
+     * @param {Promise[]} readyPromisesArray An array to push this editor's ready promise into.
      * @returns {ace.Editor} The configured Ace editor instance.
      */
-    function initEditor(editorId, labelDescription, value) {
+    function initEditor(editorId, labelDescription, value, readyPromise = false) {
       if (!document.getElementById(editorId)) return;
   
       const editor = ace.edit(editorId, {
-        // --- Accessibility & Usability Options ---
         mode: "ace/mode/css",
         theme: "ace/theme/nycss"
       });
   
-      // --- Core Accessibility: Focus Management ---
-    
-      // 1. Allow tabbing out of the editor
-      // By default, Tab inserts a tab character. We override this.
-      // Returning 'false' tells Ace to let the browser handle the event.
       editor.commands.addCommand({
         name: "tabOutForward",
         bindKey: { win: "Tab", mac: "Tab" },
-        exec: () => false, // Let the browser handle focus change
+        exec: () => false,
       });
     
       editor.commands.addCommand({
         name: "tabOutBack",
         bindKey: { win: "Shift-Tab", mac: "Shift-Tab" },
-        exec: () => false, // Let the browser handle focus change
+        exec: () => false,
       });
     
-      // 2. Use Escape to blur the editor (exit typing mode)
       editor.commands.addCommand({
         name: "blurEditor",
         bindKey: { win: "Esc", mac: "Esc" },
         exec: (editor) => editor.blur(),
       });
       
-      // 3. Provide an alternate way to indent/outdent
-      // Since Tab is for navigation, we need a new keybinding for indentation.
-      // Ctrl+] and Ctrl+[ is a common and intuitive convention.
       editor.commands.addCommand({
         name: "indentWithCtrl",
         bindKey: { win: "Ctrl-]", mac: "Command-]" },
@@ -88,22 +90,16 @@ function initializeAceEditors() {
         exec: (editor) => editor.blockOutdent(),
       });
     
-      // --- Core Accessibility: Screen Reader Support (ARIA) ---
-    
-      // 1. Get the actual <textarea> that Ace uses internally.
       const textarea = editor.textInput.getElement();
       textarea.setAttribute("aria-label", labelDescription);
-      // textarea.id = editorId + 'Textarea-' + getRandomNumbers();
     
-    
-      editor.setValue(value, -1); // -1 moves cursor to the start
+      editor.setValue(value, -1);
       editor.setAnimatedScroll(true);
     
       let tabIndexSet = false;
       let lastGutterWidth = null;
       const scrollbars = editor.container.querySelectorAll('.ace_scrollbar');
       editor.renderer.on('afterRender', () => {
-        // --- Task 1: Make scrollbars non-focusable (a one-time operation) ---
         if (scrollbars[0].getAttribute('tabindex') !== '-1') {
           if (scrollbars.length > 0) {
             scrollbars.forEach(sb => {
@@ -113,24 +109,19 @@ function initializeAceEditors() {
           }
         }
       
-        // --- Task 2: Sync gutter width for styling (an optimized operation) ---
         const gutter = editor.container.querySelector('.ace_gutter');
         const scrollbarH = editor.container.querySelector('.ace_scrollbar-h');
       
-        // Only proceed if both elements exist.
         if (gutter && scrollbarH) {
           const currentGutterWidth = gutter.style.width;
           
-          // CRITICAL: Only update the CSS property if the width has actually changed.
-          // This prevents style recalculations on every single key press.
           if (currentGutterWidth !== lastGutterWidth) {
             scrollbarH.style.setProperty('--gutter-width', currentGutterWidth);
-            lastGutterWidth = currentGutterWidth; // Update our state.
+            lastGutterWidth = currentGutterWidth;
           }
         }
       });
   
-      // Fix tooltip offset
       function getElementOffset(element) {
           const de = document.documentElement;
           const box = element.getBoundingClientRect();
@@ -154,6 +145,8 @@ function initializeAceEditors() {
       return editor;
     }
   
+    // (The rest of your function remains unchanged)
+    // ...
     let inputEditorElem = inputEditorInstance.container;
     let outputEditorElem = inputEditorElem.parentElement.lastElementChild;
   
@@ -184,7 +177,6 @@ function initializeAceEditors() {
       const tabButtons = document.createElement("div");
       tabButtons.classList.add('tabButtons');
   
-      // Add buttons to the tab
       tabButtons.appendChild(createButton(`${editorName}TabCopyAll`, 'tabCopyAll', isShadowEditor, 'Copy all input code'));
   
       if (isInputEditor) {
@@ -194,7 +186,6 @@ function initializeAceEditors() {
           fileInput.type = "file";
           fileInput.accept = ".css";
   
-          // Set up an event listener for file selection
           fileInput.addEventListener("change", (event) => {
             if (file = event.target.files[0]) {
               fileReader.onload = (e) => inputEditorInstance.setValue(e.target.result);
@@ -202,7 +193,6 @@ function initializeAceEditors() {
             };
           });
   
-          // Add event listeners for drag-and-drop functionality
           setupDragAndDrop(editor);
           
           window.insertCSSFileInput = fileInput;
@@ -215,7 +205,6 @@ function initializeAceEditors() {
   
       tabButtons.appendChild(createButton(`${editorName}TabDeleteAll`, 'tabDeleteAll', isShadowEditor, 'Delete all input code'));
   
-      // Add file name and buttons to the tab
       editorTab.appendChild(fileName);
       editorTab.appendChild(tabButtons);
   
@@ -227,40 +216,31 @@ function initializeAceEditors() {
       wrapperElement.id = `${editor.id}Wrapper`;
       wrapperElement.classList.add('editorWrapper');
   
-      // Find the fileName div inside the tab you passed in
       const fileNameDiv = editorTab.querySelector('.fileName');
       if (fileNameDiv) {
-        // Give the filename div a unique ID so we can reference it
         const labelId = `${editor.id}-label`;
         fileNameDiv.id = labelId;
-  
-        // 1. Make the wrapper a landmark "region"
         wrapperElement.setAttribute('role', 'region');
-        // 2. Label this entire region with the filename
         wrapperElement.setAttribute('aria-labelledby', labelId);
       }
   
       const editorGroup = document.createElement("div");
       editorGroup.classList.add('editorGroup');
   
-      // Replace the editor with its wrapper
       editor.replaceWith(wrapperElement);
       editor.classList.add('editor');
   
-      // Append tab and editor to the group, then to the wrapper
       editorGroup.appendChild(editorTab);
       editorGroup.appendChild(editor);
       wrapperElement.appendChild(editorGroup);
     }
   
-    // Wrap both input and output editors
     [inputEditorElem, outputEditorElem].forEach((editor) => {
       const editorTab = createEditorTab(editor, editor === inputEditorElem, false);
       wrapEditorWithGroup(editor, editorTab);
       updateCoordinateDisplay(ace.edit(editor));
     });
   
-    // Shadow editor creation
     const shadowWrapperElement = document.createElement("div");
     shadowWrapperElement.id = "shadowEditorsWrapper";
     shadowWrapperElement.inert = true;
@@ -283,7 +263,6 @@ function initializeAceEditors() {
       return shadowEditor;
     });
   
-    // Resize and reposition shadow editors
     function styleShadowEditors() {
       const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
       const convertPxToRem = (px) => px / remInPixels;
@@ -296,9 +275,8 @@ function initializeAceEditors() {
       let shadowWidthDiff = baseShadowWidth / 15;
       let previousShadowTranslation = 0;
   
-      // if (((2 * baseShadowWidth) + (shadowWidthDiff / 7.5)) > maxWidth + 50) { /* The first part simplifies to 32/15 */
       if (((32 / 15) * baseShadowWidth) > maxWidth) {
-        baseShadowWidth = maxWidth * (5/12); /* 5/12 because the shadow widths are split into: 3/6 4/5 5/6 of inputEditorElem, the biggest/base one is 5/6, and maxWidth is 2x of the inputEditorElem, therefore 5/12 */
+        baseShadowWidth = maxWidth * (5/12);
         shadowWidthDiff = baseShadowWidth / 15;
       }
   
@@ -325,46 +303,31 @@ function initializeAceEditors() {
   
     styleShadowEditors();
   
-    // A flag to track the paused/resumed state of the content observer.
     let isContentObserverPaused = false;
-  
-    // We need a stable reference to the main element and the wrapper for our checks.
     const shadowEditorsWrapper = shadowEditors[0].closest('#shadowEditorsWrapper');
   
-    // --- Observer 1: Updates shadow editors (your original observer, but modified) ---
     const contentObserver = new MutationObserver(() => {
-      // If the observer is "paused", do nothing.
       if (isContentObserverPaused) return;
   
       requestAnimationFrame(() => {
-        // 1. Copy content to shadow editors (this logic is unchanged).
         shadowEditors.forEach((shadowEditor) => {
           shadowEditor.innerHTML = inputEditorElem.innerHTML;
         });
   
-        // 2. Check if we need to "pause" the observer.
-        // This happens when the element is hidden.
         const isHidden = mainElement.classList.contains('nesting') && parseInt(window.getComputedStyle(shadowEditorsWrapper.parentElement.parentElement).opacity) == 0;
   
         if (isHidden) {
-          // "Pause" the observer by disconnecting it and updating our flag.
-          // We no longer remove any elements.
           contentObserver.disconnect();
           isContentObserverPaused = true;
         }
       });
     });
   
-    // --- Observer 2: Resumes the content observer when visibility is restored ---
     const visibilityObserver = new MutationObserver(() => {
-      // Only proceed if the content observer is currently paused.
       if (!isContentObserverPaused) return;
-  
-      // Check if the element has become visible again.
       const isVisible = !mainElement.classList.contains('nesting') || parseInt(window.getComputedStyle(shadowEditorsWrapper.parentElement.parentElement).opacity) > 0;
   
       if (isVisible) {
-        // "Resume" the observer by calling .observe() again with the original settings.
         contentObserver.observe(inputEditorElem, {
           childList: true,
           subtree: true,
@@ -374,20 +337,15 @@ function initializeAceEditors() {
       }
     });
   
-    // --- Initial Start of Observers ---
-  
-    // 1. Start the content observer.
     contentObserver.observe(inputEditorElem, {
       childList: true,
       subtree: true,
       characterData: true
     });
   
-    // 2. Start the visibility observer to watch for class changes on the <main> element.
-    // This is what will trigger our "resume" check.
     visibilityObserver.observe(mainElement, {
-      attributes: true, // We specifically care about attribute changes (like the 'class' attribute).
-      attributeFilter: ['class'] // Optional: More efficient, only fire for class changes.
+      attributes: true,
+      attributeFilter: ['class']
     });
   };
   

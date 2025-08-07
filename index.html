@@ -54,12 +54,13 @@
   <link rel="preload" href="./lib/ace/styles/theme-nycss.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="./lib/ace/styles/theme-nycss.css"></noscript>
 
-  
   <style>
-    section h1, article h1, nav h1, aside h1 { font-size: 1.5em; }
- </style>
+    @layer base {
+      section h1, article h1, nav h1, aside h1 { font-size: 1.5em; }
+    }
+  </style>
 </head>
-<body itemscope itemtype="https://schema.org/WebPage" class="scopeable">
+<body itemscope itemtype="https://schema.org/WebPage">
   <button class="skip-to-section" id="nestingToggleBtn">Start Nesting</button>
   <a class="skip-to-section" href="#reducingBoilerplateCode" onkeydown="if (event.key === ' ' || event.keyCode === 32) event.preventDefault() , this.click();">Learn why we should nest our code.</a>
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-543TRXJR" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

@@ -12,11 +12,11 @@
  * Selector with an #iD - #.*\s\{
  */
 
-@layer base, notScoped, scoped;
+@layer base, framework, notScoped, scoped;
  
 /* --- Global and Root Element Styles --- */
 
-@layer base {
+@layer framework {
     @starting-style {
         #mainContent > #textSide > header :is(nav > button, hgroup > :is(h1, h3)),
         #mainContent > #textSide > figure > :is(figcaption, figcaption + div),
@@ -118,6 +118,7 @@
         margin: 0;
         height: 100dvh;
         background-color: var(--shades-black);
+        display: block;
 
         /* --- Skip Link Styles --- */
         > .skip-to-section {

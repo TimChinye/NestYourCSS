@@ -101,12 +101,11 @@
 }
 
 @keyframes boostUp {
-	0% { translate: 0 -5lh; }
-	100% { translate: 0; }
+	to { translate: 0 -96em; }
 }
 
 @keyframes slideUp {
-	to { translate: 0 -32em; }
+	to { translate: 0 -16em; }
 }
 
 @keyframes changeCard {

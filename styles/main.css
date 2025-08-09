@@ -18,7 +18,7 @@
 
 @layer framework {
     @starting-style {
-        #mainContent > #textSide > header :is(nav > button, hgroup > :is(h1, h3)),
+        #mainContent > #textSide > header :is(nav > button, hgroup > :is(h1, p)),
         #mainContent > #textSide > figure > :is(figcaption, figcaption + div),
         #mainContent > #editorSide > #codeEditor .editorWrapper {
             opacity: 0;
@@ -1586,6 +1586,7 @@
                             text-transform: capitalize;
                             letter-spacing: 0.25ch;
                             font-family: "Orelo Semi Expanded", sans-serif;
+                            font-weight: 400;
                             font-size: 5em;
                             display: flex;
                             flex-direction: column;
@@ -1726,7 +1727,7 @@
                             position: absolute;
                             z-index: 1;
                             right: 7.5vw; 
-                            bottom: 8em;
+                            bottom: 10em;
                             color: var(--shades-white);
                             font-family: 'Poppins', 'Calibri', sans-serif;
                             font-weight: 300;
@@ -1735,10 +1736,10 @@
                             width: 50ch;
         
                             @supports (animation-range: normal) {
-                                animation: boostUp linear forwards 1ms, slideUp linear forwards 1ms;
+                                animation: boostUp linear both 1ms, slideUp linear both 1ms;
+                                animation-range: cover 16em, cover;
                                 animation-timeline: view(), view();
-                                animation-range-start: cover -5lh, contain 3lh;
-                                animation-range-end: contain 3lh, cover;
+                                animation-composition: add;
                             }
         
                             @supports not (animation-range: normal) {
@@ -1777,6 +1778,7 @@
                             margin: 0;
                             letter-spacing: 0.25rem;
                             font-family: "Orelo Semi Expanded", sans-serif;
+                            font-weight: 400;
                             font-size: 2em;
                             padding: 1.5em 2em;
                             display: inline-block;
@@ -2034,7 +2036,7 @@
                                 white-space: nowrap;
                             }
         
-                            > h1 {
+                            > h3 {
                                 font-size: 1em;
                                 font-weight: 900;
                                 font-family: 'Poppins', 'Calibri', sans-serif;
@@ -3814,6 +3816,7 @@
                     text-transform: capitalize;
                     letter-spacing: 0.25ch;
                     font-family: "Orelo Semi Expanded", sans-serif;
+                    font-weight: 400;
                     font-size: 5em;
                     display: flex;
                     flex-direction: column;
@@ -3956,7 +3959,7 @@
                     position: absolute;
                     z-index: 1;
                     right: 7.5vw; 
-                    bottom: 8em;
+                    bottom: 10em;
                     color: var(--shades-white);
                     font-family: 'Poppins', 'Calibri', sans-serif;
                     font-weight: 300;
@@ -3965,10 +3968,10 @@
                     width: 50ch;
 
                     @supports (animation-range: normal) {
-                        animation: boostUp linear forwards 1ms, slideUp linear forwards 1ms;
+                        animation: boostUp linear both 1ms, slideUp linear both 1ms;
+                        animation-range: cover 16em, cover;
                         animation-timeline: view(), view();
-                        animation-range-start: cover -5lh, contain 3lh;
-                        animation-range-end: contain 3lh, cover;
+                        animation-composition: add;
                     }
 
                     @supports not (animation-range: normal) {
@@ -4009,6 +4012,7 @@
                     margin: 0;
                     letter-spacing: 0.25rem;
                     font-family: "Orelo Semi Expanded", sans-serif;
+                    font-weight: 400;
                     font-size: 2em;
                     padding: 1.5em 2em;
                     display: inline-block;
@@ -4268,7 +4272,7 @@
                         white-space: nowrap;
                     }
 
-                    > h1 {
+                    > h3 {
                         font-size: 1em;
                         font-weight: 900;
                         font-family: 'Poppins', 'Calibri', sans-serif;

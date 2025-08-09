@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /lib/
+
+Sitemap: https://nestyourcss.com/sitemap.xml

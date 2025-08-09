@@ -59,7 +59,7 @@
   <style>
     @layer base {
       html { background-color: #000; }
-      body { display: none; }
+      body { visibility: hidden; opacity: 0; }
     }
   </style>
 
@@ -141,7 +141,7 @@
                 <label id="externalCss" class="combobox" for="external-css-checkbox" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-owns="external-css-listbox">
                   <input type="checkbox" id="external-css-checkbox" />
                   <output>
-                    <div role="textbox" contenteditable="true" placeholder="https://api.cors.lol/?url=https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox" id="external-css-input" aria-activedescendant="" tabindex="-1"></div>
+                    <div role="textbox" contenteditable="true" placeholder="https://api.codetabs.com/v1/proxy/?quest=https://.../styles.css" aria-labelledby="external-css-label" aria-autocomplete="list" aria-controls="external-css-listbox" id="external-css-input" aria-activedescendant="" tabindex="-1"></div>
                   </output>
                   <ul hidden id="external-css-listbox" role="listbox" aria-labelledby="external-css-label">
                     <!-- Pre-populated/recent items will be managed by JS -->
@@ -334,7 +334,7 @@
             <hgroup>
               <!-- I should removed this aria-live for accessibility reasons, but I personally just like it -->
               <h1>Nest Your CSS!</h1>
-              <p id="splashText" aria-live="assertive">Feeling lost in the stylesheets?</p>
+              <h2 id="splashText" aria-live="assertive">Feeling lost in the stylesheets?</h2>
             </hgroup>
             <nav>
               <a id="githubHomeBtn" href="https://github.com/TimChinye/NestYourCSS" target="_blank" rel="noopener noreferrer" aria-label="View on GitHub (opens in new tab)">
@@ -399,24 +399,36 @@
         <a href="#reducingBoilerplateCode">BUT WHY THOUGH?</a>
         
         <h2 id="parallaxText" aria-label="Reducing Boilerplate Code"><span><p>Reducing</p></span><span><p>Boilerplate</p></span><span><p>Code</p></span></h2>
-        <p id="repeatingText">With nesting, you can <b>avoid repeating <span class="repeat" data-text="common styles">common styles</span></b> in multiple <span class="repeat" data-text="selectors">selectors</span>. This helps reduce the size of your code and makes any future modifications <span class="repeat" data-text="easier">easier</span>.</p>
+        <p id="repeatingText">
+          With nesting, you can <b>avoid repeating <span class="repeat" data-text="common styles">common styles</span></b> 
+          in multiple <span class="repeat" data-text="selectors">selectors</span>. 
+          This helps reduce the size of your code and makes <a href="#easierMaintenance">any future modifications</a> <span class="repeat" data-text="easier">easier</span>. 
+        </p>
       </section>
       <section id="easierMaintenance" aria-labelledby="mergingText">
         <h2 id="mergingText" class="optimize"><span>Easier</span><span>Maintenance</span></h2>
-        <p id="changingText">By using CSS nesting, any style <s>chnages</s> <b>changes</b> can be implemented <s>better</s> <b>more efficiently</b>. It promotes readability, maintainability, <s>and</s> <b>&</b> modularity in your stylesheets.</p>
+        <p id="changingText">
+          By using CSS nesting, any style <s>chnages</s> <b>changes</b> can be implemented 
+          <s>better</s> <b>more efficiently</b>. 
+          It promotes <a href="#improvedCodeReadability">readability</a>, maintainability, <s>and</s> <b>&amp;</b> <a href="#groupingStylesTogether">modularity</a> in your stylesheets.
+        </p>
       </section>
       <section id="improvedCodeReadability" class="optimize">
         <h2 id="backgroundText"><span>Improved</span><span>Code</span><span>Readability</span></h2>
-        <p id="visibleText">Nesting makes your code easier to read and understand for both yourself and <u><b role="group">other developers</b></u>. It allows you to write cleaner, easier-to-read nested selectors, making code much <u><b role="group">easier to maintain</b></u> and increase development productivity.</p>
+        <p id="visibleText">
+          Nesting makes your code easier to read and understand for both yourself and <u><b role="group">other developers</b></u>. 
+          It allows you to write cleaner, easier-to-read <a href="#mechanicsOfNesting">nested selectors</a>, making code much 
+          <u><a href="#easierMaintenance"><b role="group">easier to maintain</b></a></u> and increase development productivity.
+        </p>
       </section>
       <section id="groupingStylesTogether" class="optimize">
         <h2 id="groupedText" data-text="Grouping&#x0A;Styles&#x0A;Together">Grouping<br>Styles<br>Together</h2>
         <div id="miniEditor" role="group" aria-label="Code example explaining CSS nesting" aria-describedby="cssNestingDescription">
-          <div id="cssNestingDescription" class="visually-hidden">
-            Nesting helps you to group related styles and write CSS in a nested hierarchy. 
-            This means you don't have to repeat the entire selector again when styling 
-            specific child elements or pseudo-selectors.
-          </div>
+          <p id="cssNestingDescription" class="visually-hidden">
+            Nesting helps you to group related styles and write CSS in a <a href="#mechanicsOfNesting">nested hierarchy</a>. 
+            This helps <a href="#reducingBoilerplateCode">reduce repeating the entire selector</a> again when styling specific child elements or pseudo-selectors, 
+            which ultimately leads to <a href="#improvedCodeReadability">improved code readability</a>.
+          </p>
                   
           <div class="visual-presentation" aria-hidden="true">
             <div id="lineNumbers" aria-hidden="true"></div>
@@ -456,7 +468,9 @@
           <p><a href="#" tabindex="-1">Click anywhere to...</a></p>
         </hgroup>
 
-        <p id="splittingText" data-text="Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that reflects your HTML structure document, making your CSS code more intuitive and easier to manage."></p>
+        <p id="splittingText" data-text="Nesting in CSS allows you to define styles for child elements within the context of their parent element's style rule. This creates a hierarchy that reflects your HTML structure document, making your CSS code more intuitive and easier to manage.">
+          This powerful hierarchy makes your code more intuitive, <a href="#improvedCodeReadability">easier to read</a>, and ultimately, <a href="#easierMaintenance">easier to manage</a>.
+        </p>
         <a id="nycssLogoGroup" href="#" tabindex="-1" aria-label="Go to top of page">
           <img id="nycssLogo" loading="lazy" class="optimize" hidden alt="The official logo for NestYourCSS..." loading="lazy" width="256" height="256" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/a8b762ae-dab2-4230-901c-0d1f90baebd3/-/resize/256x/-/format/auto/-/quality/smart/">
           <img id="nycssBadge" loading="lazy" class="optimize main-animation" alt="The official CSS badge..." loading="lazy" width="256" height="256" sizes="(max-height: 1600px) 23.703dvh, 384px" srcset="https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/48x/-/format/auto/-/quality/smart/ 48w, https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/152x/-/format/auto/-/quality/smart/ 152w, https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/256x/-/format/auto/-/quality/smart/ 256w, https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/384x/-/format/auto/-/quality/smart/ 384w" src="https://ucarecdn.com/6b309d2e-58af-41a3-bff3-c7b623fff2c5/-/resize/256x/-/format/auto/-/quality/smart/">
@@ -501,7 +515,7 @@
   <script src="./scripts/nestingSettings.js" type="text/javascript"></script>
   <!-- endbuild -->
 
-  <script>(async () => Object.assign(window, await import('/nestingMechanism.js')))();</script>
+  <script>(async () => Object.assign(window, await import('https://quickly.nestyourcss.com/scripts/converters.js')))();</script>
   
   <!--
     Ad Scripts

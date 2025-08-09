@@ -377,14 +377,6 @@ function initializeAceEditors() {
     nestCode(true);
   });
   
-  document.addEventListener('DOMContentLoaded', () => {
-    const elements = document.querySelectorAll('#strechingText, #visibleText > u > b');
-  
-    elements.forEach(element => {
-      splitTextForAnimation(element);
-    });
-  });
-  
   window.updateCoordinateDisplay = (editor) => {
     let { row, column } = editor.getCursorPosition();
   

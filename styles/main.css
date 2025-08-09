@@ -114,11 +114,12 @@
         }
     }
 
-    body {	
+    body {
+        visibility: visible;
+        opacity: 1;
         margin: 0;
         height: 100dvh;
         background-color: var(--shades-black);
-        display: block;
 
         /* --- Skip Link Styles --- */
         > .skip-to-section {
@@ -831,7 +832,7 @@
                                     }
                                 }
         
-                                > p {
+                                > h2 {
                                     line-height: 125%;
                                     font-weight: 200;
                                     font-size: 3em;
@@ -1451,6 +1452,15 @@
                     position: relative;
                     height: min(100dvh, 1600px);
                     font-size: clamp(0.5rem, 16px, 1.5rem);
+
+                    > p a {
+                        text-decoration: none;
+                        color: color-mix(in srgb, var(--shades-white) 50%, var(--sec-colour-medium));
+
+                        &:hover {
+                            color: color-mix(in srgb, var(--shades-white) 75%, var(--sec-colour-medium));
+                        }
+                    }
                     
                     &#reducingBoilerplateCode {
                         > a {
@@ -1746,21 +1756,25 @@
                                 translate: -3lh;
                             }
                             
-                            b {
-                                font-size: 1.25em;
-                                /* line-height: inherit; */
-                                transition: color 0.5s;
-                        
-                                &:hover {
+                            u {
+                                color: var(--shades-white);
+                                
+                                b {
+                                    font-size: 1.25em;
                                     /* line-height: inherit; */
-                                    color: var(--pri-colour-lightest);
-                                }
-                        
-                                > span {
-                                    transition: 0.125s;
-                        
+                                    transition: color 0.5s;
+                            
                                     &:hover {
-                                        color: var(--shades-white);
+                                        /* line-height: inherit; */
+                                        color: var(--pri-colour-lightest);
+                                    }
+                            
+                                    > span {
+                                        transition: 0.125s;
+                            
+                                        &:hover {
+                                            color: var(--shades-white);
+                                        }
                                     }
                                 }
                             }
@@ -1960,6 +1974,7 @@
                             gap: 6ch;
                             word-spacing: 0.3ch;
                             color: transparent;
+                            user-select: none;
                             @supports (animation-range: normal) {
                                 animation: unblur ease-out both 1ms;
                                 animation-timeline: view();
@@ -3045,7 +3060,7 @@
                     }
                 }
 
-                > p {
+                > h2 {
                     line-height: 125%;
                     font-weight: 200;
                     font-size: 3em;
@@ -4196,6 +4211,7 @@
                     gap: 6ch;
                     word-spacing: 0.3ch;
                     color: transparent;
+                    user-select: none;
                     @supports (animation-range: normal) {
                         animation: unblur ease-out both 1ms;
                         animation-timeline: view();
@@ -4228,6 +4244,10 @@
                         &::after {
                             animation-play-state: paused;
                         }
+                    }
+
+                    > a {
+                        color: inherit;
                     }
                 }
 

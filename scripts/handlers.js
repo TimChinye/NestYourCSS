@@ -175,5 +175,9 @@ window.addEventListener('load', () => {
       initializeDebuggingTools
     ];
     deferredScripts.forEach((dScript) => dScript());
+
+    document.querySelectorAll('#strechingText, #visibleText u b').forEach(element => {
+      splitTextForAnimation(element);
+    });
   }, 100);
 });

@@ -111,7 +111,7 @@
 @keyframes changeCard {
 	6.25% {
     scale: 0.75;
-    translate: 180px -180px;
+    translate: 12rem -12rem;
     rotate: 20 -4 20 60deg;
 	}
 	
@@ -282,6 +282,6 @@
 }
   
 @keyframes slideInLeft {
-	0% { transform: translateX(-1000px); }
+	0% { transform: translateX(-64rem); }
 	100% { transform: translateX(0); }
 }

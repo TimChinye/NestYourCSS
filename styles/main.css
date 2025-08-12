@@ -1814,7 +1814,7 @@
         
                         > #groupedText {
                             position: absolute;
-                            bottom: 33%;
+                            bottom: 67%;
                             left: 10vw;
                             color: var(--shades-white);
                             margin: 0;
@@ -2315,18 +2315,24 @@
             body > #siteWrapper > article {
                 font-size: clamp(1.1px, 1.15dvw, 22.5px);
         
-                > section, > a > section {
+                > section {
                     contain: size;
                     position: relative;
                     height: min(100dvh, 1600px);
         
                     &#reducingBoilerplateCode {
+                        > a {
+                            font-size: 5vw;
+                        }
+
                         > #repeatingText {
+                            font-size: 2.5vw;
                             top: 50%;
                             translate: 0 calc(-50% - 7.5em);
                         }
         
                         > #parallaxText {
+                            font-size: 2.5vw;
                             bottom: 50%;
                             translate: 0 calc(-50% + 6em);
                         }
@@ -2334,41 +2340,66 @@
                 
                     &#easierMaintenance {
                         > #mergingText {
+                            font-size: 8vw;
                             top: calc(4em / 3);
                         }
         
                         > #changingText {
-                            bottom: 50%;
+                            font-size: 2.5vw;
+                            bottom: 16vw;
                             translate: 0 calc(-50% + 5em);
                         }
                     }
                 
                     &#improvedCodeReadability {
                         > #backgroundText {
+                            font-size: 20vw;
                             top: 50%;
                             translate: 0 -50%;
                         }
         
                         > #visibleText {
+                            font-size: 2.5vw;
                             top: 50%;
                             translate: 0 -25%;
+                        }
+                    }
+
+                    #groupingStylesTogether {
+                        > #groupedText {
+                            font-size: 5vw;
+                            top: calc(50% - 50vw);
+                            bottom: auto;
+                            translate: 0 -50%;
+                            height: fit-content;
+                        }
+
+                        > #miniEditor {
+                            font-size: 2.5vw;
                         }
                     }
                 
                     &#mechanicsOfNesting {
                         > #splittingText {
+                            font-size: 2.1vw;
                             top: 50%;
                             translate: 0 calc(-50% - 12.5em);
                         }
                         
                         > #strechingText {
-                            top: 50%;
+                            font-size: 7.5vw;
+                            top: 64rem;
                             translate: 0 calc(-50% - 12.5em);
                             animation: none;
                         }
         
                         > #nestingText {
-                            bottom: calc(32em / 5);
+                            font-size: 7vw;
+                            bottom: calc(20em / 5);
+                        }
+        
+                        > #nycssLogoGroup {
+                            font-size: 2vw;
                         }
                     }
                 }
@@ -4064,7 +4095,7 @@
 
                 > #groupedText {
                     position: absolute;
-                    bottom: 33%;
+                    bottom: 67%;
                     left: 10vw;
                     color: var(--shades-white);
                     margin: 0;
@@ -4515,49 +4546,78 @@
                         contain: size;
                         position: relative;
                         height: min(100dvh, 1600px);
-            
-                        #repeatingText {
+
+                        &#reducingBoilerplateCode > a {
+                            font-size: 5vw;
+                        }
+
+                        > #repeatingText {
+                            font-size: 2.5vw;
                             top: 50%;
                             translate: 0 calc(-50% - 7.5em);
                         }
-            
-                        #parallaxText {
+        
+                        > #parallaxText {
+                            font-size: 2.5vw;
                             bottom: 50%;
                             translate: 0 calc(-50% + 6em);
                         }
-                    
-                        #mergingText {
+
+                        > #mergingText {
+                            font-size: 8vw;
                             top: calc(4em / 3);
                         }
-            
-                        #changingText {
-                            bottom: 50%;
+        
+                        > #changingText {
+                            font-size: 2.5vw;
+                            bottom: 16vw;
                             translate: 0 calc(-50% + 5em);
                         }
-                    
-                        #backgroundText {
+
+                        > #backgroundText {
+                            font-size: 20vw;
                             top: 50%;
                             translate: 0 -50%;
                         }
-            
-                        #visibleText {
+        
+                        > #visibleText {
+                            font-size: 2.5vw;
                             top: 50%;
                             translate: 0 -25%;
                         }
-                    
-                        #splittingText {
+
+                        > #groupedText {
+                            font-size: 5vw;
+                            top: calc(50% - 50vw);
+                            bottom: auto;
+                            translate: 0 -50%;
+                            height: fit-content;
+                        }
+
+                        > #miniEditor {
+                            font-size: 2.5vw;
+                        }
+
+                        > #splittingText {
+                            font-size: 2.1vw;
                             top: 50%;
                             translate: 0 calc(-50% - 12.5em);
                         }
                         
-                        #strechingText {
-                            top: 50%;
+                        > #strechingText {
+                            font-size: 7.5vw;
+                            top: 64rem;
                             translate: 0 calc(-50% - 12.5em);
                             animation: none;
                         }
-            
-                        #nestingText {
-                            bottom: calc(32em / 5);
+        
+                        > #nestingText {
+                            font-size: 7vw;
+                            bottom: calc(20em / 5);
+                        }
+        
+                        > #nycssLogoGroup {
+                            font-size: 2vw;
                         }
                     }
                 }

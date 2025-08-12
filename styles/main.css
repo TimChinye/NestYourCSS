@@ -1029,12 +1029,12 @@
                                 display: flex;
                                 flex-flow: row;
                                 width: fit-content;
-                                max-width: 100%;
-                                min-height: 0;
+                                contain: paint;
+                                overflow-clip-margin: content-box;
                                 border: 0.125rem solid rgb(from var(--shades-darker) r g b / var(--opacity-low));
                                 padding: 1rem;
                                 gap: 1rem;
-                                animation: slide-in-left 0.5s 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+                                animation: slideInLeft 0.5s 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
                                 transition: 0.25s, opacity 3s 1s;
         
                                 > picture {
@@ -1114,7 +1114,7 @@
                             outline: none !important;
                             padding: 0;
                             --nestBtn-shadow-direction: 1;
-                            animation: bounce-in-top 1.5s 0.5s both;
+                            animation: bounceInTop 1.5s 0.5s both;
                             transition: opacity 1s, font-size 1s, translate 1s, --nestBtn-shadow-direction 1s;
         
                             &:disabled {
@@ -3279,12 +3279,12 @@
                     display: flex;
                     flex-flow: row;
                     width: fit-content;
-                    max-width: 100%;
-                    min-height: 0;
+                    contain: paint;
+                    overflow-clip-margin: content-box;
                     border: 0.125rem solid rgb(from var(--shades-darker) r g b / var(--opacity-low));
                     padding: 1rem;
                     gap: 1rem;
-                    animation: slide-in-left 0.5s 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+                    animation: slideInLeft 0.5s 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
                     transition: 0.25s, opacity 3s 1s;
 
                     > picture {
@@ -3530,7 +3530,7 @@
                 outline: none !important;
                 padding: 0;
                 --nestBtn-shadow-direction: 1;
-                animation: bounce-in-top 1.5s 0.5s both;
+                animation: bounceInTop 1.5s 0.5s both;
                 transition: opacity 1s, font-size 1s, translate 1s, --nestBtn-shadow-direction 1s;
 
                 &:disabled {

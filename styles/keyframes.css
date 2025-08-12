@@ -237,7 +237,7 @@
 	100% { opacity: 0.25; }
 }
 
-@keyframes bounce-in-top {
+@keyframes bounceInTop {
 	0% {
 		filter: opacity(0);
 		transform: translateY(-500px);
@@ -281,7 +281,7 @@
 	}
 }
   
-@keyframes slide-in-left {
+@keyframes slideInLeft {
 	0% { transform: translateX(-1000px); }
 	100% { transform: translateX(0); }
 }

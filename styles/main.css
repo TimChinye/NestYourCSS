@@ -1015,6 +1015,8 @@
                             container: ads-container / size;
         
                             > figcaption {
+                                text-overflow: ellipsis;
+                                overflow: hidden;
                                 white-space: nowrap;
                                 color: rgb(from var(--shades-white) r g b / var(--opacity-high));
                                 font-family: 'Poppins', 'Calibri', sans-serif;
@@ -1029,6 +1031,7 @@
                                 display: flex;
                                 flex-flow: row;
                                 width: fit-content;
+                                max-width: 100%;
                                 contain: paint;
                                 overflow-clip-margin: content-box;
                                 border: 0.125rem solid rgb(from var(--shades-darker) r g b / var(--opacity-low));
@@ -3265,6 +3268,8 @@
                 container: ads-container / size;
 
                 > figcaption {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
                     white-space: nowrap;
                     color: rgb(from var(--shades-white) r g b / var(--opacity-high));
                     font-family: 'Poppins', 'Calibri', sans-serif;
@@ -3279,6 +3284,7 @@
                     display: flex;
                     flex-flow: row;
                     width: fit-content;
+                    max-width: 100%;
                     contain: paint;
                     overflow-clip-margin: content-box;
                     border: 0.125rem solid rgb(from var(--shades-darker) r g b / var(--opacity-low));

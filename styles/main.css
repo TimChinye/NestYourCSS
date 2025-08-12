@@ -126,7 +126,7 @@
     }
 
     html {
-        background-color: var(--shades-black);
+        background-color: color-mix(in srgb, #000 50%, var(--sec-colour-darkest));
         /* scroll-behavior: smooth; */
 
         overflow: hidden;

@@ -41,42 +41,64 @@
 
     :root {
         font-size: clamp(0px, 1.5dvh, 24px);
+        
+        --lightness-darkest: 20%;
+        --chroma-darkest: 0.0424;
 
-        --pri-colour-hue: 235;
-        --pri-colour-darkest: oklch(20% 0.0424 var(--pri-colour-hue)); /* #051823 */
-        --pri-colour-em-darker: oklch(25% 0.0424 var(--pri-colour-hue)); /* #092533 */
-        --pri-colour-m-darker: oklch(40% 0.0679 var(--pri-colour-hue)); /* #1c4d67 */
-        --pri-colour-darker: oklch(55% 0.0935 var(--pri-colour-hue)); /* #307aa0 */
-        --pri-colour-medium: oklch(75% 0.1278 var(--pri-colour-hue)); /* #4dbaf3 */
-        --pri-colour-lighter: oklch(85% 0.0821 var(--pri-colour-hue)); /* #98d7fc */
-        --pri-colour-lightest: oklch(90% 0.0522 var(--pri-colour-hue)); /* #bde4fc */
+        --lightness-em-darker: 25%;
+        --chroma-em-darker: 0.0424;
 
-        --sec-colour-hue: 205;
-        --sec-colour-darkest: oklch(20% 0.0424 var(--sec-colour-hue)); /* #001a1d */
-        --sec-colour-em-darker: oklch(25% 0.0424 var(--sec-colour-hue)); /* #00272b */
-        --sec-colour-m-darker: oklch(40% 0.0679 var(--sec-colour-hue)); /* #015259 */
-        --sec-colour-darker: oklch(55% 0.0935 var(--sec-colour-hue)); /* #02818b */
-        --sec-colour-medium: oklch(75% 0.1278 var(--sec-colour-hue)); /* #03c4d4 */
-        --sec-colour-lighter: oklch(85% 0.0821 var(--sec-colour-hue)); /* #8aDee7 */
-        --sec-colour-lightest: oklch(90% 0.0522 var(--sec-colour-hue)); /* #b6e9ee */
+        --lightness-m-darker: 40%;
+        --chroma-m-darker: 0.0679;
 
-        --red-colour-hue: 15;
-        --red-colour-darkest: oklch(20% 0.0424 var(--red-colour-hue)); /* #230f11 */
-        --red-colour-em-darker: oklch(25% 0.0424 var(--red-colour-hue)); /* #33191b */
-        --red-colour-m-darker: oklch(40% 0.0679 var(--red-colour-hue)); /* #67383c */
-        --red-colour-darker: oklch(55% 0.0935 var(--red-colour-hue)); /* #a15a60 */
-        --red-colour-medium: oklch(75% 0.1278 var(--red-colour-hue)); /* #f48a94 */
-        --red-colour-lighter: oklch(85% 0.0821 var(--red-colour-hue)); /* #ffb8bc */
-        --red-colour-lightest: oklch(90% 0.0522 var(--red-colour-hue)); /* #ffd1d3 */
+        --lightness-darker: 55%;
+        --chroma-darker: 0.0935;
 
-        --shades-hue: 360;
-        --shades-darkest: oklch(20% none none); /* #161616 */
-        --shades-em-darker: oklch(25% none none); /* #222222 */
-        --shades-m-darker: oklch(40% none none); /* #484848 */
-        --shades-darker: oklch(55% none none); /* #717171 */
-        --shades-medium: oklch(75% none none); /* #aeaeae */
-        --shades-lighter: oklch(85% none none); /* #cecece */
-        --shades-lightest: oklch(90% none none); /* #dedede */
+        --lightness-medium: 75%;
+        --chroma-medium: 0.1278;
+
+        --lightness-lighter: 85%;
+        --chroma-lighter: 0.0821;
+
+        --lightness-lightest: 90%;
+        --chroma-lightest: 0.0522;
+
+        --hue-pri-colour: 235;
+        --hue-sec-colour: 205;
+        --hue-red-colour: 15;
+        --hue-shades: 360;
+
+        --pri-colour-darkest: oklch(var(--lightness-darkest) var(--chroma-darkest) var(--hue-pri-colour)); /* #051823 */
+        --pri-colour-em-darker: oklch(var(--lightness-em-darker) var(--chroma-em-darker) var(--hue-pri-colour)); /* #092533 */
+        --pri-colour-m-darker: oklch(var(--lightness-m-darker) var(--chroma-m-darker) var(--hue-pri-colour)); /* #1c4d67 */
+        --pri-colour-darker: oklch(var(--lightness-darker) var(--chroma-darker) var(--hue-pri-colour)); /* #307aa0 */
+        --pri-colour-medium: oklch(var(--lightness-medium) var(--chroma-medium) var(--hue-pri-colour)); /* #4dbaf3 */
+        --pri-colour-lighter: oklch(var(--lightness-lighter) var(--chroma-lighter) var(--hue-pri-colour)); /* #98d7fc */
+        --pri-colour-lightest: oklch(var(--lightness-lightest) var(--chroma-lightest) var(--hue-pri-colour)); /* #bde4fc */
+
+        --sec-colour-darkest: oklch(var(--lightness-darkest) var(--chroma-darkest) var(--hue-sec-colour)); /* #001a1d */
+        --sec-colour-em-darker: oklch(var(--lightness-em-darker) var(--chroma-em-darker) var(--hue-sec-colour)); /* #00272b */
+        --sec-colour-m-darker: oklch(var(--lightness-m-darker) var(--chroma-m-darker) var(--hue-sec-colour)); /* #015259 */
+        --sec-colour-darker: oklch(var(--lightness-darker) var(--chroma-darker) var(--hue-sec-colour)); /* #02818b */
+        --sec-colour-medium: oklch(var(--lightness-medium) var(--chroma-medium) var(--hue-sec-colour)); /* #03c4d4 */
+        --sec-colour-lighter: oklch(var(--lightness-lighter) var(--chroma-lighter) var(--hue-sec-colour)); /* #8aDee7 */
+        --sec-colour-lightest: oklch(var(--lightness-lightest) var(--chroma-lightest) var(--hue-sec-colour)); /* #b6e9ee */
+
+        --red-colour-darkest: oklch(var(--lightness-darkest) var(--chroma-darkest) var(--hue-red-colour)); /* #230f11 */
+        --red-colour-em-darker: oklch(var(--lightness-em-darker) var(--chroma-em-darker) var(--hue-red-colour)); /* #33191b */
+        --red-colour-m-darker: oklch(var(--lightness-m-darker) var(--chroma-m-darker) var(--hue-red-colour)); /* #67383c */
+        --red-colour-darker: oklch(var(--lightness-darker) var(--chroma-darker) var(--hue-red-colour)); /* #a15a60 */
+        --red-colour-medium: oklch(var(--lightness-medium) var(--chroma-medium) var(--hue-red-colour)); /* #f48a94 */
+        --red-colour-lighter: oklch(var(--lightness-lighter) var(--chroma-lighter) var(--hue-red-colour)); /* #ffb8bc */
+        --red-colour-lightest: oklch(var(--lightness-lightest) var(--chroma-lightest) var(--hue-red-colour)); /* #ffd1d3 */
+
+        --shades-darkest: oklch(var(--lightness-darkest) none none); /* #161616 */
+        --shades-em-darker: oklch(var(--lightness-em-darker) none none); /* #222222 */
+        --shades-m-darker: oklch(var(--lightness-m-darker) none none); /* #484848 */
+        --shades-darker: oklch(var(--lightness-darker) none none); /* #717171 */
+        --shades-medium: oklch(var(--lightness-medium) none none); /* #aeaeae */
+        --shades-lighter: oklch(var(--lightness-lighter) none none); /* #cecece */
+        --shades-lightest: oklch(var(--lightness-lightest) none none); /* #dedede */
 
         --shades-black: black;
         --shades-white: white;

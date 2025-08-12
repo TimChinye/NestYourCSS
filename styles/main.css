@@ -1455,10 +1455,13 @@
 
                     > p a {
                         text-decoration: none;
-                        color: color-mix(in srgb, var(--shades-white) 50%, var(--sec-colour-medium));
+                        color: color-mix(in srgb, var(--shades-white) 50%, var(--pri-colour-darker));
+                        transition: color 0s;
+
+                        * { transition: inherit; }
 
                         &:hover {
-                            color: color-mix(in srgb, var(--shades-white) 75%, var(--sec-colour-medium));
+                            color: color-mix(in srgb, var(--shades-white) 75%, var(--pri-colour-darker));
                         }
                     }
                     
@@ -2392,6 +2395,18 @@
                         position: relative;
                         height: min(100dvh, 1600px);
                         font-size: clamp(0.5rem, 16px, 1.5rem);
+
+                        > p a {
+                            text-decoration: none;
+                            color: color-mix(in srgb, var(--shades-white) 50%, var(--pri-colour-darker));
+                            transition: color 0s;
+    
+                            * { transition: inherit; }
+    
+                            &:hover {
+                                color: color-mix(in srgb, var(--shades-white) 75%, var(--pri-colour-darker));
+                            }
+                        }
                     }
 
                     .optimize {

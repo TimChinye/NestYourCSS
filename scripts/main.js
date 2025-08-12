@@ -7,16 +7,32 @@
 * @param {number} wait The number of milliseconds to delay.
 * @returns {Function} Returns the new debounced function.
 */
-let debounceDelays = {};
 window.debounce = (func, wait) => {
-  return (...args) => {
-    if (!debounceDelays[func]) {
-      debounceDelays[func] = true;
-      func.apply(this, args);
-      setTimeout(() => requestAnimationFrame(() => debounceDelays[func] = false), wait);
+  let timeoutId = null;
+  let lastArgs;
+
+  const runTrailing = () => {
+    // Only run if there was a follow-up call. `lastArgs` is cleared after the leading call runs.
+    if (lastArgs) {
+      func.apply(this, lastArgs);
+      lastArgs = null;
+    }
+    timeoutId = null;
+  };
+
+  return function(...args) {
+    lastArgs = args;
+    // Clear any pending trailing call.
+    clearTimeout(timeoutId);
+    // Schedule the next trailing call.
+    timeoutId = setTimeout(runTrailing, wait);
+
+    // If no timer was active, it's a leading call.
+    if (!timeoutId) {
+      runTrailing();
     }
   };
-}
+};
 
 /**
  * This function will round a number to a certain decimal point.

@@ -264,13 +264,18 @@ function initializeAceEditors() {
     });
   
     function styleShadowEditors() {
+      // Ensure the elements (including shadow editors are visible / not in mobile view) are available before proceeding
+      if (!mainContent || !codeEditorElem || !inputEditorElem || window.matchMedia('(max-aspect-ratio: 1.097 / 1)').matches) return;
+
       const remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const totalAvailableSpace = mainContent.offsetWidth - codeEditorElem.offsetWidth - (2 * remInPixels);
       const convertPxToRem = (px) => px / remInPixels;
       
       const shadowHeightDiff = inputEditorElem.offsetHeight / 10;
       const baseShadowOpacity = 0.5;
       const baseShadowBlur = 2;
-      const maxWidth = inputEditorElem.offsetWidth * 2;
+      const maxWidth = Math.min(inputEditorElem.offsetWidth * 2, totalAvailableSpace);
+      
       let baseShadowWidth = inputEditorElem.offsetWidth / 3;
       let shadowWidthDiff = baseShadowWidth / 15;
       let previousShadowTranslation = 0;
@@ -281,10 +286,13 @@ function initializeAceEditors() {
       }
   
       shadowEditors.forEach((shadowEditor, index) => {
-        const shadowEditorWrapper = document.createElement("div");
-        shadowEditorWrapper.classList.add("shadowEditorWrapper", "editorWrapper");
-        shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
-        shadowEditorWrapper.appendChild(shadowEditor.parentElement);
+        // Only wrap if you haven't wrapped already
+        const shadowEditorWrapper = shadowEditor.closest('.shadowEditorWrapper') || document.createElement("div");
+        if (!shadowEditorWrapper.classList.contains('shadowEditorWrapper')) {
+            shadowEditorWrapper.classList.add("shadowEditorWrapper", "editorWrapper");
+            shadowEditor.parentElement.replaceWith(shadowEditorWrapper);
+            shadowEditorWrapper.appendChild(shadowEditor.parentElement);
+        }
   
         let scaleValue = ((inputEditorElem.offsetHeight * 0.8) - (shadowHeightDiff * (index + 1))) / inputEditorElem.offsetHeight;
         shadowEditor.parentElement.style.transform = `scale(${scaleValue})`;
@@ -296,12 +304,16 @@ function initializeAceEditors() {
         shadowEditorWrapper.style.translate = `-${convertPxToRem(previousShadowTranslation)}rem`;
   
         shadowEditorWrapper.style.opacity = baseShadowOpacity - index / 10;
-        shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1)}px)`;
+        shadowEditor.parentElement.style.filter = `blur(${Math.pow(baseShadowBlur, index + 1) / 16}rem)`;
         shadowEditorWrapper.style.backgroundColor = `rgb(from white r g b / ${(2 - index)}%)`;
       });
     }
   
+    // Recalculate shadow editor styles on window resize/zoom
+    window.addEventListener('resize', debounce(styleShadowEditors, 250));
+
     styleShadowEditors();
+
   
     let isContentObserverPaused = false;
     const shadowEditorsWrapper = shadowEditors[0].closest('#shadowEditorsWrapper');

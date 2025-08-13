@@ -24,9 +24,9 @@ function initializeSmoothScrollAndNestingController() {
           newLenis.scrollTo(maxScrollTop, { immediate: true, force: true });
         }
       });
-
-      window.currentLenis = newLenis;
     }
+
+    window.currentLenis = newLenis;
   };
   
   async function handleNestingChange(isCurrentlyNesting) {

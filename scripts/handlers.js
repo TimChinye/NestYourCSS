@@ -16,7 +16,7 @@ var(--shades-black)
 
 document.body.addEventListener('pointermove', (e) => {
   if (typeof splashTextElem === 'undefined' || splashTextElem === null || !mainElement) return;
-  
+
   window.cursorX = e.clientX;
   window.cursorY = e.clientY;
   

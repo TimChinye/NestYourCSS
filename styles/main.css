@@ -13,7 +13,7 @@
  */
 
 @layer base, framework, notScoped, scoped;
- 
+
 /* --- Global and Root Element Styles --- */
 
 @layer framework {
@@ -2066,7 +2066,7 @@
                             }
                         }
         
-                        > #nestingText { /* Click anywhere text fades up and and behind the "Nest your CSS" text */
+                        > #nestingText {
                             position: absolute;
                             bottom: calc(8em / 5);
                             right: calc(24em / 5);
@@ -2394,7 +2394,7 @@
                         }
         
                         > #nestingText {
-                            font-size: 7vw;
+                            font-size: 4vw;
                             bottom: calc(20em / 5);
                         }
         
@@ -4353,7 +4353,7 @@
                     }
                 }
 
-                > #nestingText { /* Click anywhere text fades up and and behind the "Nest your CSS" text */
+                > #nestingText {
                     position: absolute;
                     bottom: calc(8em / 5);
                     right: calc(24em / 5);
@@ -4612,7 +4612,7 @@
                         }
         
                         > #nestingText {
-                            font-size: 7vw;
+                            font-size: 4vw;
                             bottom: calc(20em / 5);
                         }
         

@@ -490,8 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             }
   
-            case 'mousedown':
-            case 'touchstart': {
+            case 'pointerdown': {
                 const updateDirection = !inputElem.previousElementSibling;
                 
                 activeHold.clear(); // Stop rapid-acceleration, if it hasn't already been done.
@@ -508,9 +507,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
             }
   
-            case 'mouseup':
-            case 'mouseleave':
-            case 'touchend': {
+            case 'pointerup':
+            case 'pointerleave':
+            case 'pointercancel': {
                 activeHold.clear(); // When user stops holding, stop rapid-acceleration.
 
                 break;
@@ -690,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         // Number Steppers
-        ['click', 'mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touchend'].forEach(type => {
+        ['click', 'pointerdown', 'pointerup', 'pointerleave', 'pointercancel'].forEach(type => {
             scope.querySelectorAll('.number [role="button"]').forEach(elem => {
                 elem.addEventListener(type, e => handleNumber(elem, e));
             });

@@ -14,7 +14,7 @@ linear-gradient(45deg, transparent, rgb(from var(--pri-colour-m-darker) r g b / 
 var(--shades-black)
 `;
 
-document.body.addEventListener('mousemove', (e) => {
+document.body.addEventListener('pointermove', (e) => {
   if (typeof splashTextElem === 'undefined' || splashTextElem === null || !mainElement) return;
   
   window.cursorX = e.clientX;

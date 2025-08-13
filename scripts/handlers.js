@@ -57,7 +57,7 @@ const elements = [
   '#repeatingText span.repeat',
   '#changingText s',
   '#groupedText',
-  '#nyssCursor',
+  '#nycssCursor',
   '#splittingText',
   '#nycssBadge'
 ];

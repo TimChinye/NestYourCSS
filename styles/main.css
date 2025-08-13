@@ -1952,19 +1952,19 @@
                             &:has(> :not(#backToStart):hover) {
                                 cursor: none;
                 
-                                > #nyssCursor {
+                                > #nycssCursor {
                                     scale: 0.25;
                                     animation-duration: 1.5s;
                                 }
                             }
                 
-                            > #nyssCursor {
+                            > #nycssCursor {
                                 opacity: 1;
                                 animation: rotate 12.5s linear infinite;
                             }
                         }
         
-                        > #nyssCursor {
+                        > #nycssCursor {
                             opacity: 0;
                             pointer-events: none;
                             position: absolute;
@@ -4235,19 +4235,19 @@
                     &:has(> :not(#backToStart):hover) {
                         cursor: none;
 
-                        > #nyssCursor {
+                        > #nycssCursor {
                             scale: 0.25;
                             animation-duration: 1.5s;
                         }
                     }
 
-                    > #nyssCursor {
+                    > #nycssCursor {
                         opacity: 1;
                         animation: rotate 12.5s linear infinite;
                     }
                 }
 
-                > #nyssCursor {
+                > #nycssCursor {
                     opacity: 0;
                     pointer-events: none;
                     position: absolute;

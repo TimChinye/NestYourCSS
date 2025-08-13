@@ -418,9 +418,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     const activeHold = {
+        _beforeCLickDelay: 400, // The delay before differentiating the 'click' from the 'hold'.
+        _afterClickDelay: 500, // The delay before repeating begins.
+        _repeatClickInterval: 50, // The interval for the rapid-fire updates.
+
+        // A cache to store a unique throttled function for each number input's keydown handler.
+        throttlerCache: new WeakMap(),
+
         timerInitial: null,
         timerDelay: null,
         interval: null,
+
         clear() {
             clearTimeout(this.timerInitial);
             clearTimeout(this.timerDelay);
@@ -429,59 +437,82 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    
     function handleNumber(inputElem, event) {
         const labelElem = inputElem.closest('label[id]');
         const id = labelElem.id;
         const displayElem = labelElem.querySelector('[type="text"]');
-  
+
         function updateNumber(updateDirection) {
             let currentValue = +displayElem.value;
             
             if (updateDirection) currentValue++;
             else currentValue--;
 
-            if (currentValue < 0) currentValue = 0;
-            else if (currentValue > 99999) currentValue = 99999;
+            // Clamp the value
+            currentValue = Math.max(0, Math.min(currentValue, 99999));
             
             updateAndCommit(id, currentValue);
         }
   
         switch (event.type) {
-            case 'input':
+            case 'input': {
                 let displayNum = Math.max(0, Math.min(+displayElem.value || 0, 99999));
-                event.preventDefault(); updateAndCommit(id, displayNum);
+                event.preventDefault();
+                
+                updateAndCommit(id, displayNum);
 
                 break;
-            
-            case 'click': // From stepper arrows
+            }
+        
+            case 'click': { // From stepper arrows
                 updateNumber(!inputElem.previousElementSibling);
+
                 break;
+            }
   
             case 'keydown': {
-                if (event.key === 'ArrowUp') { event.preventDefault(); updateNumber(true); }
-                if (event.key === 'ArrowDown') { event.preventDefault(); updateNumber(false); }
+                // Check if we have a throttled function for this input; if not, create one.
+                if (!activeHold.throttlerCache.has(labelElem)) {
+                    activeHold.throttlerCache.set(labelElem, throttle(updateNumber, activeHold._repeatClickInterval));
+                }
+
+                // Get the latest throttled function.
+                const updateNumberWithThrottle = activeHold.throttlerCache.get(labelElem);
+
+                if (event.key === 'ArrowUp') {
+                    event.preventDefault();
+                    updateNumberWithThrottle(true);
+                }
+                if (event.key === 'ArrowDown') {
+                    event.preventDefault();
+                    updateNumberWithThrottle(false);
+                }
                 break;
             }
   
             case 'mousedown':
             case 'touchstart': {
-                activeHold.clear(); // Clear any previous hold
                 const updateDirection = !inputElem.previousElementSibling;
                 
-                activeHold.timerInitial = setTimeout(() => {
-                    updateNumber(updateDirection);
-                    activeHold.timerDelay = setTimeout(() => {
-                        activeHold.interval = setInterval(() => updateNumber(updateDirection), 50);
-                    }, 500);
-                }, 400);
+                activeHold.clear(); // Stop rapid-acceleration, if it hasn't already been done.
+                activeHold.timerInitial = setTimeout(() => { // If user hasn't stopped holding, transition from just a "click" to a rapid-acceleration.
+                    updateNumber(updateDirection); // First click
+
+                    activeHold.timerDelay = setTimeout(() => { // After first click, delay again before initiating the rapid-acceleration.
+                        activeHold.interval = setInterval(() => { // Rapid-acceleration has started.
+                            updateNumber(updateDirection);
+                        }, activeHold._repeatClickInterval);
+                    }, activeHold._afterClickDelay);
+                }, activeHold._beforeCLickDelay);
+
                 break;
             }
   
             case 'mouseup':
             case 'mouseleave':
             case 'touchend': {
-                activeHold.clear();
+                activeHold.clear(); // When user stops holding, stop rapid-acceleration.
+
                 break;
             }
         }
@@ -661,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Number Steppers
         ['click', 'mousedown', 'mouseup', 'mouseleave', 'touchstart', 'touchend'].forEach(type => {
             scope.querySelectorAll('.number [role="button"]').forEach(elem => {
-                elem.addEventListener(type, e => handleNumber(elem, e), {passive: ['touchstart', 'touchend'].includes(type)});
+                elem.addEventListener(type, e => handleNumber(elem, e));
             });
         });
         

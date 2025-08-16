@@ -131,398 +131,6 @@ h2.bold {
 /* Comments */
 /* This is a comment */
 `,
-/* Complex selector group */
-'complexSelectorGroups': `
-ol ol ul,
-ol ul ul,
-ol menu ul,
-ol dir ul,
-ol ol menu,
-ol ul menu,
-ol menu menu,
-ol dir menu,
-ol ol dir,
-ol ul dir,
-ol menu dir,
-ol dir dir,
-ul ol ul,
-ul ul ul,
-ul menu ul,
-ul dir ul,
-ul ol menu,
-ul ul menu,
-ul menu menu,
-ul dir menu,
-ul ol dir,
-ul ul dir,
-ul menu dir,
-ul dir dir,
-menu ol ul,
-menu ul ul,
-menu menu ul,
-menu dir ul,
-menu ol menu,
-menu ul menu,
-menu menu menu,
-menu dir menu,
-menu ol dir,
-menu ul dir,
-menu menu dir,
-menu dir dir,
-dir ol ul,
-dir ul ul,
-dir menu ul,
-dir dir ul,
-dir ol menu,
-dir ul menu,
-dir menu menu,
-dir dir menu,
-dir ol dir,
-dir ul dir,
-dir menu dir,
-dir dir dir {
-    list-style-type: square;
-}
-`,
-/* Escaped characters */
-'escapedCharacters': `
-/* Using escaped characters in selectors */
-#\\31 \\32 \\33 {
-    background-color: #456;
-}
-
-.\\41 \\42 \\43 {
-    color: #456;
-}
-
-[data-\\61 ttribute="\\76 alue"] {
-    font-family: "Times New Roman", \\73 erif;
-}
-
-/* Using escaped characters in property names and values */
-body:has(:active) {
-    \\62 ackground-\\63 olor: #FFFFFF;
-    \\66 ont-\\73 ize: 16\\70 x;
-}
-
-h1 {
-    \\6d argin-\\74 op: 20\\70 x;
-    \\70 adding-\\62 ottom: 10\\70 x;
-}
-
-/* Using @at-rules with escaped characters */
-@\\6d edia screen and (max-width: 600\\70 x) {
-    body {
-        \\62 ackground-\\63 olor: #eee;
-    }
-}
-
-@\\66 ont-face {
-    \\66 ont-\\66 amily: 'MyFont';
-    src: url('myfont.woff2') format('woff2');
-}
-`,
-/* Unnested navbar */
-'unnestedNavbar': `
-nav {
-    display: inline-flex;
-    width: clamp(384px, 100%, 1600px);
-    height: 4rem;
-}
-
-nav > * {
-    display: inherit;
-    padding: 0.75rem 1rem;
-    background-color: var(--panel-bg-colour);
-}
-
-nav a:has(> img) {
-    display: flex;
-}
-
-nav img {
-    height: 2rem;
-}
-
-nav ul {
-    padding: 1rem 3rem;
-    display: flex;
-}
-
-nav ul a {
-    color: inherit;
-    text-decoration: none;
-}
-
-nav ul a:hover {
-    color: var(--accent-text-colour);
-}
-`,
-/* Aphella.com Login Page */
-'aphellaLoginPage': `
-html, body {
-    padding: 1vw 4vw;
-    gap: 2rem;
-    align-items: center;
-    flex-direction: column;
-}
-
-nav {
-    display: inline-flex;
-    align-items: center;
-    flex-flow: wrap;
-    justify-content: space-between;
-    width: clamp(384px, 100%, 1600px);
-    height: 4rem;
-    overflow: hidden;
-    gap: 2rem;
-}
-
-nav > * {
-    display: inherit;
-    margin: 0;
-    padding: 0.75rem 1rem;
-    border-radius: 1.5rem;
-    background-color: var(--panel-bg-colour);
-}
-
-nav a:has(> img) {
-display: flex;
-}
-
-nav img {
-    height: 2rem;
-    object-fit: contain;
-    object-position: center;
-}
-
-nav ul {
-    padding: 1rem 3rem;
-    list-style-type: none;
-    display: flex;
-    gap: 2rem;
-}
-
-nav ul a {
-    color: inherit;
-    overflow: visible;
-    font-weight: bold;
-    text-decoration: none;
-
-    -webkit-transition: 0.25s ease-in-out;
-    -moz-transition: 0.25s ease-in-out;
-    -ms-transition: 0.25s ease-in-out;
-    -o-transition: 0.25s ease-in-out;
-    transition: 0.25s ease-in-out;
-
-    -webkit-text-shadow: 0 30px 0px transparent;
-    -moz-text-shadow: 0 30px 0px transparent;
-    -ms-text-shadow: 0 30px 0px transparent;
-    -o-text-shadow: 0 30px 0px transparent;
-    text-shadow: 0 30px 0px transparent;
-}
-
-nav ul a:hover {
-    color: var(--accent-text-colour);
-
-    -webkit-text-shadow: 0 0px 0px var(--accent-text-colour);
-    -moz-text-shadow: 0 0px 0px var(--accent-text-colour);
-    -ms-text-shadow: 0 0px 0px var(--accent-text-colour);
-    -o-text-shadow: 0 0px 0px var(--accent-text-colour);
-    text-shadow: 0 0px 0px var(--accent-text-colour);
-}
-
-main {
-    height: 100%;
-    border-radius: 1.5rem;
-    padding: 2rem;
-    width: clamp(384px, 100%, 1600px);
-    background-color: var(--panel-bg-colour);
-    flex-direction: column;
-}
-
-@media screen and ( orientation: landscape ) {
-    main {
-            flex-direction: row;
-    }
-}
-
-main > * {
-    flex: 1;
-}
-
-main > figure {
-    margin: 0;
-    position: relative;
-    border-radius: 1rem;
-}
-
-main > figure img {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    border-radius: inherit;
-    object-fit: cover;
-}
-
-main > figure {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-main > figure blockquote {
-    margin: 0;
-    border-radius: inherit;
-    width: fit-content;
-    padding: 4rem;
-    background-color: color-mix(in srgb, transparent, var(--panel-bg-colour) 25%);
-    backdrop-filter: blur(3px);
-}
-
-main > figure blockquote:before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: linear-gradient(to right, #F7D4DA, transparent);
-    -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-                mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
--webkit-mask-composite: xor;
-    mask-composite: exclude;
-}
-
-main > figure blockquote > p {
-    display: block;
-    color: #FFFFFF;
-    text-align: center;
-    margin: 0;
-    position: relative;
-    top: 0.5rem;
-}
-
-main > figure blockquote > p:before {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    content: '“';
-    font-size: 4.3rem;
-    text-align: center;
-    line-height: 0;
-}
-
-main > figure blockquote > p > span {
-    font-size: 0.75rem;
-}
-
-main > article {
-    position: relative;
-    font-size: 1.75rem;
-}
-
-main > article img {
-    margin-top: 1rem;
-    margin-right: 1rem;
-    height: 5rem;
-    width: 100%;
-    object-fit: contain;
-    object-position: right;
-}
-
-main > article h1 {
-    margin: 0 3vw;
-    font-size: 1em;
-}
-
-main > article form {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-    margin: 0 auto;
-}
-
-main > article form :is(label, input) {
-    font-weight: bold;
-    font-size: 0.625em;
-    margin-bottom: 0.25rem;
-}
-
-main > article form input {
-    height: 3rem;
-    width: min(100%, 22.5rem);
-    margin-bottom: 1rem;
-    padding: 1rem 1.5rem;
-    position: relative;
-    border-radius: 999px;
-    border: 1px solid color-mix(in srgb, transparent, var(--accent-text-colour) 25%);
-}
-
-main > article form > label:after {
-    position: absolute;
-    content: '*';
-    color: var(--accent-text-colour);
-}
-
-main > article form > label[hidden] + :is(input, span:has(input)) {
-    display: none;
-}
-
-main > article h1 {
-    margin-bottom: 3rem;
-}
-
-main > article form p {
-    color: #9F6070;
-    font-size: 0.75rem;
-    text-align: center;
-}
-
-main > article button {
-    font-size: 0.625em;
-    cursor: pointer;
-    color: white;
-    display: block;
-    margin: 0 auto;
-    padding: 1rem 0;
-    width: 100%;
-    border-radius: 999px;
-    border-style: none;
-    font-weight: bold;
-    background-position-x: 100%;
-    background-position-y: 0%;
-    background-size: 400% 200%;
-    background-image: linear-gradient(to top right, #A0A0A0, #606060, #80002E, #FF005D);
-    transition: box-shadow 0.25s, background-position 1s;
-}
-
-main > article:disabled {
-    cursor: default;
-    background-position-x: 0%;
-    background-position-y: 100%;
-}
-
-main > article :not(:disabled, ::after, :nth-of-type(3)):hover {
-    box-shadow: 0 0 5px #80002E;
-}
-
-main > article form span {
-    display: inline-flex;
-    align-items: center;
-gap: 1rem;
-}
-
-main > article form p#requestCode {
-    position: relative;
-    top: -0.5rem;
-    cursor: pointer;
-}
-`,
 /* Showcase - Nested */
 'nestedShowcase': `
 /* Statement at-rules */
@@ -669,353 +277,159 @@ h2.bold {
 
 /* This is a comment */
 `,
-/* Aphella */
-'aphellaDashboard': `
-html, body {
-    flex-direction: row;
-    overflow: hidden;
+/* Extracted from: https://developer.chrome.com/docs/css-ui/css-nesting */
+'unnestedCodeSnippet': `
+.nesting {
+  color: hotpink;
 }
 
-main {
-    > section > #wrapper {
-        width: fit-content;
-        margin: 0 auto;
+.nesting > .is {
+  color: rebeccapurple;
+}
+
+.nesting > .is > .awesome {
+  color: deeppink;
+}
+`,
+/* Extracted from: https://developer.chrome.com/docs/css-ui/css-nesting */
+'nestedCodeSnippet': `
+.nesting {
+  color: hotpink;
+
+  > .is {
+    color: rebeccapurple;
+
+    > .awesome {
+      color: deeppink;
     }
+  }
+}
+`,
+/* Complex selector group */
+'complexSelectorGroups': `
+ol ol ul,
+ol ul ul,
+ol menu ul,
+ol dir ul,
+ol ol menu,
+ol ul menu,
+ol menu menu,
+ol dir menu,
+ol ol dir,
+ol ul dir,
+ol menu dir,
+ol dir dir,
+ul ol ul,
+ul ul ul,
+ul menu ul,
+ul dir ul,
+ul ol menu,
+ul ul menu,
+ul menu menu,
+ul dir menu,
+ul ol dir,
+ul ul dir,
+ul menu dir,
+ul dir dir,
+menu ol ul,
+menu ul ul,
+menu menu ul,
+menu dir ul,
+menu ol menu,
+menu ul menu,
+menu menu menu,
+menu dir menu,
+menu ol dir,
+menu ul dir,
+menu menu dir,
+menu dir dir,
+dir ol ul,
+dir ul ul,
+dir menu ul,
+dir dir ul,
+dir ol menu,
+dir ul menu,
+dir menu menu,
+dir dir menu,
+dir ol dir,
+dir ul dir,
+dir menu dir,
+dir dir dir {
+    list-style-type: square;
+}
+`,
+/* Escaped characters */
+'escapedCharacters': `
+/* Using escaped characters in selectors */
+#\\31 \\32 \\33 {
+    background-color: #456;
+}
 
-    header button {
-        border: none;
-        padding: 1rem 1.5rem;
-        padding-left: calc(1.5rem + 2.5ex + 1ch);
-        background: url(https://img.icons8.com/fluency-systems-filled/96/FFFFFF/plus-math.png) 1.5rem 1rem no-repeat scroll;
-        background-size: 2.5ex;
-        background-color: var(--bg-colour);
-        border-radius: 1rem;
-        color: #FFFFFF;
-        cursor: pointer;
-        line-height: 130%;
-        transition: 0.25s;
-        font-size: 0.875rem;
-        white-space: nowrap;
-        --bg-colour: var(--primary-colour);
+.\\41 \\42 \\43 {
+    color: #456;
+}
 
-        &:first-child {
-            --bg-colour:var(--secondary-colour);
-        }
+[data-\\61 ttribute="\\76 alue"] {
+    font-family: "Times New Roman", \\73 erif;
+}
 
-        &:hover {
-            background-color: color-mix(in srgb, black, var(--bg-colour) 90%);
-        }
+/* Using escaped characters in property names and values */
+body:has(:active) {
+    \\62 ackground-\\63 olor: #FFFFFF;
+    \\66 ont-\\73 ize: 16\\70 x;
+}
+
+h1 {
+    \\6d argin-\\74 op: 20\\70 x;
+    \\70 adding-\\62 ottom: 10\\70 x;
+}
+
+/* Using @at-rules with escaped characters */
+@\\6d edia screen and (max-width: 600\\70 x) {
+    body {
+        \\62 ackground-\\63 olor: #eee;
     }
+}
 
-    > section > div > div {
-        display: grid;
-        grid-template-columns: repeat(5, minmax(min-content, 1fr));
-        grid-template-rows: 8rem repeat(4, minmax(8rem, auto)) 1fr;
-        --gap:2rem;
-        grid-gap: var(--gap);
-        margin: 0 auto;
+@\\66 ont-face {
+    \\66 ont-\\66 amily: 'MyFont';
+    src: url('myfont.woff2') format('woff2');
+}
+`,
+/* Unnested navbar */
+'unnestedNavbar': `
+nav {
+    display: inline-flex;
+    width: clamp(384px, 100%, 1600px);
+    height: 4rem;
+}
 
-        &::after {
-            content: "";
-            display: flex;
-            height: calc(var(--main-padding) - var(--gap));
-            width: 100%;
-        }
-    }
+nav > * {
+    display: inherit;
+    padding: 0.75rem 1rem;
+    background-color: var(--panel-bg-colour);
+}
 
-    article {
-        display: flex;
-        padding: 2rem;
-        min-height: 8rem;
-        border-radius: 1rem;
-        align-items: center;
-        background: var(--panel-bg-colour);
-        gap: 1rem;
+nav a:has(> img) {
+    display: flex;
+}
 
-        > img {
-            height: 75%;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            background: color-mix(in srgb, white, var(--primary-colour) 10%);
-        }
+nav img {
+    height: 2rem;
+}
 
-        &:nth-child(-n+3) > div {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-        }
-    }
+nav ul {
+    padding: 1rem 3rem;
+    display: flex;
+}
 
-    #account div:last-of-type {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-    }
+nav ul a {
+    color: inherit;
+    text-decoration: none;
+}
 
-    article {
-        > div {
-            > h3 {
-                margin: 0;
-                margin-top: -0.5rem;
-                color: var(--secondary-colour);
-                white-space: nowrap;
-            }
-
-            > h5 {
-                margin: 0;
-                color: color-mix(in srgb, white, var(--primary-colour) 75%);
-                white-space: nowrap;
-            }
-        }
-
-        &#appointments-info {
-            grid-column: span 2;
-            grid-row: span 6;
-            flex-direction: column;
-
-            > div {
-                display: inherit;
-                flex-direction: column;
-                gap: 1rem;
-                width: 100%;
-            }
-
-            #calendar-header {
-                display: inherit;
-                flex-direction: row;
-                justify-content: space-between;
-
-                > h1 {
-                    margin: 0;
-                }
-            }
-
-            #calendar-days {
-                display: inherit;
-                flex-direction: row;
-                gap: 1ex;
-
-                > div {
-                    flex: 1;
-                    padding: 1rem 0;
-                    border-radius: 0.5rem;
-                    display: inherit;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    cursor: pointer;
-                    transition: 0.25s;
-                    border: 0.25rem solid transparent;
-                }
-
-                > .selected-day {
-                    color: white;
-                    background: color-mix(in srgb, black, var(--primary-colour) 75%);
-                }
-
-                > div:hover {
-                    color: unset;
-                    background: color-mix(in srgb, white, var(--primary-colour) 5%);
-                }
-
-                > .selected-day:hover {
-                    color: unset;
-                    background: color-mix(in srgb, white, var(--primary-colour) 5%);
-                    border-color: color-mix(in srgb, black, var(--primary-colour) 75%);
-                }
-
-                p {
-                    font-size: 0.75rem;
-                    margin: 0;
-                }
-            }
-
-            > #appointments {
-                h4 {
-                    margin: 0;
-                }
-
-                .day-group {
-                    display: inherit;
-                    flex-direction: column;
-                    gap: 1rem;
-
-                    > h6 {
-                        margin: 1rem 0;
-                        font-size: 1rem;
-                        color: color-mix(in srgb, white, var(--text-colour) 75%);
-                    }
-                }
-
-                .appointment {
-                    display: flex;
-                    height: 5rem;
-                    align-items: center;
-                    gap: 1rem;
-
-                    > div {
-                        width: 100%;
-                        height: 100%;
-                        display: inherit;
-                        gap: 0.5rem;
-                        padding: 1rem;
-                        background: color-mix(in srgb, white, var(--primary-colour) 10%);
-                        border-radius: 1rem;
-                        cursor: pointer;
-                    }
-
-                    img {
-                        height: 100%;
-                        border-radius: 1rem;
-
-                        + div {
-                            display: inherit;
-                            flex-direction: column;
-                            justify-content: center;
-                        }
-                    }
-
-                    :is(h6, p) {
-                        margin: 0;
-                    }
-                }
-            }
-        }
-
-        &#appointments-stats {
-            grid-column: span 3;
-            grid-row: span 3;
-            align-items: flex-start;
-            flex-direction: column;
-
-            > h1 {
-                margin: 0;
-                font-size: 1.5rem;
-            }
-
-            > #appts-stats-filter {
-                height: 3.2rem;
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-
-                > div {
-                    display: inherit;
-                    gap: 2rem;
-                    align-items: center;
-                }
-
-                h4 {
-                    margin: 0;
-                }
-
-                div:has(> button) {
-                    display: inherit;
-                    gap: 0.5rem;
-                }
-
-                button {
-                    color: inherit;
-                    background: color-mix(in srgb, white, var(--primary-colour) 10%);
-                    border: none;
-                    cursor: pointer;
-                    padding: 0.5rem calc(0.5rem + 0.5ex);
-                    line-height: 100%;
-                    font-weight: 700;
-                    border-radius: 0.5rem;
-                }
-            }
-        }
-
-        &#appointments-info #calendar-navigation button {
-            color: inherit;
-            background: color-mix(in srgb, white, var(--primary-colour) 10%);
-            border: none;
-            cursor: pointer;
-            padding: 0.5rem calc(0.5rem + 0.5ex);
-            line-height: 100%;
-            font-weight: 700;
-            border-radius: 0.5rem;
-        }
-
-        &#appointments-stats > #appts-stats-filter button:hover,
-        &#appointments-info #calendar-navigation button:hover,
-        &#latest-patient-info tr:has(td):hover,
-        &#appointments-info > #appointments .appointment > div:hover {
-            background: color-mix(in srgb, white, var(--primary-colour) 15%);
-        }
-
-        &#appointments-stats {
-            > #appts-stats-filter select {
-                color: inherit;
-                background: color-mix(in srgb, white, var(--primary-colour) 10%);
-                outline: none;
-                border: none;
-                cursor: pointer;
-                padding: 0.5rem;
-                border-right: 0.5rem solid transparent;
-                font-weight: 600;
-                border-radius: 0.5rem;
-
-                &:hover {
-                    background: color-mix(in srgb, white, var(--primary-colour) 15%);
-                }
-
-                &:focus {
-                    box-shadow: 0px 0px 7.5px gray;
-                }
-            }
-
-            > figure {
-                height: 100%;
-                width: 100%;
-                margin: 0;
-            }
-        }
-
-        &#latest-patient-info {
-            grid-column: span 3;
-            grid-row: span 2;
-            display: table;
-            padding-bottom: 1rem;
-
-            table {
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0 1rem;
-            }
-
-            tr {
-                &:has(td) {
-                    cursor: pointer;
-                    background: color-mix(in srgb, transparent, var(--primary-colour) 5%);
-                    --border-radius:13px;
-                }
-
-                > th {
-                    padding: 0 1.5rem;
-                    text-align: left;
-                }
-
-                > td {
-                    padding: 1.5rem;
-
-                    &:first-child {
-                        border-top-left-radius: var(--border-radius);
-                        border-bottom-left-radius: var(--border-radius);
-                    }
-
-                    &:last-child {
-                        border-top-right-radius: var(--border-radius);
-                        border-bottom-right-radius: var(--border-radius);
-                    }
-                }
-            }
-        }
-    }
+nav ul a:hover {
+    color: var(--accent-text-colour);
 }
 `,
 /* Amazon Homepage */

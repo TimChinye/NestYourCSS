@@ -873,8 +873,6 @@
                                 margin: 1em 0;
                                 padding: 0;
         
-                                /* Sourced from: https://codepen.io/TigerYT/pen/bNdGKQq */
-        
                                 > a {
                                     /* --- Animation Duration & Delay Variables --- */
                                     
@@ -1240,7 +1238,7 @@
                                             position: absolute;
                                             overflow: hidden;
                                             height: 100%;
-                                            transition: opacity 2s;
+                                            transition: translate 2s, opacity 2s;
                                         }
         
                                         &, * {
@@ -3156,8 +3154,6 @@
                 margin: 1em 0;
                 padding: 0;
 
-                /* Sourced from: https://codepen.io/TigerYT/pen/bNdGKQq */
-
                 > a {
                     /* --- Animation Duration & Delay Variables --- */
                     
@@ -3441,7 +3437,7 @@
                                     position: absolute;
                                     overflow: hidden;
                                     height: 100%;
-                                    transition: opacity 2s;
+                                    transition: translate 2s, opacity 2s;
                                 }
                 
                                 &, * {

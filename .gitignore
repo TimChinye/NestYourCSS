@@ -1,3 +1,6 @@
 /.idx
+/.gitignore
 /.vscode
-/scrapbook.json
+/dist
+/node_modules
+/package-lock.json

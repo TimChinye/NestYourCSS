@@ -20,13 +20,7 @@ document.getElementsByTagName('button')[0].addEventListener('click', nestCode);
 function convertToNestedCSS(cssProvided, htmlString) {
 	window.processMode ??= 1;
 
-    cssProvided = minimizeCSS(cssProvided);
-    if (window.processMode == 0) return cssProvided;
-
-    cssProvided = splitCSS(cssProvided);
-    cssProvided = flattenCSS(cssProvided);
-    if (window.processMode == 2) return denestCSS(cssProvided);
-
-    cssProvided = renestCSS(cssProvided, htmlString);
-    if (window.processMode == 1) return beautifyCSS(cssProvided);
+    cssProvided = parseCSS(cssProvided);
+    cssProvided = beautifyCSS(cssProvided);
+    return cssProvided;
 };

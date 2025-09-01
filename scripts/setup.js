@@ -15,23 +15,25 @@ async function setupEditors() {
   }
 
   let sample;
-  sample = `
-/* Main container styling */
-body {
-    font-family: sans-serif; /* A good default */
-    line-height: 1.5;
-
-    /* Nested rule for links */
-    a {
-        color: blue;
-    }
+  sample = `/* Using escaped characters in selectors */
+#\\31 \\32 \\33 {
+	background-color: #456;
 }
+
+/* @scope basic example */
+.card {}
+
+/* Empty rule set */
+.no-styles {}
+
+/* Statement at-rules */
+@import url("stylesheet.css") screen and (max-width: 400px);
   `;
   // sample = Object.values(cssSamples)[0]; // First one
   // sample = Object.values(cssSamples)[0]; // Specific one 
   // sample = cssSamples["hopefullyTheEnd"]; // Specific one
   // sample = Object.values(cssSamples).slice(0, 2).join(''); // Range
-  // sample = Object.values(cssSamples).join(''); // All - It would be stupid to do this
+  sample = Object.values(cssSamples).join('');  // All - It would be stupid to do this
 
   window.inputEditor = initializeEditor("inputEditor", sample || '/* Your input CSS should go here */');
   window.outputEditor = initializeEditor("outputEditor", '/* Your output CSS will appear here */');

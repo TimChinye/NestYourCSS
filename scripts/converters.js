@@ -1,1 +1,443 @@
-// From scratch
+/**
+ * The new structure for a parsed selector.
+ * @typedef {object} SelectorGroup
+ * @property {string[]} parts - The tokenized parts of the selector group (e.g., ['#id', '>', 'p']).
+ * @property {number} newlinesBefore - The number of newlines counted before this group.
+ * @property {string} [commentAfter] - An optional comment that appears after this group's comma.
+ */
+
+/**
+ * Parses a selector string into a structured array of its parts, preserving newlines and comments between groups.
+ *
+ * @param {string} selectorText The raw selector string.
+ * @returns {SelectorGroup[]} An array of selector group objects.
+ */
+function parseSelector(selectorText) {
+    const groups = [{ parts: [], newlinesBefore: 0 }];
+    let buffer = '';
+    let pos = 0;
+    const len = selectorText.length;
+    const combinators = ['>', '+', '~'];
+
+    let parenDepth = 0;
+    let attributeDepth = 0;
+
+    while (pos < len) {
+        const char = selectorText[pos];
+
+        if (char === '(') parenDepth++;
+        else if (char === ')') parenDepth--;
+        else if (char === '[') attributeDepth++;
+        else if (char === ']') attributeDepth--;
+
+        if (parenDepth === 0 && attributeDepth === 0) {
+            if (char === ' ' || char === '\t' || char === '\r' || char === '\n') {
+                if (buffer) {
+                    groups[groups.length - 1].parts.push(buffer);
+                    buffer = '';
+                }
+
+                const lastGroup = groups[groups.length - 1];
+                if (lastGroup.parts.length > 0) {
+                    const lastPart = lastGroup.parts.at(-1);
+                    if (lastPart !== ' ' && !combinators.includes(lastPart)) {
+                        lastGroup.parts.push(' ');
+                    }
+                }
+                
+                pos++;
+                continue;
+            }
+
+            if (combinators.includes(char) || char === ',') {
+                if (buffer) {
+                    groups[groups.length - 1].parts.push(buffer);
+                    buffer = '';
+                }
+                
+                const lastGroup = groups[groups.length - 1];
+                if (lastGroup.parts.length > 0 && lastGroup.parts.at(-1) === ' ') {
+                    lastGroup.parts.pop();
+                }
+
+                if (char === ',') {
+                    pos++; // Consume the comma
+                    let newlines = 0;
+                    let commentBuffer = '';
+                    // Look ahead for comments, newlines and whitespace
+                    while (pos < len) {
+                        const nextChar = selectorText[pos];
+                        if (nextChar === '\n') {
+                            newlines++;
+                            pos++;
+                        } else if (nextChar === ' ' || nextChar === '\t' || nextChar === '\r') {
+                            pos++;
+                        } else if (nextChar === '/' && selectorText[pos + 1] === '*') {
+                            const commentStart = pos;
+                            pos += 2; // Skip /*
+                            while (pos < len && !(selectorText[pos] === '*' && selectorText[pos + 1] === '/')) {
+                                pos++;
+                            }
+                            if (pos < len) pos += 2; // Skip */
+                            
+                            if (commentBuffer) commentBuffer += ' ';
+                            commentBuffer += selectorText.substring(commentStart, pos);
+                        } else {
+                            break; // Found a start of next selector part
+                        }
+                    }
+                    
+                    // Attach the found comment to the group we just finished.
+                    if (commentBuffer) {
+                        lastGroup.commentAfter = commentBuffer.trim();
+                    }
+
+                    groups.push({ parts: [], newlinesBefore: Math.min(newlines, 1) });
+                    continue; // Continue outer loop from the new position
+                } else {
+                    lastGroup.parts.push(char);
+                }
+                pos++;
+                continue;
+            }
+        }
+
+        buffer += char;
+        pos++;
+    }
+
+    if (buffer) {
+        groups[groups.length - 1].parts.push(buffer);
+    }
+
+    return groups.map(g => {
+        if (g.parts.length > 0 && g.parts.at(-1) === ' ') {
+            g.parts.pop();
+        }
+        return g;
+    }).filter(g => g.parts.length > 0);
+}
+
+// The parseCSS function remains exactly the same, as its logic is correct.
+// It will now just produce Rule nodes with the new selector structure.
+export function parseCSS(cssString) {
+    let pos = 0;
+    const len = cssString.length;
+    const root = { type: 'Stylesheet', body: [] };
+    const stack = [root];
+    const preserveComments = typeof window !== 'undefined' && window.preserveComments === true;
+
+    while (pos < len) {
+        const context = stack[stack.length - 1];
+        const initSpacesAbove = -1;
+        let spacesAbove = initSpacesAbove;
+
+        // 1. Consume whitespace and comments within selectors/declarations.
+        while (pos < len) {
+            const currentChar = cssString[pos];
+
+            if (currentChar === ' ' || currentChar === '\t' || currentChar === '\r') {
+                pos++;
+                continue;
+            } else if (currentChar === '\n') {
+                spacesAbove++;
+                pos++;
+                continue;
+            } else if (currentChar === '/' && cssString[pos + 1] === '*') {
+                pos += 2; // Skip '/*'
+                const commentStart = pos;
+                while (pos < len && (cssString[pos] !== '*' || cssString[pos + 1] !== '/')) {
+                    pos++;
+                }
+
+                if (preserveComments) {
+                    const lastNode = context.body.at(-1);
+                    const commentNode = {
+                        type: 'Comment',
+                        value: cssString.substring(commentStart, pos).trim(),
+                        spacesAbove: ((typeof lastNode === 'undefined' || lastNode?.type === 'Declaration') && spacesAbove === initSpacesAbove) ? -1 : Math.max(0, Math.min(spacesAbove, 1))
+                    };
+                    context.body.push(commentNode);
+                }
+
+                if (pos < len) pos += 2; // Skip '*/'
+                spacesAbove = initSpacesAbove; // Reset for next node
+            } else {
+                break;
+            }
+        }
+        
+        if (pos >= len) break;
+        if (cssString[pos] === '}') {
+            stack.pop();
+            pos++;
+            continue;
+        }
+
+        // 2. Scan for the end of the current statement ({ or ; or }),
+        let curlyFound = false;
+        let parenDepth = 0;
+        let inString = null;
+        let segmentBuilder = '';
+
+        while (pos < len) {
+            const char = cssString[pos];
+
+            if (inString) {
+                if (char === inString && cssString[pos - 1] !== '\\') {
+                    inString = null;
+                }
+            } else if (char === '"' || char === "'") {
+                inString = char;
+            } else if (char === '/' && cssString[pos + 1] === '*') {
+                const commentStart = pos;
+                pos += 2; 
+                while (pos < len && (cssString[pos] !== '*' || cssString[pos + 1] !== '/')) {
+                    pos++;
+                }
+                if (pos < len) pos += 2;
+
+                if (preserveComments) {
+                    segmentBuilder += cssString.substring(commentStart, pos);
+                }
+                continue;
+            } else if (char === '(') {
+                parenDepth++;
+            } else if (char === ')') {
+                parenDepth--;
+            } else if (parenDepth === 0) {
+                if (char === '{') {
+                    curlyFound = true;
+                    break;
+                }
+                if (char === ';' || (char === '}' && context.type !== 'Stylesheet')) {
+                    break;
+                }
+            }
+            
+            segmentBuilder += char;
+            pos++;
+        }
+        
+        const lastNode = context.body.at(-1);
+        const segment = segmentBuilder.trim();
+
+        const declarationSpacesAbove = Math.max(0, Math.min(spacesAbove, 1));
+        if (typeof lastNode === 'undefined') spacesAbove = 0;
+        else if (['Rule', 'AtRule'].includes(lastNode?.type)) spacesAbove = 1;
+        else spacesAbove = Math.max(0, Math.min(spacesAbove, 1));
+
+        const newNode = {
+            spacesAbove 
+        };
+
+        // 3. Decide what to do with the captured segment.
+        if (curlyFound) {
+            newNode.body = [];
+            
+            if (segment.startsWith('@')) {
+                const firstSpace = segment.indexOf(' ');
+
+                newNode.type = 'AtRule';
+                newNode.name = segment.substring(1, firstSpace === -1 ? segment.length : firstSpace);
+                newNode.params = firstSpace === -1 ? '' : segment.substring(firstSpace + 1).trim();
+            } else {
+                newNode.type = 'Rule';
+                newNode.selector = parseSelector(segment);
+            }
+            
+            context.body.push(newNode);
+            stack.push(newNode);
+            pos++; // consume '{'
+        } else { 
+            if (segment.includes(':') && context.type !== 'Stylesheet') {
+                const colonIndex = segment.indexOf(':');
+                const property = segment.substring(0, colonIndex).trim();
+                const value = segment.substring(colonIndex + 1);
+                
+                newNode.type = 'Declaration';
+                newNode.property = property;
+                newNode.value = value;
+                newNode.spacesAbove = declarationSpacesAbove;
+                
+                context.body.push(newNode);
+            } else if (segment.startsWith('@')) {
+                const firstSpace = segment.indexOf(' ');
+
+                newNode.type = 'AtRule';
+                newNode.name = segment.substring(1, firstSpace === -1 ? segment.length : firstSpace);
+                newNode.params = firstSpace === -1 ? '' : segment.substring(firstSpace + 1).trim();
+                newNode.body = null;
+
+                context.body.push(newNode);
+            }
+            
+            if (pos < len && cssString[pos] === ';') {
+                pos++;
+            }
+        }
+    }
+
+    return root;
+}
+
+/**
+ * Converts a CSS AST into a minified string.
+ *
+ * @param {object} ast The Abstract Syntax Tree generated by parseCSS.
+ * @returns {string} The minified CSS string.
+ */
+export function minifyCSS(ast) {
+    /**
+     * Converts a parsed selector structure back into a minified string.
+     * @param {SelectorGroup[]} groups The parsed selector groups.
+     * @returns {string} The minified selector string.
+     */
+    function minifySelector(groups) {
+        // Access the .parts property of each group object and join them.
+        return groups.map(group => group.parts.join('')).join(',');
+    }
+
+    function _minify(node) {
+        if (!node || !node.body) return '';
+        return node.body.map(child => {
+            switch (child.type) {
+                case 'Comment':
+                    return `/*${child.value}*/`;
+                case 'Declaration':
+                    return `${child.property}:${child.value};`;
+                case 'AtRule':
+                    const atRuleString = `@${child.name}${child.params ? ' ' + child.params : ''}`;
+                    if (child.body) {
+                        const bodyContent = _minify(child);
+                        return bodyContent ? `${atRuleString}{${bodyContent}}` : '';
+                    } else {
+                        return `${atRuleString};`;
+                    }
+                case 'Rule':
+                    const bodyContent = _minify(child);
+                    return bodyContent ? `${minifySelector(child.selector)}{${bodyContent}}` : '';
+                default:
+                    return '';
+            }
+        }).join('');
+    }
+    return _minify(ast);
+}
+
+/**
+ * Converts a CSS AST back into a well-formatted, human-readable string.
+ *
+ * @param {object} ast The Abstract Syntax Tree generated by parseCSS.
+ * @param {string} [initialIndent=''] The initial indentation string.
+ * @returns {string} The formatted CSS string.
+ */
+export function beautifyCSS(ast, initialIndent = '') {
+    const indentChar = typeof window !== 'undefined' && window.editorIndentChar ? window.editorIndentChar : '\t';
+    
+    /**
+     * Converts a single selector group's parts into a string.
+     * @param {string[]} parts The tokenized parts of the selector.
+     * @returns {string} The stringified selector group.
+     */
+    function stringifyGroup(parts) {
+        const combinators = ['>', '+', '~'];
+        let result = '';
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            const prevPart = i > 0 ? parts[i - 1] : null;
+
+            if (i > 0) {
+                if (part === ' ' || combinators.includes(part) || (prevPart && combinators.includes(prevPart))) {
+                    result += ' ';
+                }
+            }
+            if (part !== ' ') {
+                result += part;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Converts a parsed selector structure back into a beautified string, preserving newlines and comments.
+     * @param {SelectorGroup[]} groups The parsed selector groups.
+     * @param {string} indent The current indentation string for multi-line selectors.
+     * @returns {string} The formatted selector string.
+     */
+    function beautifySelector(groups, indent) {
+        let result = '';
+        groups.forEach((group, index) => {
+            // First, add the content of the current group.
+            result += stringifyGroup(group.parts);
+            
+            // Then, add its associated comment, if any.
+            if (group.commentAfter) {
+                result += ' ' + group.commentAfter;
+            }
+
+            // Finally, add the separator (comma, space, or newline) for the *next* group.
+            if (index < groups.length - 1) {
+                const nextGroup = groups[index + 1];
+                result += ',';
+                if (nextGroup.newlinesBefore === 1) {
+                    result += '\n'; // Only one newline, repeat is not needed based on new parser
+                    result += indent;
+                } else {
+                    result += ' ';
+                }
+            }
+        });
+        return result;
+    }
+
+    function _beautify(node, indent) {
+        if (!node || !node.body) return '';
+        let css = '';
+        node.body.forEach((child) => {
+            if (child.spacesAbove === -1) {
+                css += ' ';
+            } else {
+                css += '\n'.repeat(child.spacesAbove + 1);
+            }
+            
+            if (child.spacesAbove > -1) css += indent;
+
+            switch (child.type) {
+                case 'Comment':
+                    css += `/* ${child.value} */`;
+                    break;
+                case 'Declaration':
+                    css += `${child.property}: ${child.value};`;
+                    break;
+                case 'AtRule':
+                    css += `@${child.name}${child.params ? ' ' + child.params : ''}`;
+                    if (child.body) {
+                        if (child.body.length > 0) {
+                            css += ' {';
+                            css += _beautify(child, indent + indentChar);
+                            css += '\n' + indent + '}';
+                        } else {
+                            css += ' {}';
+                        }
+                    } else {
+                        css += ';';
+                    }
+                    break;
+                case 'Rule':
+                    // Pass the current indent to handle multi-line selector alignment.
+                    css += `${beautifySelector(child.selector, indent)}`;
+                    if (child.body.length > 0) {
+                        css += ' {';
+                        css += _beautify(child, indent + indentChar);
+                        css += '\n' + indent + '}';
+                    } else {
+                        css += ' {}';
+                    }
+                    break;
+            }
+        });
+        return css;
+    }
+    return _beautify(ast, initialIndent).trim();
+}

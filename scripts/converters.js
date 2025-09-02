@@ -118,6 +118,76 @@ function parseSelector(selectorText) {
     }).filter(g => g.parts.length > 0);
 }
 
+/**
+ * The structure for a parsed Declaration value.
+ * @typedef {string[]} ValueTokens
+ */
+
+/**
+ * Parses a declaration value string into an array of tokens.
+ *
+ * @param {string} valueText The raw declaration value string.
+ * @returns {ValueTokens} An array of value tokens.
+ */
+function parseValue(valueText) {
+    const tokens = [];
+    let buffer = '';
+    let pos = 0;
+    const len = valueText.length;
+    let inString = null;
+    let parenDepth = 0;
+
+    const flushBuffer = () => {
+        const trimmedBuffer = buffer.trim();
+        if (trimmedBuffer) {
+            tokens.push(trimmedBuffer);
+        }
+        buffer = '';
+    };
+
+    while (pos < len) {
+        const char = valueText[pos];
+        const prevChar = pos > 0 ? valueText[pos - 1] : null;
+
+        if (inString) {
+            buffer += char;
+            if (char === inString && prevChar !== '\\') {
+                inString = null;
+            }
+        } else if (char === '"' || char === "'") {
+            buffer += char;
+            inString = char;
+        } else if (char === '(') {
+            parenDepth++;
+            buffer += char;
+        } else if (char === ')') {
+            parenDepth--;
+            buffer += char;
+            if (parenDepth === 0) {
+                flushBuffer();
+            }
+        } else if ((char === '/' || char === ',') && parenDepth === 0) {
+            flushBuffer();
+            tokens.push(char);
+        } else if (char === ' ' || char === '\t' || char === '\r' || char === '\n') {
+            if (parenDepth === 0) {
+                flushBuffer();
+            } else {
+                if (buffer.length > 0 && !buffer.endsWith(' ')) {
+                   buffer += ' ';
+                }
+            }
+        } else {
+            buffer += char;
+        }
+        pos++;
+    }
+
+    flushBuffer();
+    return tokens;
+}
+
+
 // The parseCSS function remains exactly the same, as its logic is correct.
 // It will now just produce Rule nodes with the new selector structure.
 export function parseCSS(cssString) {
@@ -132,7 +202,7 @@ export function parseCSS(cssString) {
         const initSpacesAbove = -1;
         let spacesAbove = initSpacesAbove;
 
-        // 1. Consume whitespace and comments within selectors/declarations.
+        // Consume whitespace and comments within selectors/declarations.
         while (pos < len) {
             const currentChar = cssString[pos];
 
@@ -174,7 +244,7 @@ export function parseCSS(cssString) {
             continue;
         }
 
-        // 2. Scan for the end of the current statement ({ or ; or }),
+        // Scan for the end of the current statement ({ or ; or }),
         let curlyFound = false;
         let parenDepth = 0;
         let inString = null;
@@ -227,11 +297,9 @@ export function parseCSS(cssString) {
         else if (['Rule', 'AtRule'].includes(lastNode?.type)) spacesAbove = 1;
         else spacesAbove = Math.max(0, Math.min(spacesAbove, 1));
 
-        const newNode = {
-            spacesAbove 
-        };
+        const newNode = { spacesAbove };
 
-        // 3. Decide what to do with the captured segment.
+        // Decide what to do with the captured segment.
         if (curlyFound) {
             newNode.body = [];
             
@@ -253,7 +321,7 @@ export function parseCSS(cssString) {
             if (segment.includes(':') && context.type !== 'Stylesheet') {
                 const colonIndex = segment.indexOf(':');
                 const property = segment.substring(0, colonIndex).trim();
-                const value = segment.substring(colonIndex + 1);
+                const value = parseValue(segment.substring(colonIndex + 1).trim());
                 
                 newNode.type = 'Declaration';
                 newNode.property = property;
@@ -298,6 +366,27 @@ export function minifyCSS(ast) {
         return groups.map(group => group.parts.join('')).join(',');
     }
 
+    /**
+     * Converts a tokenized declaration value back into a minified string.
+     * @param {ValueTokens} tokens The tokenized value parts.
+     * @returns {string} The minified value string.
+     */
+    function minifyValue(tokens) {
+        let result = '';
+        for (let i = 0; i < tokens.length; i++) {
+            const token = tokens[i];
+            const prevToken = i > 0 ? tokens[i - 1] : null;
+
+            // Add a space only if required (between two alphanumeric identifiers)
+            if (prevToken && /[a-zA-Z0-9]/.test(prevToken.slice(-1)) && /[a-zA-Z0-9]/.test(token[0])) {
+                result += ' ';
+            }
+            result += token;
+        }
+        // Handle !important specifically
+        return result.replace(' ! ', '!').replace('! important', '!important');
+    }
+
     function _minify(node) {
         if (!node || !node.body) return '';
         return node.body.map(child => {
@@ -305,7 +394,7 @@ export function minifyCSS(ast) {
                 case 'Comment':
                     return `/*${child.value}*/`;
                 case 'Declaration':
-                    return `${child.property}:${child.value};`;
+                    return `${child.property}:${minifyValue(child.value)};`;
                 case 'AtRule':
                     const atRuleString = `@${child.name}${child.params ? ' ' + child.params : ''}`;
                     if (child.body) {
@@ -323,6 +412,48 @@ export function minifyCSS(ast) {
         }).join('');
     }
     return _minify(ast);
+}
+
+function beautifyMathContent(content) {
+    let result = '';
+    let buffer = '';
+    let pos = 0;
+    const len = content.length;
+    let parenDepth = 0;
+    const operators = ['+', '-', '*', '/'];
+
+    const flush = () => {
+        if (buffer) {
+            result += buffer;
+            buffer = '';
+        }
+    };
+
+    while (pos < len) {
+        const char = content[pos];
+
+        if (char === '(') {
+            parenDepth++;
+            buffer += char;
+        } else if (char === ')') {
+            parenDepth--;
+            buffer += char;
+        } else if (operators.includes(char) && parenDepth === 0) {
+            flush();
+            const lastChar = result.trim().at(-1);
+            const isUnary = char === '-' && (!lastChar || ['(', '*', '/', '+', '-'].includes(lastChar));
+            
+            if (!isUnary) result = result.trimEnd() + ' ';
+            result += char;
+            if (!isUnary) result += ' ';
+
+        } else {
+            buffer += char;
+        }
+        pos++;
+    }
+    flush();
+    return result.replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -390,6 +521,41 @@ export function beautifyCSS(ast, initialIndent = '') {
         });
         return result;
     }
+    
+    /**
+     * Converts a tokenized declaration value back into a beautified string.
+     * @param {ValueTokens} valueTokens The tokenized value parts.
+     * @returns {string} The beautified value string.
+     */
+    function beautifyValue(valueTokens) {
+        if (!valueTokens || valueTokens.length === 0) return '';
+        
+        const processedTokens = valueTokens.map(token => {
+            const parenIndex = token.indexOf('(');
+            if (parenIndex !== -1 && token.endsWith(')')) {
+                const functionName = token.substring(0, parenIndex).toLowerCase().trim();
+                const prefix = token.substring(0, parenIndex + 1);
+                const content = token.substring(parenIndex + 1, token.length - 1);
+                const suffix = ')';
+                
+                if (functionName === 'calc' || (functionName === '' && token.startsWith('(('))) {
+                    return prefix + beautifyMathContent(content) + suffix;
+                }
+                if (functionName === 'url') {
+                    return prefix + content.trim() + suffix;
+                }
+                // Recursive step: beautify the content of any other function
+                // by treating its content as a new value.
+                return prefix + beautifyValue(parseValue(content)) + suffix;
+            }
+            return token;
+        });
+
+        // Join the master tokens with spaces, then clean up commas. The slash is handled
+        // by the tokenizer, so a global replace is no longer needed and would be harmful.
+        return processedTokens.join(' ').replace(/\s*,\s*/g, ', ');
+    }
+
 
     function _beautify(node, indent) {
         if (!node || !node.body) return '';
@@ -408,7 +574,7 @@ export function beautifyCSS(ast, initialIndent = '') {
                     css += `/* ${child.value} */`;
                     break;
                 case 'Declaration':
-                    css += `${child.property}: ${child.value};`;
+                    css += `${child.property}: ${beautifyValue(child.value)};`;
                     break;
                 case 'AtRule':
                     css += `@${child.name}${child.params ? ' ' + child.params : ''}`;

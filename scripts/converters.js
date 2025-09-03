@@ -372,19 +372,50 @@ export function minifyCSS(ast) {
      * @returns {string} The minified value string.
      */
     function minifyValue(tokens) {
-        let result = '';
-        for (let i = 0; i < tokens.length; i++) {
-            const token = tokens[i];
-            const prevToken = i > 0 ? tokens[i - 1] : null;
+        if (!tokens || tokens.length === 0) {
+            return '';
+        }
 
-            // Add a space only if required (between two alphanumeric identifiers)
-            if (prevToken && /[a-zA-Z0-9]/.test(prevToken.slice(-1)) && /[a-zA-Z0-9]/.test(token[0])) {
+        let result = tokens[0];
+
+        for (let i = 1; i < tokens.length; i++) {
+            const prevToken = tokens[i - 1];
+            const token = tokens[i];
+
+            const lastCharPrev = prevToken.slice(-1);
+            const firstCharToken = token[0];
+
+            let spaceNeeded = false;
+
+            // Case 1: The most common requirement for a space is between two alphanumeric
+            // characters that would otherwise merge into a single identifier.
+            // e.g., "1px" and "solid" -> "1px solid"
+            // e.g., "border-box" and "important" -> "border-box !important" (after '!' is handled)
+            if (/[a-zA-Z0-9]/.test(lastCharPrev) && /[a-zA-Z0-9]/.test(firstCharToken)) {
+                spaceNeeded = true;
+            }
+
+            // Case 2: A space is needed after a closing parenthesis if it's followed by
+            // an identifier that doesn't start with an operator.
+            // e.g., "rgba(0,0,0)" and "solid" -> "rgba(0,0,0) solid"
+            else if (lastCharPrev === ')' && /[a-zA-Z0-9]/.test(firstCharToken)) {
+                spaceNeeded = true;
+            }
+            
+            // In all other cases, no space is needed. This correctly handles:
+            // - Joining `!` and `important`: `!` is not alphanumeric.
+            // - Attaching values to `!`: `10px` and `!` are joined to `10px!`.
+            // - Operators and commas: `10px/1.5` or `shadow(0,0,0)`.
+            // - Unary minus: `10px -5px` becomes `10px-5px`, which is valid.
+            // - Functions: `rgb` and `(...)` become `rgb(...)`.
+
+            if (spaceNeeded) {
                 result += ' ';
             }
             result += token;
         }
-        // Handle !important specifically
-        return result.replace(' ! ', '!').replace('! important', '!important');
+
+        return result;
     }
 
     function _minify(node) {
@@ -398,13 +429,15 @@ export function minifyCSS(ast) {
                 case 'AtRule':
                     const atRuleString = `@${child.name}${child.params ? ' ' + child.params : ''}`;
                     if (child.body) {
-                        const bodyContent = _minify(child);
+                        let bodyContent = _minify(child);
+                        if (bodyContent.at(-1) === ';') bodyContent = bodyContent.slice(0, -1);
                         return bodyContent ? `${atRuleString}{${bodyContent}}` : '';
                     } else {
                         return `${atRuleString};`;
                     }
                 case 'Rule':
-                    const bodyContent = _minify(child);
+                    let bodyContent = _minify(child);
+                    if (bodyContent.at(-1) === ';') bodyContent = bodyContent.slice(0, -1);
                     return bodyContent ? `${minifySelector(child.selector)}{${bodyContent}}` : '';
                 default:
                     return '';

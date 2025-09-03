@@ -186,9 +186,13 @@ function parseValue(valueText) {
     flushBuffer();
     return tokens;
 }
-
-// The parseCSS function remains exactly the same, as its logic is correct.
-// It will now just produce Rule nodes with the new selector structure.
+ 
+/**
+ * The parseCSS function remains exactly the same, as its logic is correct.
+ * It will now just produce Rule nodes with the new selector structure.
+ * @param {string} cssString 
+ * @returns 
+ */
 export function parseCSS(cssString) {
     let pos = 0;
     const len = cssString.length;

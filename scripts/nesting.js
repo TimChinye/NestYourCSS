@@ -18,15 +18,13 @@ function nestCode() {
 document.getElementsByTagName('button')[0].addEventListener('click', nestCode);
 
 function convertToNestedCSS(cssProvided, htmlString) {
-	window.processMode ??= 1; // 0: Minify, 1: Beautify, 2: Denest, 3: Nest
+	window.processMode ??= 3; // 0: Minify, 1: Beautify, 2: Denest, 3: Nest
 	window.preserveComments ??= true;
 
     cssProvided = parseCSS(cssProvided);
-    // console.log(cssProvided);
     if (window.processMode == 0) return minifyCSS(cssProvided);
     if (window.processMode == 1) return beautifyCSS(cssProvided);
     if (window.processMode == 2) cssProvided = denestCSS(cssProvided);
-    // console.log(cssProvided);
-    // if (window.processMode == 3) cssProvided = nestCSS(cssProvided);
+    if (window.processMode == 3) cssProvided = renestCSS(cssProvided);
     return beautifyCSS(cssProvided);
 };

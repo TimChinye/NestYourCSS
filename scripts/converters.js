@@ -691,15 +691,6 @@ function stringifySelectorForIs(groups) {
 }
 
 /**
- * Checks if a selector part is a combinator.
- * @param {string} part The selector part string.
- * @returns {boolean} True if the part is a combinator.
- */
-function isCombinator(part) {
-    return part === '>' || part === '+' || part === '~' || part === ' ';
-}
-
-/**
  * Combines a parent selector with a child selector according to CSS nesting rules.
  *
  * @param {SelectorGroup[] | null} parentGroups The parent selector groups.
@@ -707,80 +698,66 @@ function isCombinator(part) {
  * @returns {SelectorGroup[]} The new, combined selector groups.
  */
 function combineSelectors(parentGroups, childGroups) {
-    // Case 1: No parent context (top-level rules).
     if (!parentGroups || parentGroups.length === 0) {
-        // According to the spec, a top-level '&' refers to the scoping root.
-        // We'll represent this with `:root` for a sensible default in global CSS.
-        return childGroups.map(group => {
-            const newParts = group.parts.map(p => p.includes('&') ? p.replace(/&/g, ':root') : p);
-            return { ...group, parts: newParts };
+        // Handle top-level '&', which represents the scoping root, e.g., :root or a shadow host.
+        // For simplicity in a general context, we can treat it like :root.
+        return childGroups.map(g => {
+            const newParts = g.parts.map(p => p.replace(/&/g, ':root'));
+            return { ...g, parts: newParts };
         });
     }
 
     const newSelectorGroups = [];
-    
-    // The spec mandates that a selector list in the parent context is wrapped in :is().
-    // This simplifies combination logic significantly, as we can treat the entire
-    // parent list as a single conceptual unit.
     const parentIsList = parentGroups.length > 1;
-    const parentSelectorString = stringifySelectorForIs(parentGroups);
+
+    // The replacement for '&' is either the single parent selector or the parent list wrapped in :is()
+    const parentReplacementStr = stringifySelectorForIs(parentGroups);
+    const parentHasTypeSelector = parentGroups.some(g => g.parts.some(p => /^[a-zA-Z]/.test(p) && p !== ' ' && p !== '>' && p !== '+' && p !== '~'));
     
-    // This is the base string for replacing '&' when it appears at the start of a selector.
-    const parentContextAsSelector = parentIsList ? `:is(${parentSelectorString})` : parentSelectorString;
-    
-    // For concatenation cases (like `&&`), a type selector must be wrapped in `:is()`
-    // to avoid invalid selectors (e.g., `main` + `main` -> `mainmain`).
-    const parentStartsWithType = !parentIsList && parentGroups[0].parts.length > 0 && /^[a-zA-Z]/.test(parentGroups[0].parts[0]);
-    const safeParentForConcat = parentStartsWithType ? `:is(${parentSelectorString})` : parentContextAsSelector;
+    // The wrapper for subsequent ampersands
+    const subsequentWrapper = (str) => parentHasTypeSelector ? `:is(${str})` : str;
 
     for (const childGroup of childGroups) {
         const hasAmpersand = childGroup.parts.some(p => p.includes('&'));
 
-        // Case 2: No '&' found. This is a simple descendant selector.
-        // e.g., .parent { .child {} } -> .parent .child {}
         if (!hasAmpersand) {
-            const parentParts = parseSelector(parentContextAsSelector)[0].parts;
-            const newParts = [...parentParts, ' ', ...childGroup.parts];
-            newSelectorGroups.push({ ...childGroup, parts: newParts });
+            // Rule: No '&' implies a descendant selector.
+            // .parent { .child {} } -> .parent .child {}
+            const parentParts = parentIsList ? [`:is(${parentReplacementStr})`] : parentGroups[0].parts;
+            const newGroup = {
+                parts: [...parentParts, ' ', ...childGroup.parts],
+                newlinesBefore: 0,
+                commentAfter: childGroup.commentAfter
+            };
+            newSelectorGroups.push(newGroup);
             continue;
         }
 
-        // Case 3: '&' is present. Perform substitution.
-        let combinedParts = [];
+        // Rule: '&' is present, perform replacement.
+        let combinedString = '';
         for (const part of childGroup.parts) {
-            if (!part.includes('&')) {
-                combinedParts.push(part);
-                continue;
+            if (part.includes('&')) {
+                let isFirstAmpersand = true;
+                const replacedPart = part.replace(/&/g, () => {
+                    if (isFirstAmpersand) {
+                        isFirstAmpersand = false;
+                        return parentReplacementStr;
+                    }
+                    return subsequentWrapper(parentReplacementStr);
+                });
+                combinedString += replacedPart;
+            } else {
+                combinedString += part;
             }
-
-            // A part can contain multiple ampersands, e.g., `&&&` or `&.foo&`.
-            // We split the part by '&' and insert the parent context accordingly.
-            const subParts = part.split('&');
-            
-            subParts.forEach((subPart, index) => {
-                // An ampersand existed before this subPart (unless it's the first empty string from a leading &)
-                if (index > 0) {
-                    const lastPart = combinedParts.length > 0 ? combinedParts[combinedParts.length - 1] : null;
-                    const isConcatenating = lastPart && !isCombinator(lastPart);
-                    
-                    const replacementString = isConcatenating ? safeParentForConcat : parentContextAsSelector;
-                    const replacementParts = parseSelector(replacementString)[0].parts;
-                    combinedParts.push(...replacementParts);
-                }
-
-                if (subPart) {
-                    combinedParts.push(subPart);
-                }
-            });
         }
         
-        // The resulting combination might itself be a list or have complex structures,
-        // so we re-parse it to normalize the structure into valid SelectorGroups.
-        const normalizedGroups = parseSelector(combinedParts.join(''));
-        newSelectorGroups.push(...normalizedGroups.map(g => ({
-            ...childGroup, // Preserve original comment/newline info
-            ...g
-        })));
+        // Reparse the combined string to normalize it correctly.
+        // This handles context reversal and complex substitutions gracefully.
+        const reparsedGroups = parseSelector(combinedString);
+        reparsedGroups.forEach(g => {
+            g.commentAfter = childGroup.commentAfter; // Preserve original comment
+        });
+        newSelectorGroups.push(...reparsedGroups);
     }
 
     return newSelectorGroups;
@@ -891,4 +868,130 @@ export function denestCSS(ast) {
     const newRoot = cloneASTNode(ast);
     newRoot.body = _denest(ast.body, { selector: null, atRule: null });
     return newRoot;
+}
+
+/**
+ * A helper to stringify selector groups for comparison.
+ * @param {SelectorGroup[]} groups 
+ * @returns {string}
+ */
+function stringifySelector(groups) {
+    return groups.map(g => g.parts.join('')).join(',');
+}
+
+/**
+ * Finds the nesting relationship between two selectors.
+ * @param {SelectorGroup[]} parentGroups 
+ * @param {SelectorGroup[]} childGroups 
+ * @returns {{type: 'MERGE' | 'NEST' | 'REVERSE_NEST', newSelector: SelectorGroup[]} | null}
+ */
+function findNestingRelationship(parentGroups, childGroups) {
+    // For simplicity and to produce the most readable output,
+    // this implementation focuses on nesting single-group selectors.
+    if (parentGroups.length > 1 || childGroups.length > 1) {
+        return null;
+    }
+
+    const parentStr = stringifySelector(parentGroups);
+    const childStr = stringifySelector(childGroups);
+
+    // Case 1: Merge identical selectors
+    if (parentStr === childStr) {
+        return { type: 'MERGE', newSelector: parentGroups };
+    }
+
+    // Case 2: Standard Nesting (descendant or compound)
+    // e.g., .parent .child OR .parent:hover
+    const isDescendant = childStr.startsWith(parentStr + ' ') || childStr.startsWith(parentStr + '>') || childStr.startsWith(parentStr + '+') || childStr.startsWith(parentStr + '~');
+    const isCompound = childStr.startsWith(parentStr) && !isDescendant;
+
+    if (isDescendant) {
+        const newSelectorStr = childStr.substring(parentStr.length);
+        return { type: 'NEST', newSelector: parseSelector(newSelectorStr) };
+    }
+    if (isCompound) {
+        const newSelectorStr = '&' + childStr.substring(parentStr.length);
+        return { type: 'NEST', newSelector: parseSelector(newSelectorStr) };
+    }
+
+    // Case 3: Reverse Context Nesting
+    // e.g., .featured .parent
+    const reverseMatch = new RegExp(`(\\s|\\>|\\+|\\~)${parentStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`);
+    if (reverseMatch.test(childStr)) {
+        const newSelectorStr = childStr.replace(reverseMatch, '$1&');
+        return { type: 'REVERSE_NEST', newSelector: parseSelector(newSelectorStr) };
+    }
+
+    return null;
+}
+
+/**
+ * Traverses a flat CSS AST and returns a new AST with rules nested
+ * according to native CSS Nesting syntax.
+ *
+ * @param {object} ast The Abstract Syntax Tree (should be flat, e.g., from denestCSS).
+ * @returns {object} A new AST with rules nested.
+ */
+export function renestCSS(ast) {
+    function _renest(node) {
+        if (!node.body || node.body.length === 0) {
+            return;
+        }
+        
+        const newBody = [];
+        let nodesToProcess = [...node.body];
+
+        while (nodesToProcess.length > 0) {
+            const parentNode = nodesToProcess.shift();
+            
+            // Only rules can be parents for nesting.
+            if (parentNode.type === 'Rule') {
+                parentNode.body = parentNode.body || [];
+                const remainingNodes = [];
+
+                for (const potentialChild of nodesToProcess) {
+                    let consumed = false;
+                    if (potentialChild.type === 'Rule') {
+                        const relationship = findNestingRelationship(parentNode.selector, potentialChild.selector);
+
+                        if (relationship) {
+                            if (relationship.type === 'MERGE') {
+                                /* Add nesting setting to remove duplicates, or leave them as fallback - for now: leave as fallback */
+
+                                // Merge declarations into parent
+                                const topMostRule = potentialChild.body.find((node) => ['Rule', 'AtRule'].includes(node.type));
+                                if (parentNode.body.length > 0 && topMostRule) topMostRule.spacesAbove = 1;
+                                parentNode.body.push(...potentialChild.body);
+                                consumed = true;
+                            } else { // 'NEST' or 'REVERSE_NEST'
+                                const nestedChild = cloneASTNode(potentialChild);
+                                nestedChild.selector = relationship.newSelector;
+                                parentNode.body.push(nestedChild);
+                                consumed = true;
+                            }
+                        }
+                    }
+                    if (!consumed) {
+                        remainingNodes.push(potentialChild);
+                    }
+                }
+                nodesToProcess = remainingNodes;
+
+                // Recurse to nest the children we just added
+                _renest(parentNode);
+            }
+            
+            // Recurse into at-rules
+            if (parentNode.type === 'AtRule' && parentNode.body) {
+                _renest(parentNode);
+            }
+
+            newBody.push(parentNode);
+        }
+        node.body = newBody;
+    }
+
+    const nestedAST = cloneASTNode(ast);
+    _renest(nestedAST);
+    return nestedAST;
 }

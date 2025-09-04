@@ -1060,7 +1060,7 @@ html {
 `,
 /* Comprehensive At-Rules and Nesting */
 'atRulesGalore': `
-@charset "UTF-8";
+/* @charset "UTF-8"; - Commented out for debugging process (since charset must be at the top, and this sample isn't the top-most sample, when testing all samples at once, an error will occur) */
 
 @namespace svg "http://www.w3.org/2000/svg";
 @namespace xul "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";

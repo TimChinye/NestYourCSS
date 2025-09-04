@@ -16,8 +16,9 @@ async function setupEditors() {
 
   let sample;
   sample = `
-*[hidden] {
-	display: none;
+/* Selectors */
+h1 {
+    color: red /* test */ blue;
 }
   `;
   sample = Object.values(cssSamples)[0]; // First one

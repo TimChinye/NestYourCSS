@@ -240,10 +240,19 @@ export function parseCSS(cssString) {
 
                 if (preserveComments) {
                     const lastNode = context.body.at(-1);
+
+                    const isFirstNodeInBlock = typeof lastNode === 'undefined';
+                    const isAfterDeclaration = lastNode?.type === 'Declaration';
+                    const isInSpecialPosition = isFirstNodeInBlock || isAfterDeclaration;
+                    const isInline = spacesAbove === initSpacesAbove;
+                    
+                    const shouldUseDefaultFormatterBehavior = isInSpecialPosition && isInline;
+                    const clampedSpacesAbove = Math.max(0, Math.min(spacesAbove, 1));
+                    
                     const commentNode = {
                         type: 'Comment',
                         value: cssString.substring(commentStart, pos).trim(),
-                        spacesAbove: ((typeof lastNode === 'undefined' || lastNode?.type === 'Declaration') && spacesAbove === initSpacesAbove) ? -1 : Math.max(0, Math.min(spacesAbove, 1))
+                        spacesAbove: shouldUseDefaultFormatterBehavior ? initSpacesAbove : (['Rule', 'AtRule'].includes(lastNode?.type) ? 1 : clampedSpacesAbove)
                     };
                     context.body.push(commentNode);
                 }

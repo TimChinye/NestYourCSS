@@ -1,13 +1,10 @@
 # To-do List
 
 ## Next up:
-- Optimise for lighthouse
-
-## To-do now, before [release]:
-- Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)
+- ???
 
 ## List of (potential) stuff to add to the site, after release:
-- Refine nesting logic, optimize it.
+- Make a 'dev.nestyourcss.com' (for more frequent updates than nestyourcss.com)
 - Provide functionality for the 5 buttons on the hero section (link to github, view history, view settings, report bugs, share feedback)
 - Make history, settings, and a custom "share feedback" and "report a bug".
 - Re-make #codeEditor but with grid (with cqh on grid-template-columns: {widthUsingCqhAndVariables} {gap} {widthUsingCqhAndVariables};, parent would have container-type: inline-size, as it has a fixed width anyways)
@@ -41,7 +38,7 @@
 - Allow the `input.css` file can be clicked on, when it’s clicked on it turns into an input field with the placeholder text “Insert url...”, if you un-focus it or press enter goes back to “input.css”, if you provide a url and then un-focus it or press enter, it’ll inject the css to into the editor, and change the file name from “input.css” to the provided file’s name (or if it’s too long or doesn’t end with .css: “provided.css”, “linked.css” or “external.css”)
 
 ## Much later:
-- Full revamp
+- Full design revamp
 - Design the nesting editors, similar to Google Docs (centered editors, toolbar at the top)
 - Make the nesting settings area have a fixed width and center the editors within the nesting area
 - Implement locomotive scroll or another momentum scroll plugin (e.g; [locomotive-scroll](https://github.com/locomotivemtl/locomotive-scroll))
@@ -49,6 +46,5 @@
 - Add AceDiff
 - Add light/dark mode toggle
 - Allow input for both HTML and CSS code, and display the Nested CSS output
-- Add support for comments (may require a code revamp)
 - Enable nesting multiple CSS files simultaneously
 - Option to allow Emmet

@@ -22,10 +22,11 @@ function convertToNestedCSS(cssProvided, htmlString) {
 	window.preserveComments ??= true;
 
     cssProvided = parseCSS(cssProvided);
-    console.log(cssProvided);
+    // console.log(cssProvided);
     if (window.processMode == 0) return minifyCSS(cssProvided);
     if (window.processMode == 1) return beautifyCSS(cssProvided);
-    // if (window.processMode == 2) cssProvided = unnestCSS(cssProvided);
+    if (window.processMode == 2) cssProvided = denestCSS(cssProvided);
+    // console.log(cssProvided);
     // if (window.processMode == 3) cssProvided = nestCSS(cssProvided);
     return beautifyCSS(cssProvided);
 };

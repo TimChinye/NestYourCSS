@@ -1,7 +1,7 @@
 /**
  * The new structure for a parsed selector.
  * @typedef {object} SelectorGroup
- * @property {string[]} parts - The tokenized parts of the selector group (e.g., ['#id', '>', 'p']).
+ * @property {string[]} parts - The tokenized parts of the selector group (e.g; ['#id', '>', 'p']).
  * @property {number} newlinesBefore - The number of newlines counted before this group.
  * @property {string} [commentAfter] - An optional comment that appears after this group's comma.
  */
@@ -148,6 +148,21 @@ function parseValue(valueText) {
     while (pos < len) {
         const char = valueText[pos];
         const prevChar = pos > 0 ? valueText[pos - 1] : null;
+
+        // Check for block comments first.
+        if (char === '/' && valueText[pos + 1] === '*') {
+            flushBuffer();
+            const commentStart = pos;
+            pos += 2; // Skip /*
+            while (pos < len && !(valueText[pos] === '*' && valueText[pos + 1] === '/')) {
+                pos++;
+            }
+            if (pos < len) {
+                pos += 2; // Skip */
+            }
+            tokens.push(valueText.substring(commentStart, pos));
+            continue; // Continue to next iteration, as pos is already advanced
+        }
 
         if (inString) {
             buffer += char;
@@ -324,11 +339,11 @@ export function parseCSS(cssString) {
             if (segment.includes(':') && context.type !== 'Stylesheet') {
                 const colonIndex = segment.indexOf(':');
                 const property = segment.substring(0, colonIndex).trim();
-                const value = parseValue(segment.substring(colonIndex + 1).trim());
+                const value = segment.substring(colonIndex + 1).trim();
                 
                 newNode.type = 'Declaration';
                 newNode.property = property;
-                newNode.value = value;
+                newNode.value = parseValue(value);
                 newNode.spacesAbove = declarationSpacesAbove;
                 
                 context.body.push(newNode);
@@ -385,15 +400,15 @@ function minifyValue(tokens) {
 
         // Case 1: The most common requirement for a space is between two alphanumeric
         // characters that would otherwise merge into a single identifier.
-        // e.g., "1px" and "solid" -> "1px solid"
-        // e.g., "border-box" and "important" -> "border-box !important" (after '!' is handled)
+        // e.g; "1px" and "solid" -> "1px solid"
+        // e.g; "border-box" and "important" -> "border-box !important" (after '!' is handled)
         if (/[a-zA-Z0-9]/.test(lastCharPrev) && /[a-zA-Z0-9]/.test(firstCharToken)) {
             spaceNeeded = true;
         }
 
         // Case 2: A space is needed after a closing parenthesis if it's followed by
         // an identifier that doesn't start with an operator.
-        // e.g., "rgba(0,0,0)" and "solid" -> "rgba(0,0,0) solid"
+        // e.g; "rgba(0,0,0)" and "solid" -> "rgba(0,0,0) solid"
         else if (lastCharPrev === ')' && /[a-zA-Z0-9]/.test(firstCharToken)) {
             spaceNeeded = true;
         }
@@ -644,4 +659,227 @@ export function beautifyCSS(ast, initialIndent = '') {
     }
 
     return _beautify(ast, initialIndent).trim();
+}
+
+/**
+ * Creates a deep clone of a CSS AST node.
+ * @param {object} node The AST node to clone.
+ * @returns {object} The cloned AST node.
+ */
+function cloneASTNode(node) {
+    return JSON.parse(JSON.stringify(node));
+}
+
+/**
+ * Stringifies a selector group array back into a string for use within :is().
+ * This is a simplified version of beautify/minify for this specific purpose.
+ * @param {SelectorGroup[]} groups The parsed selector groups.
+ * @returns {string} The stringified selector.
+ */
+function stringifySelectorForIs(groups) {
+    // This is a simplified stringifier that doesn't add extra spaces around combinators.
+    return groups.map(group => group.parts.join('')).join(',');
+}
+
+/**
+ * Checks if a selector part is a combinator.
+ * @param {string} part The selector part string.
+ * @returns {boolean} True if the part is a combinator.
+ */
+function isCombinator(part) {
+    return part === '>' || part === '+' || part === '~' || part === ' ';
+}
+
+/**
+ * Combines a parent selector with a child selector according to CSS nesting rules.
+ *
+ * @param {SelectorGroup[] | null} parentGroups The parent selector groups.
+ * @param {SelectorGroup[]} childGroups The child selector groups.
+ * @returns {SelectorGroup[]} The new, combined selector groups.
+ */
+function combineSelectors(parentGroups, childGroups) {
+    // Case 1: No parent context (top-level rules).
+    if (!parentGroups || parentGroups.length === 0) {
+        // According to the spec, a top-level '&' refers to the scoping root.
+        // We'll represent this with `:root` for a sensible default in global CSS.
+        return childGroups.map(group => {
+            const newParts = group.parts.map(p => p.includes('&') ? p.replace(/&/g, ':root') : p);
+            return { ...group, parts: newParts };
+        });
+    }
+
+    const newSelectorGroups = [];
+    
+    // The spec mandates that a selector list in the parent context is wrapped in :is().
+    // This simplifies combination logic significantly, as we can treat the entire
+    // parent list as a single conceptual unit.
+    const parentIsList = parentGroups.length > 1;
+    const parentSelectorString = stringifySelectorForIs(parentGroups);
+    
+    // This is the base string for replacing '&' when it appears at the start of a selector.
+    const parentContextAsSelector = parentIsList ? `:is(${parentSelectorString})` : parentSelectorString;
+    
+    // For concatenation cases (like `&&`), a type selector must be wrapped in `:is()`
+    // to avoid invalid selectors (e.g., `main` + `main` -> `mainmain`).
+    const parentStartsWithType = !parentIsList && parentGroups[0].parts.length > 0 && /^[a-zA-Z]/.test(parentGroups[0].parts[0]);
+    const safeParentForConcat = parentStartsWithType ? `:is(${parentSelectorString})` : parentContextAsSelector;
+
+    for (const childGroup of childGroups) {
+        const hasAmpersand = childGroup.parts.some(p => p.includes('&'));
+
+        // Case 2: No '&' found. This is a simple descendant selector.
+        // e.g., .parent { .child {} } -> .parent .child {}
+        if (!hasAmpersand) {
+            const parentParts = parseSelector(parentContextAsSelector)[0].parts;
+            const newParts = [...parentParts, ' ', ...childGroup.parts];
+            newSelectorGroups.push({ ...childGroup, parts: newParts });
+            continue;
+        }
+
+        // Case 3: '&' is present. Perform substitution.
+        let combinedParts = [];
+        for (const part of childGroup.parts) {
+            if (!part.includes('&')) {
+                combinedParts.push(part);
+                continue;
+            }
+
+            // A part can contain multiple ampersands, e.g., `&&&` or `&.foo&`.
+            // We split the part by '&' and insert the parent context accordingly.
+            const subParts = part.split('&');
+            
+            subParts.forEach((subPart, index) => {
+                // An ampersand existed before this subPart (unless it's the first empty string from a leading &)
+                if (index > 0) {
+                    const lastPart = combinedParts.length > 0 ? combinedParts[combinedParts.length - 1] : null;
+                    const isConcatenating = lastPart && !isCombinator(lastPart);
+                    
+                    const replacementString = isConcatenating ? safeParentForConcat : parentContextAsSelector;
+                    const replacementParts = parseSelector(replacementString)[0].parts;
+                    combinedParts.push(...replacementParts);
+                }
+
+                if (subPart) {
+                    combinedParts.push(subPart);
+                }
+            });
+        }
+        
+        // The resulting combination might itself be a list or have complex structures,
+        // so we re-parse it to normalize the structure into valid SelectorGroups.
+        const normalizedGroups = parseSelector(combinedParts.join(''));
+        newSelectorGroups.push(...normalizedGroups.map(g => ({
+            ...childGroup, // Preserve original comment/newline info
+            ...g
+        })));
+    }
+
+    return newSelectorGroups;
+}
+
+/**
+ * Traverses a CSS AST and returns a new AST with all nesting resolved ("denested").
+ * This produces a flat structure equivalent to what a browser would interpret.
+ *
+ * @param {object} ast The Abstract Syntax Tree generated by parseCSS.
+ * @returns {object} A new AST with nesting removed.
+ */
+export function denestCSS(ast) {
+    /**
+     * The recursive worker function that processes nodes.
+     * @param {object[]} nodes - The array of nodes to process.
+     * @param {object} context - The current nesting context.
+     * @param {SelectorGroup[] | null} context.selector - The selector of the current parent rule.
+     * @param {object | null} context.atRule - The info of the current parent at-rule.
+     * @returns {object[]} A new array of denested nodes.
+     */
+    function _denest(nodes, context) {
+        if (!Array.isArray(nodes)) {
+            return []; // Guard against non-iterable bodies (e.g., from @import)
+        }
+
+        const denestedNodes = [];
+        let pendingDeclarations = [];
+
+        const flushDeclarations = () => {
+            if (pendingDeclarations.length > 0) {
+                if (context.selector) {
+                    // Hoist declarations into a new rule with the parent context's selector.
+                    const rule = {
+                        type: 'Rule',
+                        selector: cloneASTNode(context.selector),
+                        body: pendingDeclarations,
+                        spacesAbove: denestedNodes.length === 0 ? 0 : 1
+                    };
+                    denestedNodes.push(rule);
+                } else {
+                    // If there's no selector (e.g., directly inside @layer),
+                    // preserve comments and handle declarations as invalid (or just keep comments).
+                    denestedNodes.push(...pendingDeclarations.filter(n => n.type === 'Comment'));
+                }
+            }
+            pendingDeclarations = [];
+        };
+
+        for (const node of nodes) {
+            if (node.type === 'Declaration' || node.type === 'Comment') {
+                pendingDeclarations.push(cloneASTNode(node));
+                continue;
+            }
+            
+            // Any rule or at-rule forces pending declarations to be flushed.
+            flushDeclarations();
+
+            if (node.type === 'Rule') {
+                const newSelector = combineSelectors(context.selector, node.selector);
+                const newContext = { ...context, selector: newSelector };
+                const childNodes = _denest(node.body, newContext);
+                
+                if (childNodes.length > 0) {
+                    if (denestedNodes.length > 0 && ['Rule', 'AtRule'].includes(denestedNodes.at(-1)?.type)) {
+                         // Ensure a newline between consecutive rules/at-rules.
+                        if (childNodes[0].spacesAbove === 0) childNodes[0].spacesAbove = 1;
+                    }
+                    denestedNodes.push(...childNodes);
+                }
+            }
+
+            if (node.type === 'AtRule') {
+                 // Check if we need to combine nested @media rules.
+                let combinedAtRuleParams = node.params;
+                if (context.atRule && context.atRule.name === 'media' && node.name === 'media') {
+                     combinedAtRuleParams = `${context.atRule.params} and (${node.params})`;
+                }
+                
+                const newAtRuleContext = { name: node.name, params: combinedAtRuleParams };
+                
+                // Pass the selector context down, but use the new combined at-rule context.
+                const childContext = {
+                    selector: context.selector,
+                    atRule: newAtRuleContext,
+                };
+                
+                const childNodes = _denest(node.body, childContext);
+
+                if (childNodes.length > 0) {
+                    const atRuleWrapper = cloneASTNode(node);
+                    atRuleWrapper.params = combinedAtRuleParams;
+                    atRuleWrapper.body = childNodes;
+                    if (denestedNodes.length > 0) atRuleWrapper.spacesAbove = 1;
+                    denestedNodes.push(atRuleWrapper);
+                } else if (node.body === null) {
+                    // Preserve at-rules with no body, like @import or @charset.
+                    denestedNodes.push(cloneASTNode(node));
+                }
+            }
+        }
+
+        flushDeclarations();
+
+        return denestedNodes;
+    }
+
+    const newRoot = cloneASTNode(ast);
+    newRoot.body = _denest(ast.body, { selector: null, atRule: null });
+    return newRoot;
 }

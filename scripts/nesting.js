@@ -102,15 +102,13 @@ function nestCode(onClick = false) {
 };
 
 function convertToNestedCSS(cssProvided, htmlString) {
-	window.processMode ??= 1;
+	window.processMode ??= 3; // 0: Minify, 1: Beautify, 2: Denest, 3: Nest
+	window.preserveComments ??= true;
 
-    cssProvided = minimizeCSS(cssProvided);
-    if (window.processMode == 0) return cssProvided;
-
-    cssProvided = splitCSS(cssProvided);
-    cssProvided = flattenCSS(cssProvided);
-    if (window.processMode == 2) return denestCSS(cssProvided);
-
-    cssProvided = renestCSS(cssProvided, htmlString);
+    cssProvided = parseCSS(cssProvided);
+    if (window.processMode == 0) return minifyCSS(cssProvided);
     if (window.processMode == 1) return beautifyCSS(cssProvided);
+    if (window.processMode == 2) cssProvided = denestCSS(cssProvided);
+    if (window.processMode == 3) cssProvided = renestCSS(cssProvided);
+    return beautifyCSS(cssProvided);
 };

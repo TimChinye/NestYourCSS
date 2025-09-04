@@ -2,7 +2,7 @@
 
 ![Nest Your CSS Github Banner](https://github.com/user-attachments/assets/193bee28-d84c-4e47-8241-b152aa1b0f3a)
 
-An Awwwards-inspired online tool to nest, un-nest, and minify stylesheets according to the native CSS Nesting spec. This project started as a simple utility and evolved into a personal masterclass in modern, framework-less front-end development, focusing on performance, accessibility, and cutting-edge CSS features.
+An Awwwards-inspired online converter tool to minify, beautify, denest, and nest CSS code according to the latest CSS specs. This project started as a simple utility and evolved into a personal masterclass in modern, framework-less front-end development, focusing on performance, accessibility, and cutting-edge CSS features.
 
 <p align="center">
   <a href="https://nestyourcss.com/">View Website</a>
@@ -50,8 +50,9 @@ This project is a testament to the power of web fundamentals, built with **zero 
 ## Features
 
 -   **Nest CSS:** Convert standard CSS to the latest native nested syntax.
--   **Un-nest CSS:** Flatten nested CSS back to standard, browser-compatible CSS.
+-   **De-nest CSS:** Flatten nested CSS back to standard, browser-compatible CSS.
 -   **Minify CSS:** Optimize your stylesheets by removing unnecessary characters.
+-   **Beautify CSS:** Format and indent your code for maximum readability and maintainability.
 -   **Customizable Editor:** Adjust font, font size, indentation, and word wrap to your preference.
 -   **Load External CSS:** Fetch and convert stylesheets directly from a URL.
 -   **Deep Accessibility:** Fully navigable and usable with screen readers, thanks to extensive ARIA implementation.

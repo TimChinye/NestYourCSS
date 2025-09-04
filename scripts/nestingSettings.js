@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         mode: {
             type: 'radio-group',
-            defaultValue: 1, // index for 'Nest'
+            defaultValue: 3, // index for 'Nest'
             action: (value, isInitialLoad) => {
                 window.processMode = value;
                 if ((window.processAuto ?? true) && !isInitialLoad && typeof nestCode === 'function') {

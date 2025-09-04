@@ -181,8 +181,24 @@ document.addEventListener('DOMContentLoaded', () => {
             action: (value, isInitialLoad) => {
                 window.processAuto = value;
                 const modeLabelElem = document.querySelector('#mode');
+
                 if (modeLabelElem) {
                     modeLabelElem.classList.toggle('button', !window.processAuto);
+                }
+
+                if (window.processAuto && !isInitialLoad && typeof nestCode === 'function') {
+                    nestCode();
+                }
+            }
+        },
+        preserveComments: {
+            type: 'checkbox',
+            defaultValue: false, // true for 'Keep Comments'
+            action: (value, isInitialLoad) => {
+                window.preserveComments = !value;
+                const preserveCommentsLabelElem = document.querySelector('#preserveComments');
+                if (preserveCommentsLabelElem) {
+                    preserveCommentsLabelElem.classList.toggle('button', !window.preserveComments);
                 }
                 if (window.processAuto && !isInitialLoad && typeof nestCode === 'function') {
                     nestCode();

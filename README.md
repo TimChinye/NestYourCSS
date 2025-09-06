@@ -1,3 +1,12 @@
+# 🛑 This Repository is Archived
+
+This repository contains the original source code for **Nest Your CSS** when it was maintained solely by me, as a personal portfolio project, from the absolute start to the final, complete MVP. The project has since graduated to a dedicated open-source organization to better support its growth and encourage community contributions.
+
+### Please visit [the new, active repository](https://github.com/NestYourCSS/NestYourCSS) for the latest code, to open issues, or to contribute.
+
+
+_(The original README for the project is preserved below for historical context.)_
+
 # Nest Your CSS
 
 ![Nest Your CSS Github Banner](https://github.com/user-attachments/assets/193bee28-d84c-4e47-8241-b152aa1b0f3a)
@@ -20,8 +29,6 @@ An Awwwards-inspired online converter tool to minify, beautify, denest, and nest
 - [Built With](#built-with)
 - [Features](#features)
 - [Key Learning Points](#key-learning-points)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 
@@ -50,7 +57,7 @@ This project is a testament to the power of web fundamentals, built with **zero 
 ## Features
 
 -   **Nest CSS:** Convert standard CSS to the latest native nested syntax.
--   **De-nest CSS:** Flatten nested CSS back to standard, browser-compatible CSS.
+-   **Denest CSS:** Flatten nested CSS back to standard, browser-compatible CSS.
 -   **Minify CSS:** Optimize your stylesheets by removing unnecessary characters.
 -   **Beautify CSS:** Format and indent your code for maximum readability and maintainability.
 -   **Customizable Editor:** Adjust font, font size, indentation, and word wrap to your preference.
@@ -71,45 +78,6 @@ This project accidentally became a masterclass modern-day front-end web developm
 - **Real-World Accessibility:** Writing crawler-friendly, semantic HTML wasn't enough. Dove deep into the world of ARIA's roles and properties to make the site genuinely usable with screen readers.
 
 - **Modern CSS is awesome:** I got to play with everything from `@layer` and container queries to relative color syntax. It pushed me to follow W3C drafts, and now I seriously can't wait for native mixins and functions (currently on the standards track!).
-
-## Getting Started
-
-To get a local copy up and running for development or contribution, follow these simple steps.
-
-### Prerequisites
-
-Make sure you have Node.js and npm installed on your machine.
--   You can download them from [nodejs.org](https://nodejs.org/).
-
-### Installation & Production Build
-
-1.  Clone the repo:
-    ```sh
-    git clone https://github.com/TimChinye/NestYourCSS.git
-    ```
-2.  Navigate to the project directory:
-    ```sh
-    cd NestYourCSS
-    ```
-3.  Install NPM packages and build the project for production:
-    ```sh
-    npm install && npm run build
-    ```
-4.  This will create a `dist` folder with the optimized production files. Open `dist/index.html` in your browser to run the live version locally.
-
-#### Development Mode
-
-If you simply want to view the raw, `in-development` files without running the build process, you can open the `index.html` file in the root directory directly in your browser after cloning. Note that some features may behave differently than in the production build.
-
-## Contributing
-
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. While I don't expect any, if you have suggestions to improve this project, please feel free to fork the repo and create a pull request, or simply open an issue with the "enhancement" tag.
-
-1.  Fork the Project
-2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4.  Push to the Branch (`git push origin feature/AmazingFeature`)
-5.  Open a Pull Request
 
 ## License
 
